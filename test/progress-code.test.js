@@ -1,18 +1,9 @@
 /* Progress codes carry a child's stars from school to home by hand, so the
    two things that matter are that a correct code round-trips exactly, and that
    a mistyped one is rejected rather than silently restoring the wrong thing. */
-import { src, engine, levels } from "./helpers/source.js";
-
-const tracksSrc = src.slice(src.indexOf("const TRACKS = ["), src.indexOf("function applyBugs"));
-const codeSrc = src.slice(src.indexOf('const B32 = "0123456789'), src.indexOf("/* ---------- the teacher's copy ----------"));
-const mod = new Function(`
-  ${engine}
-  ${levels}
-  ${tracksSrc}
-  ${codeSrc}
-  return { encodeProgress, decodeProgress, mergeProgress, normaliseCode, LEVELS, TRACKS, B32 };
-`)();
-const { encodeProgress, decodeProgress, mergeProgress, LEVELS, TRACKS, B32 } = mod;
+import { encodeProgress, decodeProgress, mergeProgress, B32 } from "../src/state/progressCode.js";
+import { LEVELS } from "../src/data/levels.js";
+import { TRACKS } from "../src/data/tracks.js";
 
 let fail = 0;
 const check = (n, c, d = "") => { if (!c) { fail++; console.log(`FAIL  ${n}${d ? "  — " + d : ""}`); } };

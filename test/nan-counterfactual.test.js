@@ -1,13 +1,16 @@
-/* Pre-fix vs current: proves the NaN guard is doing work rather than the test being toothless. */
-import { engine, levels, grab } from "./helpers/source.js";
+/* Pre-fix vs current: proves the NaN guard is doing work rather than the test
+   being toothless. Both halves matter — CURRENT at zero is the fix, PRE-FIX
+   above zero is the proof this comparison can still detect the bug. */
+import { compile, compileLoops, safeNum } from "../src/engine/interpreter.js";
+import { LEVELS } from "../src/data/levels.js";
+import { grab } from "./helpers/source.js";
 
-const mod = new Function(`${engine}\n${levels}\nreturn { compile, compileLoops, LEVELS, safeNum };`)();
-const { compile, compileLoops, LEVELS } = mod;
+const mod = { safeNum };
 
-/* The current path has to be the shipping one. When this was a hand-copy, the
+/* The current path has to be the shipping one. When this was a hand-copy the
    comparison proved nothing: reverting safeNum in the component left this test
    green because the copy still coerced. */
-const substitutedSrc = grab("function substituted(useAnswers)");
+const substitutedSrc = grab("phases/TogetherPhase.jsx", "function substituted(useAnswers)");
 const substitutedNow = (tg, fills) =>
   new Function("tg", "fills", "safeNum", `${substitutedSrc}\nreturn substituted;`)(tg, fills, mod.safeNum)(false);
 

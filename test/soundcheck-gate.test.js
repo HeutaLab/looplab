@@ -1,17 +1,10 @@
-/* The booth unlocks only when every loop matches the studio version, across all six tracks. */
-import { engine, src, grabBlock } from "./helpers/source.js";
+/* The booth unlocks only when every loop matches the studio version, across
+   all six tracks — and the gate must survive a student changing how many lines
+   there are while typing. */
+import { TRACKS, applyBugs } from "../src/data/tracks.js";
+import { grabBlock } from "./helpers/source.js";
 
-// pull TRACKS + applyBugs + optionsFor out of the source
-const tracksSrc = src.slice(src.indexOf("const HOUSE_DRUMS = seq("), src.indexOf("function applyBugs"));
-const applySrc = src.slice(src.indexOf("function applyBugs"), src.indexOf("function applyBugs") + 700);
-const applyEnd = applySrc.indexOf("\n}\n") + 2;
-const mod = new Function(`${engine}\n${tracksSrc}\n${applySrc.slice(0, applyEnd)}\nreturn { TRACKS, applyBugs };`)();
-const { TRACKS, applyBugs } = mod;
-
-/* The gate itself, executed straight from Soundcheck's body. Copying these
-   lines into the test would mean a change to the component could never fail
-   here — which is exactly what happened before this was rewired. */
-const gateSrc = grabBlock("const diffs = track.loops.map(", "const allFixed =");
+const gateSrc = grabBlock("phases/Soundcheck.jsx", "const diffs = track.loops.map(", "const allFixed =");
 const gate = new Function("track", "loopLines", `${gateSrc}\nreturn { allFixed, bugsLeft, strayLines, fixedPerLoop };`);
 
 const clone = (ll) => ll.map((ls) => ls.map((x) => ({ ...x })));

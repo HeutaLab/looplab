@@ -1,12 +1,16 @@
-/* Storage and players. Two things matter most here: the store must report
-   honestly when it cannot save (the map used to promise "saved automatically"
-   while nothing was), and two children on one school device must never see or
-   overwrite each other's stars — the spec's Tier 1 acceptance criteria. */
-import { src, engine, levels } from "./helpers/source.js";
+/* Storage and players. Two things matter most: the store must report honestly
+   when it cannot save, and two children on one school device must never see or
+   overwrite each other's stars.
 
-const adapterSrc = src.slice(src.indexOf('const PROGRESS_KEY = "looplab:progress";'), src.indexOf("/* ---------- main app ---------- */"));
-const make = (window) =>
-  new Function("window", `${engine}\n${levels}\n${adapterSrc}\nreturn { store, profiles, device, emptyProgress, MAX_PROFILES };`)(window);
+   The modules read `window` at call time, so each scenario swaps the global
+   and then exercises the real store rather than a copy of it. */
+import { store, MAX_PROFILES } from "../src/state/storage.js";
+import { profiles, device, emptyProgress } from "../src/state/profiles.js";
+
+const make = (w) => {
+  globalThis.window = w;
+  return { store, profiles, device, emptyProgress, MAX_PROFILES };
+};
 
 function browser(seed = {}) {
   const m = { ...seed };

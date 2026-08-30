@@ -2,28 +2,11 @@
    is written in their language (no developer jargon, always a worked example),
    and anything the chips can build round-trips through text unchanged — so
    moving from tapping to typing never loses or alters their music. */
-import { src, engine, levels, grab } from "./helpers/source.js";
-
-// the parser block: from SYNTH_NAMES through codeToText
-const start = src.indexOf("const SYNTH_NAMES =");
-const endMark = src.indexOf("function indents(lines)");
-const block = src.slice(start, endMark);
-
-const chipSrc = src.slice(src.indexOf("const CHIP_GROUPS = {"), src.indexOf("\n};", src.indexOf("const CHIP_GROUPS = {")) + 3);
-// `levels` already carries the drum helpers, so take TRACKS alone
-const tracksSrc = src.slice(src.indexOf("const TRACKS = ["), src.indexOf("function applyBugs"));
-
-const mod = new Function(`
-  ${engine}
-  ${src.slice(src.indexOf("function lineTokens(L)"), src.indexOf("const SYNTH_NAMES ="))}
-  ${block}
-  ${grab("function indents(lines)")}
-  ${levels}
-  ${tracksSrc}
-  ${chipSrc}
-  return { parseLine, parseCode, codeToText, lineText, LEVELS, TRACKS, CHIP_GROUPS, editDistance };
-`)();
-const { parseLine, parseCode, codeToText, lineText, LEVELS, TRACKS, CHIP_GROUPS } = mod;
+import { parseLine, parseCode, codeToText } from "../src/engine/parser.js";
+import { lineText } from "../src/engine/sonicpi.js";
+import { LEVELS } from "../src/data/levels.js";
+import { TRACKS } from "../src/data/tracks.js";
+import { CHIP_GROUPS } from "../src/data/chipGroups.js";
 
 let fail = 0;
 const check = (name, cond, detail = "") => {

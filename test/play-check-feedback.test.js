@@ -1,17 +1,18 @@
 /* The worst bug in the original build lived here: a wrong chip in a `sleep`
    blank produced `sleep 67`, and the hint only fired in the onEnd callback —
    so a child sat in silence for up to 70 seconds before being told anything.
-   Two things fix it, and both must hold: the hint is set BEFORE playback
-   starts, and the preview is capped so the attempt cannot run long.
-   playMine() is executed from source, with its collaborators stubbed. */
-import { engine, levels, grab } from "./helpers/source.js";
+   Both halves of the fix must hold: the hint is set BEFORE playback starts,
+   and the preview is capped. playMine() is executed from source with its
+   collaborators stubbed. */
+import { safeNum, MAX_PREVIEW } from "../src/engine/interpreter.js";
+import { LEVELS } from "../src/data/levels.js";
+import { grab } from "./helpers/source.js";
 
-const mod = new Function(`${engine}\n${levels}\nreturn { LEVELS, MAX_PREVIEW, safeNum };`)();
-const { LEVELS, MAX_PREVIEW } = mod;
+const mod = { safeNum };
 
 const EXPECTED_CAP = 10; // written down, not read from source — see chip-combinations
-const playMineSrc = grab("function playMine()");
-const substitutedSrc = grab("function substituted(useAnswers)");
+const playMineSrc = grab("phases/TogetherPhase.jsx", "function playMine()");
+const substitutedSrc = grab("phases/TogetherPhase.jsx", "function substituted(useAnswers)");
 
 function runPlayMine(tg, fills) {
   const calls = [];

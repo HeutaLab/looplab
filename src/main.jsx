@@ -1,7 +1,7 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import LoopLab from "../looplab.jsx";
+import LoopLab from "./App.jsx";
 
 /* A crash inside the component would otherwise leave a blank page with the
    reason only in the console — show it on screen instead. */

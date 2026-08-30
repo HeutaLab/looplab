@@ -2,20 +2,9 @@
    worse than no report, so this checks the ticks and the tables against the
    progress they were built from — including the empty case a teacher will see
    from a student who barely started. */
-import { src, engine, levels, grab } from "./helpers/source.js";
-
-const tracksSrc = src.slice(src.indexOf("const TRACKS = ["), src.indexOf("function applyBugs"));
-const reportSrc = src.slice(src.indexOf("const CAN_DO = ["), src.indexOf("/* Handing the file to the student."));
-
-const mod = new Function(`
-  ${engine}
-  ${src.slice(src.indexOf("function lineTokens(L)"), src.indexOf("const SYNTH_NAMES ="))}
-  ${levels}
-  ${tracksSrc}
-  ${reportSrc}
-  return { buildReport, LEVELS, TRACKS, CAN_DO };
-`)();
-const { buildReport, LEVELS, TRACKS } = mod;
+import { buildReport } from "../src/state/report.js";
+import { LEVELS } from "../src/data/levels.js";
+import { TRACKS } from "../src/data/tracks.js";
 
 let fail = 0;
 const check = (n, c, d = "") => { if (!c) { fail++; console.log(`FAIL  ${n}${d ? "  — " + d : ""}`); } };

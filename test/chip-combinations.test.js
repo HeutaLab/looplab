@@ -1,17 +1,14 @@
-/* Every chip combination in every We-do phase: no NaN reaches the scheduler, no preview outruns the cap, no correct answer is truncated. */
-import { engine, levels, grab } from "./helpers/source.js";
+/* Every chip combination in every We-do phase: no NaN reaches the scheduler,
+   no preview outruns the cap, no correct answer is truncated. */
+import { compile, compileLoops, capPreview, safeNum, MAX_PREVIEW } from "../src/engine/interpreter.js";
+import { LEVELS } from "../src/data/levels.js";
+import { grab } from "./helpers/source.js";
 
-// Build a sandbox module out of the real source text.
-const mod = new Function(`
-  ${engine}
-  ${levels}
-  return { compile, compileLoops, capPreview, safeNum, MAX_PREVIEW, LEVELS, findEndIdx };
-`)();
-const { compile, compileLoops, capPreview, MAX_PREVIEW, LEVELS } = mod;
+const mod = { safeNum };
 
 /* TogetherPhase.substituted() executed from source. A hand-copy here would let
    the component's coercion change without any test noticing. */
-const substitutedSrc = grab("function substituted(useAnswers)");
+const substitutedSrc = grab("phases/TogetherPhase.jsx", "function substituted(useAnswers)");
 const makeSubstituted = (tg, fills) =>
   new Function("tg", "fills", "safeNum", `${substitutedSrc}\nreturn substituted;`)(tg, fills, mod.safeNum);
 const substituted = (tg, fills, useAnswers) => makeSubstituted(tg, fills)(useAnswers);

@@ -1,9 +1,7 @@
-/* No Build Lab stage can be cleared with chips unlocked by an earlier stage, and each stage stays completable. */
-import { engine, levels, src } from "./helpers/source.js";
-
-const chipSrc = src.slice(src.indexOf("const CHIP_GROUPS = {"), src.indexOf("\n};", src.indexOf("const CHIP_GROUPS = {")) + 3);
-const mod = new Function(`${engine}\n${levels}\n${chipSrc}\nreturn { LEVELS, CHIP_GROUPS };`)();
-const { LEVELS, CHIP_GROUPS } = mod;
+/* No Build Lab stage can be cleared with chips unlocked by an earlier stage,
+   and each stage stays completable with what it does unlock. */
+import { LEVELS } from "../src/data/levels.js";
+import { CHIP_GROUPS } from "../src/data/chipGroups.js";
 
 // the ctx the stage checks are handed, lifted from BuildPhase
 const makeCtx = (code) => ({

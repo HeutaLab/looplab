@@ -1,8 +1,7 @@
-/* Every correct answer still compiles exactly as it did before the safeNum change. */
-import { engine, levels } from "./helpers/source.js";
-
-const mod = new Function(`${engine}\n${levels}\nreturn { compile, compileLoops, capPreview, MAX_PREVIEW, LEVELS };`)();
-const { compile, compileLoops, capPreview, MAX_PREVIEW, LEVELS } = mod;
+/* Every correct answer still compiles exactly as it did before the safeNum
+   change, and loop repetition counts behave like Ruby rather than like JS. */
+import { compile, compileLoops, capPreview, MAX_PREVIEW } from "../src/engine/interpreter.js";
+import { LEVELS } from "../src/data/levels.js";
 
 // The pre-fix path for a CORRECT answer: raw strings through parseFloat.
 const PICK = (a) => a[0];

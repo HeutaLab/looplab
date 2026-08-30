@@ -1,18 +1,14 @@
-/* The real conduct() driven by a simulated clock: pacing, note lead time, and a hidden tab that must not burn the set. */
-import { engine, grab, levels, src } from "./helpers/source.js";
+/* The real conduct() driven by a simulated clock: pacing, note lead time, and
+   a hidden tab that must not burn the set. */
+import { compile } from "../src/engine/interpreter.js";
+import { LEAD } from "../src/theme.js";
+import { SET_BARS, SCHED_AHEAD, MAX_BARS_PER_TICK } from "../src/phases/liveSetConfig.js";
+import { grab } from "./helpers/source.js";
+import { requestMet, makeRequest, makeGlitch } from "../src/phases/liveSetEngine.js";
 
-const LEAD = parseFloat(src.match(/const LEAD = ([0-9.]+);/)[1]);
-const eng = new Function(`${engine}\nreturn { compile, compileLoops };`)();
-const { compile } = eng;
-
-const SET_BARS = +src.match(/const SET_BARS = (\d+);/)[1];
-const SCHED_AHEAD = parseFloat(src.match(/const SCHED_AHEAD = ([0-9.]+);/)[1]);
-const MAX_BARS_PER_TICK = +src.match(/const MAX_BARS_PER_TICK = (\d+);/)[1];
-
-const conductSrc = grab("function conduct(s)");
-const requestMetSrc = grab("function requestMet(e)");
-const makeRequestSrc = grab("function makeRequest(e, track)");
-const makeGlitchSrc = grab("function makeGlitch(e, track)");
+/* The crowd logic is a real module now, so it is imported rather than pasted
+   in as text. Only conduct() still lives inside the component. */
+const conductSrc = grab("phases/LiveSet.jsx", "function conduct(s)");
 
 // a stub track with 4 loops
 const TRACK = { bpm: 128, loops: [
@@ -41,14 +37,13 @@ function makeRig() {
   const deps = {
     Tone, compile, DRUMS, SET_BARS, SCHED_AHEAD, MAX_BARS_PER_TICK, track: TRACK,
     eng: engRef,
+    requestMet, makeRequest, makeGlitch,
     trigger: (s, ev, at) => triggered.push({ at, ev }),
     endSet: () => { if (engRef.current.interval) { engRef.current.interval = null; finished.push({ bar: e.bar, score: e.score }); } },
   };
   const conduct = new Function("deps", `
-    const { Tone, compile, DRUMS, SET_BARS, SCHED_AHEAD, MAX_BARS_PER_TICK, track, eng, trigger, endSet } = deps;
-    ${requestMetSrc}
-    ${makeRequestSrc}
-    ${makeGlitchSrc}
+    const { Tone, compile, DRUMS, SET_BARS, SCHED_AHEAD, MAX_BARS_PER_TICK, track, eng, trigger, endSet,
+            requestMet, makeRequest, makeGlitch } = deps;
     ${conductSrc}
     return conduct;
   `)(deps);
@@ -135,9 +130,11 @@ const check = (name, cond, detail = "") => {
     .replace(/now \+ SCHED_AHEAD/, "now + 0.45");              // old horizon
   const r = makeRig();
   const conduct = new Function("deps", `
-    const { Tone, compile, DRUMS, SET_BARS, SCHED_AHEAD, MAX_BARS_PER_TICK, track, eng, trigger, endSet } = deps;
-    ${requestMetSrc}${makeRequestSrc}${makeGlitchSrc}${oldConduct}
+    const { Tone, compile, DRUMS, SET_BARS, SCHED_AHEAD, MAX_BARS_PER_TICK, track, eng, trigger, endSet,
+            requestMet, makeRequest, makeGlitch } = deps;
+    ${oldConduct}
     return conduct;`)({
+      requestMet, makeRequest, makeGlitch,
       Tone: { now: () => r.clock.t }, compile, DRUMS: ["bd_haus","sn_dolf","drum_cymbal_closed"],
       SET_BARS, SCHED_AHEAD, MAX_BARS_PER_TICK, track: TRACK, eng: { current: r.e },
       trigger: (s, ev, at) => r.triggered.push({ at, ev }), endSet: () => { r.finished.push({ bar: r.e.bar }); r.e.interval = null; },
