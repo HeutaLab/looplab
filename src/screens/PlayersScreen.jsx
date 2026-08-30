@@ -13,7 +13,7 @@ export function PlayersScreen({ players, currentId, onOpen, onAdd, onRemove, onB
     <div className="flex flex-col gap-3">
       <div className="flex items-center gap-2">
         {onBack && (
-          <button onClick={onBack} className="rounded-xl px-3 py-2 font-extrabold" style={{ background: C.panel2, border: `1px solid ${C.line}` }} aria-label="Back to the level map">
+          <button onClick={onBack} className="rounded-[4px] px-3 py-2 font-extrabold" style={{ background: C.panel2, border: `1px solid ${C.line}` }} aria-label="Back to the level map">
             ←
           </button>
         )}
@@ -24,8 +24,8 @@ export function PlayersScreen({ players, currentId, onOpen, onAdd, onRemove, onB
 
       <div className="flex flex-col gap-2">
         {players.map((p) => (
-          <div key={p.id} className="flex items-center gap-2 rounded-2xl p-2" style={{ background: p.id === currentId ? C.panel2 : C.panel, border: `1px solid ${p.id === currentId ? C.yellow : C.line}` }}>
-            <button onClick={() => onOpen(p.id)} className="flex-1 rounded-xl px-3 py-3 text-left font-extrabold" style={{ color: C.ink, fontSize: 16 }}>
+          <div key={p.id} className="flex items-center gap-2 rounded-[4px] p-2" style={{ background: p.id === currentId ? C.panel2 : C.panel, border: `1px solid ${p.id === currentId ? C.yellow : C.line}` }}>
+            <button onClick={() => onOpen(p.id)} className="flex-1 rounded-[4px] px-3 py-3 text-left font-extrabold" style={{ color: C.ink, fontSize: 16 }}>
               {p.id === currentId ? "🎧 " : "👤 "}
               {p.name}
             </button>
@@ -48,7 +48,7 @@ export function PlayersScreen({ players, currentId, onOpen, onAdd, onRemove, onB
       </div>
 
       {adding ? (
-        <div className="rounded-2xl p-3" style={{ background: C.panel, border: `1px solid ${C.aqua}` }}>
+        <div className="rounded-[4px] p-3" style={{ background: C.panel, border: `1px solid ${C.aqua}` }}>
           <label className="text-xs font-extrabold uppercase" style={{ color: C.dim }} htmlFor="new-player">
             Your first name
           </label>
@@ -59,7 +59,7 @@ export function PlayersScreen({ players, currentId, onOpen, onAdd, onRemove, onB
             placeholder="first name or nickname"
             maxLength={16}
             autoCapitalize="words"
-            className="mt-1 w-full rounded-xl px-3 py-2 font-bold outline-none"
+            className="mt-1 w-full rounded-[4px] px-3 py-2 font-bold outline-none"
             style={{ background: "#151233", color: C.ink, border: `1px solid ${C.line}`, fontSize: 16 }}
           />
           <div className="mt-1 text-[11px] font-semibold" style={{ color: C.dim }}>

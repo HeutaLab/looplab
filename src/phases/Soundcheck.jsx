@@ -104,7 +104,7 @@ export function Soundcheck({ track, playInfo, playTag, elapsed, playLines, stopA
         })}
       </div>
       {codeMode === "chips" ? (
-        <div className="max-h-56 overflow-y-auto rounded-2xl p-2" style={{ background: "#151233", border: `1px solid ${C.line}` }}>
+        <div className="max-h-56 overflow-y-auto rounded-[4px] p-2" style={{ background: "#151233", border: `1px solid ${C.line}` }}>
           {lines.map((L, i) => (
             <CodeLine
               key={i}
@@ -139,7 +139,7 @@ export function Soundcheck({ track, playInfo, playTag, elapsed, playLines, stopA
         />
       )}
       {codeMode === "chips" && selLine !== null && (
-        <div className="flex flex-wrap gap-1.5 rounded-2xl p-2" style={{ background: C.panel, border: `1px solid ${C.yellow}` }}>
+        <div className="flex flex-wrap gap-1.5 rounded-[4px] p-2" style={{ background: C.panel, border: `1px solid ${C.yellow}` }}>
           <span className="w-full text-xs font-extrabold" style={{ color: C.yellow }}>
             Change line to:
           </span>
@@ -153,13 +153,13 @@ export function Soundcheck({ track, playInfo, playTag, elapsed, playLines, stopA
       <div className="flex flex-wrap gap-2">
         <BigButton
           color={C.aqua}
-          onClick={() => (playTag === "mine" ? stopAll() : playLines([LOOP(2), ...lines, END()], "mine", null, track.bpm))}
+          onClick={() => (playTag === "mine" ? stopAll(true) : playLines([LOOP(2), ...lines, END()], "mine", null, track.bpm))}
         >
           {playTag === "mine" ? "■ Stop" : "▶ Solo this loop"}
         </BigButton>
         <BigButton
           color={C.violet}
-          onClick={() => (playTag === "target" ? stopAll() : playLines([LOOP(2), ...orig, END()], "target", null, track.bpm))}
+          onClick={() => (playTag === "target" ? stopAll(true) : playLines([LOOP(2), ...orig, END()], "target", null, track.bpm))}
         >
           {playTag === "target" ? "■ Stop" : "🎧 Hear it fixed"}
         </BigButton>
@@ -168,14 +168,22 @@ export function Soundcheck({ track, playInfo, playTag, elapsed, playLines, stopA
         </BigButton>
       </div>
       {hints && !allFixed && (
-        <div className="rounded-xl px-3 py-2 text-xs font-bold" style={{ background: "rgba(255,154,87,0.12)", color: C.orange }}>
+        <div className="rounded-[4px] px-3 py-2 text-xs font-bold" style={{ background: "rgba(255,154,87,0.12)", color: C.orange }}>
           {track.bugs.map((b, i) => (
             <div key={i}>• {b.hint}</div>
           ))}
           {strayLines > 0 && <div>• {strayLines === 1 ? "One line you changed doesn't" : `${strayLines} lines you changed don't`} match the studio version — they're the highlighted ones.</div>}
         </div>
       )}
-      <BigButton disabled={!allFixed} onClick={() => onDone(loopLines.map((ls) => ls.map((x) => ({ ...x }))))}>
+      <BigButton
+        disabled={!allFixed}
+        why={
+          bugsLeft > 0
+            ? `${bugsLeft} bug${bugsLeft === 1 ? "" : "s"} still to find`
+            : `Put ${strayLines === 1 ? "one changed line" : "the changed lines"} back`
+        }
+        onClick={() => onDone(loopLines.map((ls) => ls.map((x) => ({ ...x }))))}
+      >
         🎛 Soundcheck done — take the booth!
       </BigButton>
       </div>

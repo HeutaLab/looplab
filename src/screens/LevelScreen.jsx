@@ -5,47 +5,57 @@ import { TogetherPhase } from "../phases/TogetherPhase.jsx";
 import { WatchPhase } from "../phases/WatchPhase.jsx";
 import { YourTurnPhase } from "../phases/YourTurnPhase.jsx";
 import { C } from "../theme.js";
+import { Stars } from "../ui/controls.jsx";
 
 export function LevelScreen(props) {
   const { level, levelIdx, phase, setPhase, stars, back } = props;
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex items-center gap-2">
-        <button onClick={back} className="rounded-xl px-3 py-2 font-extrabold" style={{ background: C.panel2, border: `1px solid ${C.line}` }}>
+      <div className="flex items-center gap-3">
+        <button onClick={back} aria-label="Back to the map" className="text-xl" style={{ color: C.dim, minWidth: 44, minHeight: 44 }}>
           ←
         </button>
         <div className="flex-1">
-          <div className="text-lg font-extrabold">
-            {level.emoji} Level {levelIdx + 1}: {level.title}
+          <div className="text-[11px] font-bold uppercase" style={{ color: C.dim, letterSpacing: "0.16em" }}>
+            Level {levelIdx + 1}
           </div>
+          <div className="text-lg font-bold">{level.title}</div>
         </div>
-        <div className="text-sm" style={{ color: C.yellow }}>
-          {"⭐".repeat(stars)}
-          <span style={{ opacity: 0.25 }}>{"⭐".repeat(3 - stars)}</span>
-        </div>
+        <Stars n={stars} size={15} />
       </div>
-      <div className="flex gap-2">
+      {/* The same three tabs as the booth: a word, its job underneath, and a
+          rule under the one you are on. They were three filled violet slabs,
+          which made the phase you were in look like a pressed button rather
+          than the place you are. */}
+      <div className="grid grid-cols-3" style={{ borderBottom: `1px solid ${C.line}` }}>
         {PHASES.map((p0, i) => {
-          const p = i === 2 && level.build ? { ...p0, sub: "Build it", icon: "🧱" } : p0;
+          const p = i === 2 && level.build ? { ...p0, sub: "Build it" } : p0;
           const unlocked = i <= stars;
           const current = i === phase;
+          const done = i < stars;
           return (
             <button
               key={p.key}
               onClick={() => unlocked && setPhase(i)}
-              className="flex-1 rounded-2xl px-1 py-2 text-center"
+              /* A locked tab used to be a live button that swallowed the tap
+                 and said nothing. Now it reads as locked to a screen reader
+                 too, and the padlock says why to everyone else. */
+              disabled={!unlocked}
+              aria-disabled={!unlocked || undefined}
+              aria-current={current ? "step" : undefined}
+              className="flex flex-col items-center gap-0.5 px-1 pb-2 pt-1"
               style={{
-                background: current ? C.violet : C.panel,
-                color: current ? "#1A1030" : unlocked ? C.ink : C.dim,
-                border: `2px solid ${current ? C.violet : C.line}`,
+                minHeight: 48,
+                marginBottom: -1,
+                borderBottom: `2px solid ${current ? (done ? C.green : C.ink) : "transparent"}`,
+                color: done ? C.green : current ? C.ink : C.dim,
                 opacity: unlocked ? 1 : 0.45,
               }}
             >
-              <div className="text-base">{i < stars ? "✅" : p.icon}</div>
-              <div className="text-[11px] font-extrabold leading-tight">
-                {p.label}
-                <div style={{ opacity: 0.75 }}>{p.sub}</div>
-              </div>
+              <span className="text-base font-bold">{unlocked ? p.label : "🔒"}</span>
+              <span className="text-[10px] font-bold uppercase" style={{ letterSpacing: "0.14em" }}>
+                {p.sub}
+              </span>
             </button>
           );
         })}
@@ -53,9 +63,13 @@ export function LevelScreen(props) {
       {phase === 0 && <WatchPhase {...props} key={`w${levelIdx}`} />}
       {phase === 1 && <TogetherPhase {...props} key={`t${levelIdx}`} />}
       {phase === 2 && (level.build ? <BuildPhase {...props} key={`b${levelIdx}`} /> : <YourTurnPhase {...props} key={`y${levelIdx}`} />)}
-      <div className="text-center text-[11px] font-semibold" style={{ color: C.dim }}>
-        🔇 No sound? Turn the volume up, switch off silent mode, and tap ▶ again.
-      </div>
+      {/* Advice for a real problem, not a permanent footer on every screen —
+          it shows once, on the phase where they have not yet heard anything. */}
+      {phase === 0 && stars === 0 && (
+        <div className="text-[11px]" style={{ color: C.dim }}>
+          No sound? Turn the volume up, switch off silent mode, and tap play again.
+        </div>
+      )}
     </div>
   );
 }

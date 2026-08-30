@@ -39,16 +39,16 @@ export function WatchPhase({ level, playInfo, playTag, elapsed, playLines, playM
           color={C.aqua}
           onClick={() =>
             playInfo
-              ? stopAll()
+              ? stopAll(true)
               : multi
               ? playMulti(w.loops.map((l) => l.lines), "demo", () => setDone(true), w.bpm || 60, 2)
               : playLines(w.lines, "demo", () => setDone(true))
           }
         >
-          {playInfo ? "■ Stop" : "▶ Play DJ Loop's code"}
+          {playInfo ? "Stop" : "Play DJ Loop's code"}
         </BigButton>
-        <BigButton disabled={!done} onClick={() => completePhase(0)}>
-          Got it! Next 🤝
+        <BigButton disabled={!done} why="Have a listen first" onClick={() => completePhase(0)}>
+          Got it! Next
         </BigButton>
       </div>
       </div>

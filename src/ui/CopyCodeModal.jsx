@@ -15,7 +15,7 @@ export function CopyCodeModal({ text, onClose }) {
           readOnly
           value={text}
           onFocus={(e) => e.target.select()}
-          className="mt-2 w-full rounded-xl p-2 font-mono text-xs"
+          className="mt-2 w-full rounded-[4px] p-2 font-mono text-xs"
           style={{ background: "#151233", color: C.aqua, border: `1px solid ${C.line}`, height: 180 }}
         />
         <div className="mt-2 flex gap-2">

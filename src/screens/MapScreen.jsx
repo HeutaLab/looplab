@@ -1,38 +1,42 @@
 import React from "react";
 import { LEVELS } from "../data/levels.js";
-import { C } from "../theme.js";
-import { Chip, Mentor } from "../ui/controls.jsx";
+import { C, CHANNEL, CLUB, TYPE } from "../theme.js";
+import { Chip, Mentor, Rule, Stars } from "../ui/controls.jsx";
 
 export function MapScreen({ stars, records, loaded, persist, playerName, onOpen, onClub, onReport, onSwitch, onHoldStart, onHoldEnd }) {
   const clubOpen = stars[1] >= 3;
   const golds = Object.values(records).filter((r) => r === "gold").length;
   return (
     <div className="flex flex-col gap-4">
-      <div className="pt-3 text-center">
-        <div className="text-4xl font-extrabold tracking-tight">
-<div
-          onPointerDown={onHoldStart}
-          onPointerUp={onHoldEnd}
-          onPointerLeave={onHoldEnd}
-          onPointerCancel={onHoldEnd}
-          onContextMenu={(e) => e.preventDefault()}
-          style={{ WebkitTouchCallout: "none", WebkitUserSelect: "none", userSelect: "none" }}
-        >
-          Loop<span style={{ color: C.pink }}>Lab</span> 🎧
+      <div className="flex flex-wrap items-end justify-between gap-x-4 gap-y-1 pt-2">
+        <div>
+          <div
+            className="text-4xl font-bold"
+            style={{ letterSpacing: "-0.02em", WebkitTouchCallout: "none", WebkitUserSelect: "none", userSelect: "none" }}
+            onPointerDown={onHoldStart}
+            onPointerUp={onHoldEnd}
+            onPointerLeave={onHoldEnd}
+            onPointerCancel={onHoldEnd}
+            onContextMenu={(e) => e.preventDefault()}
+          >
+            Loop<span style={{ color: C.pink }}>Lab</span>
+          </div>
+          <div className="mt-0.5 text-sm" style={{ color: C.dim }}>
+            Learn to code music — then DJ the club
+          </div>
         </div>
-        </div>
-        <div className="mt-1 text-sm font-semibold" style={{ color: C.dim }}>
-          Learn to code music — then DJ the club
-        </div>
-        <div className="mt-1 text-center text-xs font-extrabold" style={{ color: C.yellow }}>
-          {playerName ? `🎧 ${playerName}` : ""}
-        </div>
+        {playerName && (
+          <div className="text-[11px] font-bold uppercase" style={{ color: C.yellow, letterSpacing: "0.16em" }}>
+            Playing · {playerName}
+          </div>
+        )}
       </div>
       <Mentor text="Train in the Studio, then take the booth in The Club: fix real dance tracks, then perform them live and keep the crowd jumping. Let's go!" />
-      <div className="text-xs font-extrabold uppercase tracking-widest" style={{ color: C.dim }}>
-        🎓 The Studio — learn the moves
-      </div>
-      <div className="flex flex-col gap-3">
+      <Rule>The Studio</Rule>
+      {/* A list, not six identical cards with an emoji in a rounded square.
+          What identifies a level is the code it teaches, so the code is what
+          the row shows — set in the same monospace it will be written in. */}
+      <div className="flex flex-col">
         {LEVELS.map((lv, i) => {
           const unlocked = i === 0 || stars[i - 1] >= 3;
           const st = stars[i];
@@ -40,74 +44,72 @@ export function MapScreen({ stars, records, loaded, persist, playerName, onOpen,
             <button
               key={lv.id}
               onClick={() => unlocked && onOpen(i)}
-              className="flex items-center gap-3 rounded-2xl p-3 text-left transition-transform active:scale-95"
+              disabled={!unlocked}
+              className="flex items-center gap-4 py-3 pl-4 pr-2 text-left"
               style={{
-                background: unlocked ? C.panel : "#17142F",
-                border: `2px solid ${st >= 3 ? C.green : unlocked ? C.line : "#221E45"}`,
-                opacity: unlocked ? 1 : 0.55,
+                borderLeft: `2px solid ${st >= 3 ? C.green : unlocked ? CHANNEL[i % CHANNEL.length] : C.line}`,
+                borderBottom: `1px solid ${C.line}`,
+                opacity: unlocked ? 1 : 0.45,
+                minHeight: 60,
               }}
             >
-              <div className="flex items-center justify-center rounded-xl text-2xl" style={{ width: 52, height: 52, background: C.panel2 }}>
-                {unlocked ? lv.emoji : "🔒"}
-              </div>
-              <div className="flex-1">
-                <div className="font-extrabold">
-                  Level {i + 1}: {lv.title}
-                </div>
-                <div className="text-xs font-semibold" style={{ color: C.dim }}>
+              <span className="text-lg font-bold tabular-nums" style={{ fontFamily: TYPE.code, color: unlocked ? C.dim : C.line, minWidth: 22 }}>
+                {i + 1}
+              </span>
+              <span className="flex-1">
+                <span className="block font-bold">{lv.title}</span>
+                <span className="block text-xs" style={{ fontFamily: TYPE.code, color: C.dim }}>
                   {unlocked ? lv.blurb : "Finish the level above to unlock"}
-                </div>
-              </div>
-              <div className="text-sm" style={{ color: C.yellow }}>
-                {"⭐".repeat(st)}
-                <span style={{ opacity: 0.25 }}>{"⭐".repeat(3 - st)}</span>
-              </div>
+                </span>
+              </span>
+              <Stars n={st} />
             </button>
           );
         })}
       </div>
-      <div className="text-xs font-extrabold uppercase tracking-widest" style={{ color: C.dim }}>
-        🪩 The Club — become the DJ
-      </div>
+      <Rule>The Club</Rule>
+      {/* The door shows the room behind it: this is the only thing on the map
+          painted in the floor's colours, so arriving at the booth is not a
+          surprise. */}
       <button
         onClick={() => clubOpen && onClub()}
-        className="rounded-2xl p-4 text-left transition-transform active:scale-95"
+        disabled={!clubOpen}
+        className="p-4 text-left"
         style={{
-          background: clubOpen ? `linear-gradient(135deg, ${C.panel2}, #2E1B4E)` : "#17142F",
-          border: `2px solid ${clubOpen ? C.pink : "#221E45"}`,
-          opacity: clubOpen ? 1 : 0.55,
+          background: clubOpen ? CLUB.void : "#17142F",
+          border: `1px solid ${clubOpen ? CLUB.amber : C.line}`,
+          borderRadius: 4,
+          opacity: clubOpen ? 1 : 0.5,
         }}
       >
-        <div className="flex items-center gap-3">
-          <div className="text-3xl">{clubOpen ? "🪩" : "🔒"}</div>
-          <div className="flex-1">
-            <div className="text-lg font-extrabold">Enter The Club</div>
-            <div className="text-xs font-semibold" style={{ color: C.dim }}>
-              {clubOpen
-                ? `6 tracks · 125–140 BPM · fix them, then perform them live · ${golds} gold record${golds === 1 ? "" : "s"}`
-                : "Finish Level 2 (Loop Magic) to get past the bouncer"}
-            </div>
-          </div>
+        <div className="text-lg font-bold" style={{ color: clubOpen ? CLUB.ink : C.dim }}>
+          Enter The Club
+        </div>
+        <div className="mt-0.5 text-xs" style={{ color: clubOpen ? CLUB.dim : C.dim }}>
+          {clubOpen
+            ? `6 tracks · 125–140 BPM · fix them, then play them live · ${golds} gold record${golds === 1 ? "" : "s"}`
+            : "Finish Level 2 (Loop Magic) to get past the bouncer"}
         </div>
       </button>
-      <div className="rounded-2xl p-3 text-center text-xs font-semibold" style={{ background: C.panel, color: C.dim, border: `1px solid ${C.line}` }}>
-        🎹 Everything here is real <span style={{ color: C.aqua }}>Sonic Pi</span> code — real synth names, real sample names, real live loops. Copy any
-        track and run it in the free desktop app!
+      <div className="text-xs" style={{ color: C.dim, lineHeight: 1.5, maxWidth: "62ch" }}>
+        Everything here is real <span style={{ color: C.aqua, fontFamily: TYPE.code }}>Sonic Pi</span> — real synth names, real sample names, real live
+        loops. Copy any track and run it in the free desktop app.
       </div>
-      <div className="flex flex-wrap items-center justify-center gap-2">
-        <span className="text-[11px] font-bold" style={{ color: !loaded ? C.dim : persist === false ? C.orange : C.green }}>
-          {!loaded
-            ? "💾 Loading your progress…"
-            : persist === false
-            ? "⚠️ This browser won't let the game save — your stars will vanish on reload"
-            : "💾 Progress saved automatically"}
-        </span>
+      <div className="flex flex-wrap items-center gap-2 pt-1">
         <Chip small onClick={onReport}>
-          📋 My progress
+          My progress
         </Chip>
         <Chip small onClick={onSwitch}>
-          👤 Not you? Switch player
+          Switch player
         </Chip>
+        <span className="flex-1" />
+        <span className="text-[11px]" style={{ color: !loaded ? C.dim : persist === false ? C.orange : C.dim }}>
+          {!loaded
+            ? "Loading your progress…"
+            : persist === false
+            ? "This browser won't let the game save — your stars will vanish on reload"
+            : "Progress saved automatically"}
+        </span>
       </div>
     </div>
   );

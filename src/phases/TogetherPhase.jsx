@@ -55,7 +55,7 @@ export function TogetherPhase({ level, playInfo, playTag, elapsed, playLines, pl
 
   function playMine() {
     if (fills.some((f) => f === null)) {
-      setMsg("Fill every ❓ blank first!");
+      setMsg("Fill every blank first.");
       return;
     }
     const correct = tg.lines.filter((L) => L.blank !== undefined).every((L, i) => String(fills[i]) === String(L.blank));
@@ -72,11 +72,11 @@ export function TogetherPhase({ level, playInfo, playTag, elapsed, playLines, pl
   return (
     <div className={PHASE["gap-3"].grid}>
       <div className={PHASE["gap-3"].watch}>
-      <Mentor text={won ? "PERFECT! 🎉 You fixed the track — that star is yours!" : tg.mentor} />
+      <Mentor text={won ? "That is the track. The star is yours." : tg.mentor} />
       <NoteHighway playInfo={playInfo} elapsed={elapsed} />
       </div>
       <div className={PHASE["gap-3"].edit}>
-      <div className="rounded-2xl p-2" style={{ background: "#151233", border: `1px solid ${C.line}` }}>
+      <div className="p-2" style={{ background: "#151233", borderRadius: 4, border: `1px solid ${C.line}` }}>
         {tg.lines.map((L, i) => {
           const isBlank = L.blank !== undefined;
           if (isBlank) bCounter++;
@@ -90,14 +90,14 @@ export function TogetherPhase({ level, playInfo, playTag, elapsed, playLines, pl
                   )}
                   <button
                     onClick={() => fills[bIdx] !== null && clearBlank(bIdx)}
-                    className="mx-0.5 rounded-lg px-2 py-0.5 font-mono font-bold"
+                    className="mx-0.5 rounded-[4px] px-2 py-0.5 font-mono font-bold"
                     style={{
                       border: `2px dashed ${fills[bIdx] !== null ? C.yellow : C.pink}`,
                       background: fills[bIdx] !== null ? "rgba(255,211,77,0.15)" : "rgba(255,92,168,0.1)",
                       color: fills[bIdx] !== null ? C.yellow : C.pink,
                     }}
                   >
-                    {fills[bIdx] !== null ? (L.t === "sample" || L.t === "synth" ? ":" + fills[bIdx] : fills[bIdx]) : "❓"}
+                    {fills[bIdx] !== null ? (L.t === "sample" || L.t === "synth" ? ":" + fills[bIdx] : fills[bIdx]) : "?"}
                   </button>
                   {L.t === "loop" && <span style={{ color: tokColor.kw }}>.times do</span>}
                 </>
@@ -120,25 +120,25 @@ export function TogetherPhase({ level, playInfo, playTag, elapsed, playLines, pl
               setMsg(null);
             }}
           >
-            ↺ reset
+            reset
           </Chip>
         </div>
       )}
       {msg && (
-        <div className="rounded-xl px-3 py-2 text-sm font-bold" style={{ background: "rgba(255,154,87,0.15)", color: C.orange }}>
+        <div className="px-3 py-2 text-sm" style={{ borderLeft: `2px solid ${C.orange}`, color: C.orange }}>
           {msg}
         </div>
       )}
       <div className="flex flex-wrap gap-2">
-        <BigButton color={C.violet} onClick={() => (playTag === "target" ? stopAll() : play(substituted(true), "target"))}>
-          {playTag === "target" ? "■ Stop" : "🎧 Hear the goal"}
+        <BigButton color={C.violet} onClick={() => (playTag === "target" ? stopAll(true) : play(substituted(true), "target"))}>
+          {playTag === "target" ? "Stop" : "Hear the goal"}
         </BigButton>
         {!won ? (
-          <BigButton color={C.aqua} onClick={() => (playTag === "mine" ? stopAll() : playMine())}>
-            {playTag === "mine" ? "■ Stop" : "▶ Play & check"}
+          <BigButton color={C.aqua} onClick={() => (playTag === "mine" ? stopAll(true) : playMine())}>
+            {playTag === "mine" ? "Stop" : "Play & check"}
           </BigButton>
         ) : (
-          <BigButton onClick={() => completePhase(1)}>⭐ Next: Your turn 🚀</BigButton>
+          <BigButton onClick={() => completePhase(1)}>Next: Your turn</BigButton>
         )}
       </div>
       </div>

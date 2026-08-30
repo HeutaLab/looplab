@@ -5,7 +5,7 @@ import { C, tokColor } from "../theme.js";
 export function CodeLine({ L, indent, active, warn, onTap, selected, small, children }) {
   const inner = (
     <div
-      className="flex items-center rounded-lg px-2 py-1 font-mono transition-colors"
+      className="flex items-center rounded-[4px] px-2 py-1 font-mono transition-colors"
       style={{
         fontSize: small ? 12 : 14,
         paddingLeft: 8 + indent * 16,
@@ -36,7 +36,7 @@ export function CodeLine({ L, indent, active, warn, onTap, selected, small, chil
 export function CodeView({ lines, activeLine, small }) {
   const ind = indents(lines);
   return (
-    <div className="rounded-2xl p-2" style={{ background: "#151233", border: `1px solid ${C.line}` }}>
+    <div className="rounded-[4px] p-2" style={{ background: "#151233", border: `1px solid ${C.line}` }}>
       {lines.map((L, i) => (
         <CodeLine key={i} L={L} indent={ind[i]} active={activeLine === i} small={small} />
       ))}

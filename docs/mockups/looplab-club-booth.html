@@ -1,0 +1,1034 @@
+<title>Warehouse 909 Booth</title>
+<style>
+  :root{
+    /* product surface — locked palette from the brief */
+    --void:#07060c;
+    --ink:#f3eee4;
+    --dim:#c9c3d4;
+    --amber:#ffb703;
+    --sour:#ff2d1a;
+    --ok:#7dffb3;
+
+    /* mock-up board — deliberately warm, so the product's void reads as a screen */
+    --board:#141110;
+    --board-2:#1d1917;
+    --board-line:#2e2823;
+    --board-ink:#cfc6ba;
+    --board-dim:#8a8075;
+
+    --ui:"Gill Sans","Gill Sans MT","Trebuchet MS","Segoe UI",system-ui,sans-serif;
+    --code:ui-monospace,"SF Mono",Menlo,Consolas,"Courier New",monospace;
+  }
+
+  *{box-sizing:border-box}
+
+  body{
+    margin:0;
+    background:var(--board);
+    color:var(--board-ink);
+    font-family:var(--ui);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ─────────────────────────── mock-up chrome ─────────────────────────── */
+
+  .board{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+    padding:20px clamp(14px,3vw,34px) 40px;
+  }
+
+  .board-bar{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:baseline;
+    gap:10px 22px;
+    padding-bottom:14px;
+    border-bottom:1px solid var(--board-line);
+  }
+  .board-title{
+    margin:0;
+    font-size:15px;
+    font-weight:600;
+    letter-spacing:.02em;
+    color:var(--board-ink);
+  }
+  .board-title b{color:var(--amber);font-weight:600}
+  .board-note{
+    margin:0;
+    font-size:12.5px;
+    color:var(--board-dim);
+    max-width:56ch;
+    line-height:1.5;
+  }
+  .board-spacer{flex:1 1 auto}
+
+  .switch{display:flex;align-items:center;gap:8px}
+  .switch-label{
+    font-size:10.5px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--board-dim);
+  }
+  .switch-set{
+    display:flex;
+    border:1px solid var(--board-line);
+    border-radius:2px;
+    overflow:hidden;
+    background:var(--board-2);
+  }
+  .switch-set button{
+    appearance:none;
+    border:0;
+    background:transparent;
+    color:var(--board-dim);
+    font-family:var(--ui);
+    font-size:12.5px;
+    letter-spacing:.02em;
+    padding:7px 12px;
+    cursor:pointer;
+    border-right:1px solid var(--board-line);
+  }
+  .switch-set button:last-child{border-right:0}
+  .switch-set button[aria-pressed="true"]{background:var(--amber);color:#140f00;font-weight:600}
+  .switch-set button:focus-visible{outline:2px solid var(--amber);outline-offset:-2px}
+
+  .frame-wrap{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:12px;
+  }
+  .frame-hold{position:relative}
+  .frame-scaler{
+    position:absolute;
+    top:0;left:0;
+    transform-origin:top left;
+  }
+  .frame{
+    position:relative;
+    background:var(--void);
+    border:1px solid #383029;
+    box-shadow:0 30px 70px rgba(0,0,0,.55);
+    overflow:hidden;
+  }
+  .frame[data-device="ipad"]{width:1024px;height:768px;border-radius:14px}
+  .frame[data-device="phone"]{width:390px;height:844px;border-radius:34px}
+  .frame[data-device="mac"]{width:1440px;height:900px;border-radius:8px}
+
+  .frame-caption{
+    font-size:11px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--board-dim);
+  }
+  .frame-caption b{color:var(--board-ink);font-weight:600}
+
+  /* ─────────────────────── the product surface itself ─────────────────── */
+
+  .screen{
+    width:100%;
+    height:100%;
+    display:flex;
+    flex-direction:column;
+    background:var(--void);
+    color:var(--ink);
+    font-family:var(--ui);
+    --code-size:18px;
+    --pad:22px;
+  }
+  .frame[data-device="phone"] .screen{--code-size:15px;--pad:14px}
+  .frame[data-device="mac"] .screen{--code-size:22px;--pad:30px}
+
+  /* header */
+  .hdr{
+    flex:0 0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:14px;
+    padding:14px var(--pad) 10px;
+  }
+  .who{
+    font-size:13px;
+    letter-spacing:.02em;
+    color:var(--dim);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .frame[data-device="mac"] .who{font-size:16px}
+  .who b{color:var(--ink);font-weight:700}
+  .silence{
+    appearance:none;
+    background:none;
+    border:0;
+    padding:6px 2px;
+    min-height:44px;
+    font-family:var(--ui);
+    font-size:12px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--dim);
+    text-decoration:underline;
+    text-underline-offset:5px;
+    text-decoration-thickness:1px;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  .frame[data-device="mac"] .silence{font-size:14px}
+  .silence:hover{color:var(--ink)}
+  .silence[data-muted="true"]{color:var(--sour);text-decoration-color:var(--sour)}
+  .silence:focus-visible{outline:2px solid var(--amber);outline-offset:3px}
+
+  /* phases */
+  .phases{
+    flex:0 0 auto;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    border-bottom:1px solid rgba(243,238,228,.14);
+    padding:0 var(--pad);
+  }
+  .phase{
+    appearance:none;
+    background:none;
+    border:0;
+    border-bottom:2px solid transparent;
+    margin-bottom:-1px;
+    min-height:48px;
+    padding:6px 4px 10px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:2px;
+    cursor:pointer;
+    font-family:var(--ui);
+    color:var(--dim);
+    opacity:.55;
+  }
+  .phase .p-name{font-size:16px;font-weight:700;letter-spacing:.01em}
+  .phase .p-sub{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase}
+  .frame[data-device="mac"] .phase .p-name{font-size:19px}
+  .frame[data-device="mac"] .phase .p-sub{font-size:12px}
+  .phase[data-state="done"]{color:var(--ok);opacity:1}
+  .phase[data-state="on"]{color:var(--ink);opacity:1;border-bottom-color:var(--ink)}
+  /* still the phase you are on, but its work is finished */
+  .phase[data-state="on-done"]{color:var(--ok);opacity:1;border-bottom-color:var(--ok)}
+  .phase:focus-visible{outline:2px solid var(--amber);outline-offset:-3px}
+
+  /* stage */
+  .stage{
+    flex:1 1 auto;
+    min-height:0;
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);
+    gap:var(--pad);
+    padding:var(--pad);
+  }
+  .frame[data-device="phone"] .stage{
+    grid-template-columns:minmax(0,1fr);
+    grid-template-rows:176px minmax(0,1fr);
+    gap:10px;
+  }
+
+  /* the pit */
+  .pit{position:relative;min-height:0;min-width:0}
+  .pit canvas{display:block;width:100%;height:100%}
+
+  /* the writing column */
+  .write{
+    display:flex;
+    flex-direction:column;
+    min-height:0;
+    min-width:0;
+    gap:14px;
+  }
+  .frame[data-device="phone"] .write{gap:10px}
+
+  /* One block. A long loop scrolls in the middle, so `live_loop :bass do`
+     and `end` never leave the screen — the script is never cut in half. */
+  .code{
+    flex:1 1 auto;
+    min-height:0;
+    display:flex;
+    flex-direction:column;
+    margin:0;
+    font-family:var(--code);
+    font-size:var(--code-size);
+    font-weight:700;
+    line-height:1.55;
+    color:var(--dim);
+  }
+  .code-body{
+    position:relative;          /* so a row's offsetTop is measured inside it */
+    flex:1 1 auto;
+    min-height:0;
+    overflow-y:auto;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+    -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 16px,#000 calc(100% - 16px),transparent 100%);
+    mask-image:linear-gradient(180deg,transparent 0,#000 16px,#000 calc(100% - 16px),transparent 100%);
+  }
+  .code-body::-webkit-scrollbar{width:0;height:0}
+  .ln{
+    position:relative;
+    display:flex;
+    align-items:center;
+    padding:1px 8px 1px 14px;
+    white-space:pre;
+    border-radius:2px;
+  }
+  .ln .bar{
+    position:absolute;
+    left:0;top:2px;bottom:2px;
+    width:4px;
+    border-radius:1px;
+    background:transparent;
+  }
+  .ln[data-now="true"] .bar{background:rgba(255,183,3,.45)}
+  .ln[data-hole="true"]{background:rgba(243,238,228,.07)}
+  .ln[data-hole="true"] .bar{background:var(--amber)}
+  .kw{color:var(--ink)}
+  .sour{color:var(--sour)}
+  .hole{
+    color:var(--amber);
+    border-bottom:2px dashed var(--amber);
+    padding-bottom:1px;
+  }
+  .filled{color:var(--amber)}
+
+  .hint{
+    flex:0 0 auto;
+    margin:0;
+    min-height:1.2em;          /* held open, so nothing jumps when it speaks */
+    font-size:13px;
+    line-height:1.4;
+    color:var(--dim);
+    opacity:0;
+    transition:opacity .25s ease;
+  }
+  .hint[data-show="true"]{opacity:.9}
+  .frame[data-device="mac"] .hint{font-size:15px}
+
+  .chips{flex:0 0 auto;display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+  .chips-legend{
+    font-size:10.5px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--dim);
+    margin-right:2px;
+  }
+  .chip{
+    appearance:none;
+    border:0;
+    border-radius:999px;
+    background:var(--amber);
+    color:#120c00;
+    font-family:var(--code);
+    font-weight:700;
+    font-size:15px;
+    letter-spacing:-.01em;
+    padding:0 16px;
+    min-height:44px;
+    cursor:pointer;
+  }
+  .frame[data-device="mac"] .chip{font-size:17px;min-height:48px}
+  .chip:hover{background:#ffc634}
+  .chip:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+  .chips[data-locked="true"] .chip{opacity:.28;pointer-events:none}
+
+  .actions{flex:0 0 auto;display:flex;gap:12px}
+  .btn{
+    appearance:none;
+    flex:1 1 0;
+    min-height:48px;
+    border-radius:999px;
+    font-family:var(--ui);
+    font-size:16px;
+    font-weight:600;
+    letter-spacing:.01em;
+    cursor:pointer;
+  }
+  .frame[data-device="mac"] .btn{font-size:18px;min-height:54px}
+  .btn.ghost{background:transparent;border:1.5px solid var(--ink);color:var(--ink)}
+  .btn.solid{background:var(--ink);border:1.5px solid var(--ink);color:var(--void)}
+  .btn:focus-visible{outline:2px solid var(--amber);outline-offset:3px}
+  .btn[data-on="true"].ghost{border-color:var(--amber);color:var(--amber)}
+  .btn[data-on="true"].solid{background:var(--amber);border-color:var(--amber);color:#120c00}
+
+  @media (prefers-reduced-motion:reduce){
+    .hint{transition:none}
+  }
+</style>
+
+<div class="board">
+  <div class="board-bar">
+    <h1 class="board-title">LoopLab Club &middot; <b>Warehouse 909</b> &middot; locked screen</h1>
+    <div class="board-spacer"></div>
+    <div class="switch">
+      <span class="switch-label">Device</span>
+      <div class="switch-set" id="deviceSwitch">
+        <button type="button" data-device="ipad" aria-pressed="true">iPad</button>
+        <button type="button" data-device="phone" aria-pressed="false">Phone</button>
+        <button type="button" data-device="mac" aria-pressed="false">Mac</button>
+      </div>
+    </div>
+  </div>
+
+  <p class="board-note">Mock-up. Real Warehouse 909 data, no audio &mdash; the highway and the playhead run on the track's own timing at 128&nbsp;BPM. Chips write into the hole. Phase tabs, chips and the two buttons are live so you can walk it.</p>
+
+  <div class="frame-wrap">
+   <div class="frame-hold" id="hold">
+    <div class="frame-scaler" id="scaler">
+      <div class="frame" data-device="ipad" id="frame">
+        <div class="screen">
+          <header class="hdr">
+            <div class="who">Sam &middot; <b>Warehouse 909</b> &middot; 128 BPM</div>
+            <button type="button" class="silence" id="silence" data-muted="false">Silence the room</button>
+          </header>
+
+          <nav class="phases" id="phases" aria-label="Lesson phase">
+            <button type="button" class="phase" data-phase="i"><span class="p-name">I do</span><span class="p-sub">Watch</span></button>
+            <button type="button" class="phase" data-phase="we"><span class="p-name">We do</span><span class="p-sub">Together</span></button>
+            <button type="button" class="phase" data-phase="you"><span class="p-name">You do</span><span class="p-sub">Your turn</span></button>
+          </nav>
+
+          <main class="stage">
+            <section class="pit"><canvas id="pit"></canvas></section>
+            <section class="write">
+              <pre class="code" id="code"></pre>
+              <p class="hint" id="hint" data-show="false"></p>
+              <div class="chips" id="chips"></div>
+              <div class="actions">
+                <button type="button" class="btn ghost" id="goalBtn">Hear the goal</button>
+                <button type="button" class="btn solid" id="loopBtn">Play this loop</button>
+              </div>
+            </section>
+          </main>
+        </div>
+      </div>
+    </div>
+   </div>
+    <p class="frame-caption" id="caption"></p>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ══════════════ 1. Track data — copied from src/data/tracks.js ══════════ */
+
+  var HOUSE_DRUMS = [["bd_haus",.5],["drum_cymbal_closed",.5],["bd_haus",.5],["drum_cymbal_closed",.5],
+                     ["bd_haus",.5],["drum_cymbal_closed",.5],["bd_haus",.5],["drum_cymbal_closed",.5]];
+  var CLAPS = [[null,1],["sn_dolf",1],[null,1],["sn_dolf",1]];
+
+  var TRACK = {
+    title:"Warehouse 909", bpm:128, player:"Sam",
+    loops:[
+      {name:"drums", synth:null, pool:null, steps:HOUSE_DRUMS},
+      {name:"claps", synth:null, pool:null, steps:CLAPS},
+      {name:"bass",  synth:"tb303",  pool:[33,36,40,43,45],
+       steps:[[33,.5],[33,.25],[45,.25],[33,.5],[33,.25],[45,.25],
+              [33,.5],[36,.25],[43,.25],[33,.5],[40,.25],[45,.25]]},
+      {name:"stabs", synth:"prophet", pool:[55,57,60,62,64,67],
+       steps:[[null,.5],[[57,60,64],.5],[null,.5],[[57,60,64],.5],
+              [null,.5],[[57,60,64],.5],[null,.5],[[57,60,64],.5]]}
+    ],
+    bugs:[
+      {loop:2, find:["play",2],   v:46,         hint:"One bass note is sour\u2026"},
+      {loop:0, find:["sample",3], v:"sn_dolf",  hint:"A hat got swapped for something heavier."},
+      {loop:3, find:["sleep",1],  v:0.25,       hint:"The stabs are stumbling \u2014 a sleep is wrong."}
+    ]
+  };
+
+  var SAMPLES = ["bd_haus","sn_dolf","drum_cymbal_closed"];
+
+  /* expand steps into Sonic Pi statements, exactly like seq() does */
+  function expand(loop){
+    var out = [];
+    for (var s=0; s<loop.steps.length; s++){
+      var note = loop.steps[s][0], dur = loop.steps[s][1];
+      if (note !== null){
+        if (typeof note === "string") out.push({t:"sample", v:note});
+        else out.push({t:"play", v:note});
+      }
+      out.push({t:"sleep", v:dur});
+    }
+    return out;
+  }
+
+  TRACK.loops.forEach(function(loop){
+    loop.stmts = expand(loop);
+    loop.stmts.forEach(function(st){ st.clean = st.v; });
+  });
+
+  /* inject the bugs — nth statement of that type carries the wrong value */
+  TRACK.bugs.forEach(function(bug, bi){
+    var loop = TRACK.loops[bug.loop], type = bug.find[0], nth = bug.find[1], seen = -1;
+    for (var i=0; i<loop.stmts.length; i++){
+      if (loop.stmts[i].t !== type) continue;
+      seen++;
+      if (seen === nth){ loop.stmts[i].bug = bi; loop.stmts[i].v = bug.v; break; }
+    }
+  });
+
+  /* per-loop timing: every Warehouse loop is four beats long */
+  TRACK.loops.forEach(function(loop){
+    var cur = 0;
+    loop.stmts.forEach(function(st){
+      st.at = cur;
+      if (st.t === "sleep"){ st.mid = cur + st.v/2; cur += st.v; }
+      else st.mid = cur;
+    });
+    loop.beats = cur;
+  });
+
+  /* ══════════════════════════ 2. State ═══════════════════════════════════ */
+
+  var state = {
+    device:"ipad",
+    phase:"we",
+    holeIdx:0,        /* which bug is the open hole */
+    solved:[false,false,false],
+    tries:{},         /* bugIdx -> wrong value currently written */
+    hint:"",
+    muted:false,
+    mode:null,        /* null | "goal" | "loop" */
+    t0:0
+  };
+
+  function bugOf(i){ return TRACK.bugs[i]; }
+  function stmtOfBug(i){
+    var b = bugOf(i), loop = TRACK.loops[b.loop];
+    for (var k=0; k<loop.stmts.length; k++) if (loop.stmts[k].bug === i) return {loop:loop, li:b.loop, si:k, st:loop.stmts[k]};
+    return null;
+  }
+
+  /* the hole that is open right now, or null when the phase has none */
+  function openHole(){
+    if (state.phase === "i") return null;
+    if (state.phase === "we") return state.solved[0] ? null : 0;
+    for (var i=1; i<TRACK.bugs.length; i++) if (!state.solved[i]) return i;
+    return null;
+  }
+
+  /* the loop shown in the code column, and highlighted on the highway */
+  function focusLoopIdx(){
+    var h = openHole();
+    if (h !== null) return bugOf(h).loop;
+    if (state.phase === "you") return bugOf(TRACK.bugs.length-1).loop;
+    return bugOf(0).loop;
+  }
+
+  /* what a statement reads as right now */
+  function valueNow(li, si, clean){
+    var st = TRACK.loops[li].stmts[si];
+    if (clean) return st.clean;
+    if (st.bug === undefined) return st.v;
+    if (state.solved[st.bug]) return st.clean;
+    if (state.tries[st.bug] !== undefined) return state.tries[st.bug];
+    return st.v;   /* the sour value the record shipped with */
+  }
+
+  /* is this statement the open hole, and is it still blank? */
+  function isHole(li, si){
+    var h = openHole();
+    if (h === null) return false;
+    var s = stmtOfBug(h);
+    return s && s.li === li && s.si === si;
+  }
+  function isBlank(li, si){
+    var h = openHole();
+    if (!isHole(li,si) || h === null) return false;
+    /* We do blanks the line. You do shows the sour value to be changed. */
+    return state.phase === "we" && state.tries[h] === undefined;
+  }
+
+  /* ═════════════════════ 3. Sonic Pi text rendering ══════════════════════ */
+
+  function num(n){
+    if (typeof n !== "number") return String(n);
+    return String(Math.round(n*1000)/1000);
+  }
+  function playText(v){ return Array.isArray(v) ? "[" + v.join(", ") + "]" : num(v); }
+  function stmtText(st, v){
+    if (st.t === "play")   return "play " + playText(v);
+    if (st.t === "sample") return "sample :" + v;
+    return "sleep " + num(v);
+  }
+
+  function renderCode(){
+    var li = focusLoopIdx(), loop = TRACK.loops[li];
+    var pre = document.getElementById("code");
+    var head = "", html = "";
+
+    function line(inner, attrs){
+      return '<div class="ln"' + (attrs||"") + '><span class="bar"></span>' + inner + '</div>';
+    }
+
+    if (loop.synth) head += line('<span class="kw">use_synth :' + loop.synth + '</span>');
+    head += line('<span class="kw">live_loop <span class="lane-ink" style="color:' +
+      laneInk(li) + '">:' + loop.name + '</span> do</span>');
+
+    for (var i=0; i<loop.stmts.length; i++){
+      var st = loop.stmts[i];
+      var hole = isHole(li,i);
+      var blank = isBlank(li,i);
+      var v = valueNow(li,i,false);
+      var word = st.t;
+      var body;
+
+      if (blank){
+        body = word + ' <span class="hole">?</span>';
+      } else if (st.bug !== undefined && !state.solved[st.bug]){
+        body = word + ' <span class="sour">' + (st.t === "sample" ? ":" + v : playText(v)) + '</span>';
+      } else if (st.bug !== undefined){
+        /* they wrote this one — it stays amber, so their own work is visible */
+        body = word + ' <span class="filled">' + (st.t === "sample" ? ":" + v : playText(v)) + '</span>';
+      } else {
+        body = stmtText(st, v);
+      }
+
+      html += line("  " + body, ' data-i="' + i + '"' +
+        (hole ? ' data-hole="true"' : "") +
+        (st.bug !== undefined ? ' data-bug="' + st.bug + '"' : ""));
+    }
+    pre.innerHTML = head +
+      '<div class="code-body">' + html + "</div>" +
+      line('<span class="kw">end</span>');
+
+    /* the hole — or, when watching, the sour line — must never be
+       the part you cannot see */
+    var body = pre.querySelector(".code-body");
+    var holeRow = body.querySelector('.ln[data-hole="true"]') || body.querySelector(".ln[data-bug]");
+    if (holeRow) requestAnimationFrame(function(){
+      var top = holeRow.offsetTop - body.clientHeight/2 + holeRow.offsetHeight/2;
+      body.scrollTop = Math.max(0, top);
+    });
+  }
+
+  /* ═══════════════════════════ 4. Chips ══════════════════════════════════ */
+
+  /* The house for this loop, plus the sleeps this loop actually uses.
+     Taken from the locked screen: a play hole still shows sleep chips. */
+  function chipSet(){
+    var h = openHole();
+    var li = focusLoopIdx(), loop = TRACK.loops[li];
+    var chips = [];
+
+    if (loop.pool) loop.pool.forEach(function(n){ chips.push({t:"play", v:n}); });
+    else SAMPLES.forEach(function(s){ chips.push({t:"sample", v:s}); });
+
+    var sleeps = [];
+    loop.stmts.forEach(function(st){
+      if (st.t !== "sleep") return;
+      [st.v, st.clean].forEach(function(d){ if (sleeps.indexOf(d) < 0) sleeps.push(d); });
+    });
+    sleeps.sort(function(a,b){ return a-b; }).forEach(function(d){ chips.push({t:"sleep", v:d}); });
+    return chips;
+  }
+
+  function renderChips(){
+    var wrap = document.getElementById("chips");
+    var locked = state.phase === "i";
+    var html = '<span class="chips-legend">Write with these</span>';
+    chipSet().forEach(function(c, i){
+      html += '<button type="button" class="chip" data-chip="' + i + '"' +
+              (locked ? ' tabindex="-1" aria-disabled="true"' : "") + '>' +
+              stmtText({t:c.t}, c.v) + "</button>";
+    });
+    wrap.innerHTML = html;
+    wrap.setAttribute("data-locked", locked ? "true" : "false");
+  }
+
+  function tapChip(i){
+    var h = openHole();
+    if (h === null || state.phase === "i") return;
+    var c = chipSet()[i], s = stmtOfBug(h);
+    if (!s) return;
+
+    var right = (c.t === s.st.t) && String(c.v) === String(s.st.clean);
+    if (right){
+      state.solved[h] = true;
+      delete state.tries[h];
+      state.hint = "";
+    } else {
+      state.tries[h] = c.v;
+      state.hint = bugOf(h).hint;
+    }
+    render();
+  }
+
+  /* ════════════════════════ 5. Phases and controls ═══════════════════════ */
+
+  function workDone(p){
+    if (p === "i") return state.phase !== "i";
+    if (p === "we") return state.solved[0];
+    return state.solved[1] && state.solved[2];
+  }
+  function phaseState(p){
+    if (p === state.phase) return workDone(p) ? "on-done" : "on";
+    return workDone(p) ? "done" : "next";
+  }
+
+  function renderPhases(){
+    [].forEach.call(document.querySelectorAll(".phase"), function(b){
+      b.setAttribute("data-state", phaseState(b.dataset.phase));
+      b.setAttribute("aria-current", b.dataset.phase === state.phase ? "true" : "false");
+    });
+  }
+
+  function renderButtons(){
+    var goal = document.getElementById("goalBtn"), loop = document.getElementById("loopBtn");
+    goal.textContent = state.mode === "goal" ? "Stop" : "Hear the goal";
+    loop.textContent = state.mode === "loop" ? "Stop" : "Play this loop";
+    goal.setAttribute("data-on", state.mode === "goal" ? "true" : "false");
+    loop.setAttribute("data-on", state.mode === "loop" ? "true" : "false");
+    var sil = document.getElementById("silence");
+    sil.setAttribute("data-muted", state.muted ? "true" : "false");
+    sil.textContent = state.muted ? "Sound is off" : "Silence the room";
+  }
+
+  function renderHint(){
+    var el = document.getElementById("hint");
+    el.textContent = state.hint || "";
+    el.setAttribute("data-show", state.hint ? "true" : "false");
+  }
+
+  function render(){
+    renderPhases();
+    renderCode();
+    renderChips();
+    renderHint();
+    renderButtons();
+    sizeCanvas();
+  }
+
+  /* ═══════════════════════ 6. The highway (the ear) ══════════════════════ */
+
+  var cv = document.getElementById("pit"), ctx = cv.getContext("2d");
+  /* How far ahead you can see. This is also how long a token takes to reach
+     the now-line, so it is the speed control: longer = slower approach. */
+  function lead(){ return state.device === "phone" ? 0.95 : 1.5; }
+
+  /* One colour per channel, by its place in the track — drums are always the
+     first lane, so they are always the same colour. Amber is not in this set:
+     amber stays the colour of the thing you write (chips, the hole). Red stays
+     the fault, mint stays finished. */
+  var LANE_INK = ["#ece7f2", "#4ab8f0", "#b085ff", "#ff7fb0", "#ffd166"];
+  function laneInk(li){ return LANE_INK[li % LANE_INK.length]; }
+  function tint(hex, a){
+    var n = parseInt(hex.slice(1), 16);
+    return "rgba(" + (n>>16&255) + "," + (n>>8&255) + "," + (n&255) + "," + a + ")";
+  }
+
+  var DPR = 1;
+  var W = 0, H = 0;
+
+  function sizeCanvas(){
+    var r = cv.getBoundingClientRect();
+    var scale = currentScale();
+    if (!r.width || !r.height) return;
+    W = r.width / scale; H = r.height / scale;
+    DPR = Math.min(3, (window.devicePixelRatio || 1) * scale);
+    cv.width  = Math.round(W * DPR);
+    cv.height = Math.round(H * DPR);
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+    draw();
+  }
+
+  function beatSecs(){ return 60 / TRACK.bpm; }
+  function now(){
+    if (state.mode === null || state.muted) return null;
+    return (performance.now() - state.t0) / 1000;
+  }
+
+  /* every token that will sound in the next LEAD seconds, per lane */
+  function tokensFor(li, t, clean){
+    var loop = TRACK.loops[li], out = [];
+    var loopSecs = loop.beats * beatSecs();
+    var start = Math.floor(t / loopSecs) - 1;
+    for (var n = start; n <= start + 3; n++){
+      for (var i=0; i<loop.stmts.length; i++){
+        var st = loop.stmts[i];
+        /* the highway is the ear: only what sounds gets a token —
+           plus the hole itself, wherever you are writing */
+        if (st.t === "sleep" && !isHole(li,i)) continue;
+        var at = n * loopSecs + st.mid * beatSecs();
+        var dt = at - t;
+        if (dt < -0.06 || dt > lead()) continue;
+        var blank = isBlank(li,i), hole = isHole(li,i);
+        var v = valueNow(li,i,clean);
+        var sour = !clean && st.bug !== undefined && !state.solved[st.bug];
+        out.push({
+          dt: dt, st: st, li: li,
+          text: blank && !clean ? st.t + " ?" : stmtText(st, v),
+          blank: blank && !clean,
+          hole: hole,
+          sour: sour,
+          quiet: st.t === "sleep"
+        });
+      }
+    }
+    return out;
+  }
+
+  function lanesShown(){
+    if (state.device === "phone") return [focusLoopIdx()];
+    return [0,1,2,3];
+  }
+
+  function draw(){
+    if (!W || !H) return;
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle = "#07060c";
+    ctx.fillRect(0,0,W,H);
+
+    var lanes = lanesShown();
+    var hitY  = H - 36;      /* a clear band below the line for the channel names */
+    var topY  = 4;
+    var vx = W/2;
+    var solo = lanes.length === 1;              /* phone: only the lane you write */
+    var laneW = solo ? W * 0.66 : W / lanes.length;
+    var pad = solo ? (W - laneW) / 2 : 0;
+    var CONV = solo ? 0.34 : 0.60;   /* how far the lanes close up, hit line to top */
+    var K = 2.4;          /* perspective strength — gentler, so tokens spread out */
+
+    /* depth 0 = sounding now, 1 = the far end of what you can see */
+    function gOf(u){ return (1 - 1/(1 + u*K)) / (1 - 1/(1 + K)); }
+    function xOf(cx, g){ return cx + (vx - cx) * CONV * g; }
+    function yOf(g){ return hitY - (hitY - topY) * g; }
+    function widthAt(g){ return 1 - CONV * g; }
+
+    /* each lane in its channel's colour; the one you are writing is filled
+       faintly with that same colour, so focus never has to borrow the red */
+    var fi = lanes.indexOf(focusLoopIdx());
+    lanes.forEach(function(li, k){
+      var lx = pad + k * laneW, rx = lx + laneW;
+      var ink = laneInk(li), on = k === fi;
+      ctx.beginPath();
+      ctx.moveTo(lx, hitY);
+      ctx.lineTo(xOf(lx, 1), topY);
+      ctx.lineTo(xOf(rx, 1), topY);
+      ctx.lineTo(rx, hitY);
+      ctx.closePath();
+      ctx.fillStyle = tint(ink, on ? 0.07 : 0.022);
+      ctx.fill();
+      ctx.strokeStyle = tint(ink, on ? 0.5 : 0.18);
+      ctx.lineWidth = on ? 1.5 : 1;
+      ctx.stroke();
+
+      /* the channel says its own name, in its own colour */
+      var lab = ":" + TRACK.loops[li].name;
+      var ls = Math.min(12, Math.max(9, laneW * 0.11));
+      ctx.font = "700 " + ls.toFixed(1) + 'px ui-monospace, Menlo, "Courier New", monospace';
+      ctx.textAlign = "center";
+      ctx.textBaseline = "top";
+      ctx.fillStyle = tint(ink, on ? 0.95 : 0.6);
+      ctx.fillText(lab, lx + laneW/2, hitY + 23);
+    });
+
+    /* the now-line — this is when the statement sounds */
+    ctx.beginPath();
+    ctx.moveTo(2, hitY);
+    ctx.lineTo(W - 2, hitY);
+    ctx.strokeStyle = "#f3eee4";
+    ctx.lineWidth = 2.5;
+    ctx.globalAlpha = state.mode && !state.muted ? 1 : 0.5;
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+
+    var t = now();
+    var frozen = t === null;
+    var tt = frozen ? 0 : t;
+    var clean = state.mode === "goal";
+
+    var all = [];
+    lanes.forEach(function(li, idx){
+      tokensFor(li, tt, clean).forEach(function(tok){
+        tok.lane = idx;
+        all.push(tok);
+      });
+    });
+    all.sort(function(a,b){ return b.dt - a.dt; });   /* far first */
+
+    all.forEach(function(tok){
+      var u = Math.min(1, Math.max(0, tok.dt) / lead());   /* 0 = now, 1 = far */
+      var g = gOf(u);
+      var s = widthAt(g);
+      var laneCx = pad + (tok.lane + 0.5) * laneW;
+      var x = xOf(laneCx, g);
+      var y = yOf(g);
+      var full = Math.min(21, H * 0.10);          /* a token never swamps the pit */
+      var base = (tok.quiet ? full * 0.65 : full) * (tok.hole ? 1.28 : 1);
+      var r = base * s;
+      if (r < 4) return;
+
+      var focused = tok.li === focusLoopIdx();
+      var ink = laneInk(tok.li);
+      var alpha = (1 - 0.5 * g) * (focused ? 1 : 0.72) * (frozen ? 0.85 : 1);
+
+      ctx.globalAlpha = alpha;
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI*2);
+
+      if (tok.blank){
+        ctx.setLineDash([4.5*s + 1.5, 3.5*s + 1.5]);
+        ctx.strokeStyle = "#ffb703";
+        ctx.lineWidth = Math.max(1, 2*s);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      } else if (tok.sour){
+        ctx.fillStyle = "#ff2d1a";
+        ctx.fill();
+        /* a halo, so the fault is never just a hue among hues */
+        ctx.beginPath();
+        ctx.arc(x, y, r + Math.max(2, 3*s), 0, Math.PI*2);
+        ctx.strokeStyle = "rgba(255,45,26,.55)";
+        ctx.lineWidth = Math.max(1, 1.5*s);
+        ctx.stroke();
+      } else if (tok.quiet){
+        ctx.fillStyle = tint(ink, 0.14);
+        ctx.fill();
+        ctx.strokeStyle = tint(ink, 0.6);
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      } else {
+        ctx.fillStyle = ink;
+        ctx.fill();
+      }
+
+      /* the statement, written on the token — shrunk to fit, never clipped */
+      if (r >= 8.5){
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillStyle = tok.blank ? "#ffb703" : tok.quiet ? ink : "#0c0910";
+
+        var parts = tok.text.split(" ");
+        var oneLine = [tok.text];
+        var twoLine = parts.length > 1 ? [parts[0], parts.slice(1).join(" ")] : oneLine;
+        var lines = tok.text.length > 8 ? twoLine : oneLine;
+
+        var size = r * (lines.length > 1 ? 0.40 : 0.46);
+        ctx.font = "700 " + size.toFixed(2) + 'px ui-monospace, Menlo, "Courier New", monospace';
+        var widest = 0;
+        lines.forEach(function(l){ widest = Math.max(widest, ctx.measureText(l).width); });
+        var room = r * (lines.length > 1 ? 1.60 : 1.70);
+        if (widest > room){
+          size = size * (room / widest);
+          ctx.font = "700 " + size.toFixed(2) + 'px ui-monospace, Menlo, "Courier New", monospace';
+        }
+        if (lines.length > 1){
+          ctx.fillText(lines[0], x, y - size * 0.62);
+          ctx.fillText(lines[1], x, y + size * 0.62);
+        } else {
+          ctx.fillText(lines[0], x, y);
+        }
+      }
+      ctx.globalAlpha = 1;
+    });
+  }
+
+  /* the amber bar walking the focused loop */
+  function markPlayhead(){
+    var li = focusLoopIdx(), loop = TRACK.loops[li];
+    var rows = document.querySelectorAll("#code .ln[data-i]");
+    var t = now();
+    if (t === null){
+      [].forEach.call(rows, function(r){ r.removeAttribute("data-now"); });
+      return;
+    }
+    var loopSecs = loop.beats * beatSecs();
+    var pos = ((t % loopSecs) + loopSecs) % loopSecs / beatSecs();
+    var live = -1;
+    for (var i=0; i<loop.stmts.length; i++){
+      var st = loop.stmts[i];
+      var end = st.t === "sleep" ? st.at + st.v : st.at + 0.001;
+      if (pos >= st.at && pos < end + (st.t === "sleep" ? 0 : 0.06)) live = i;
+    }
+    [].forEach.call(rows, function(r){
+      if (+r.dataset.i === live) r.setAttribute("data-now","true");
+      else r.removeAttribute("data-now");
+    });
+  }
+
+  /* Reduced motion: the pit holds still as a diagram, the loop still runs. */
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+  function frame(){
+    if (state.mode !== null && !state.muted && !reduce.matches){
+      draw();
+      markPlayhead();
+    }
+    requestAnimationFrame(frame);
+  }
+
+  /* ═════════════════════ 7. Mock-up chrome behaviour ═════════════════════ */
+
+  var frameEl = document.getElementById("frame");
+  var scaler  = document.getElementById("scaler");
+  var hold    = document.getElementById("hold");
+  var SIZES = { ipad:[1024,768,"iPad \u00b7 1024 \u00d7 768"], phone:[390,844,"Phone \u00b7 390 \u00d7 844"], mac:[1440,900,"Mac / projector \u00b7 1440 \u00d7 900"] };
+  var scaleNow = 1;
+  function currentScale(){ return scaleNow; }
+
+  function layout(){
+    var d = SIZES[state.device];
+    var availW = Math.max(280, document.querySelector(".board").clientWidth - 8);
+    var availH = Math.max(320, window.innerHeight - 210);
+    scaleNow = Math.min(availW / d[0], availH / d[1], 1);
+    scaler.style.transform = "scale(" + scaleNow.toFixed(4) + ")";
+    hold.style.width  = Math.round(d[0] * scaleNow) + "px";
+    hold.style.height = Math.round(d[1] * scaleNow) + "px";
+    document.getElementById("caption").innerHTML =
+      "<b>" + d[2] + "</b> &nbsp;&middot;&nbsp; shown at " + Math.round(scaleNow*100) + "%";
+    sizeCanvas();
+  }
+
+  document.getElementById("deviceSwitch").addEventListener("click", function(e){
+    var b = e.target.closest("button[data-device]");
+    if (!b) return;
+    state.device = b.dataset.device;
+    frameEl.setAttribute("data-device", state.device);
+    [].forEach.call(this.querySelectorAll("button"), function(x){
+      x.setAttribute("aria-pressed", x === b ? "true" : "false");
+    });
+    layout();
+    render();
+  });
+
+  document.getElementById("phases").addEventListener("click", function(e){
+    var b = e.target.closest(".phase");
+    if (!b) return;
+    state.phase = b.dataset.phase;
+    state.hint = "";
+    render();
+  });
+
+  document.getElementById("chips").addEventListener("click", function(e){
+    var b = e.target.closest(".chip");
+    if (b) tapChip(+b.dataset.chip);
+  });
+
+  function start(mode){
+    if (state.mode === mode){ state.mode = null; }
+    else { state.mode = mode; state.muted = false; state.t0 = performance.now(); }
+    render();
+  }
+  document.getElementById("goalBtn").addEventListener("click", function(){ start("goal"); });
+  document.getElementById("loopBtn").addEventListener("click", function(){ start("loop"); });
+  document.getElementById("silence").addEventListener("click", function(){
+    state.muted = !state.muted;
+    if (!state.muted && state.mode !== null) state.t0 = performance.now();
+    render();
+  });
+
+  window.addEventListener("resize", layout);
+  layout();
+  render();
+  requestAnimationFrame(frame);
+})();
+</script>

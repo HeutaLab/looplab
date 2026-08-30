@@ -179,7 +179,7 @@ export function LiveSet({ track, startLines, ensureAudio, trigger, unlockMedia, 
     <div className={PHASE["gap-2"].grid}>
       <div className={PHASE["gap-2"].watch}>
       {/* crowd */}
-      <div className="rounded-2xl p-3" style={{ background: C.panel, border: `1px solid ${C.line}` }}>
+      <div className="rounded-[4px] p-3" style={{ background: C.panel, border: `1px solid ${C.line}` }}>
         <div className="flex items-center justify-between text-xs font-extrabold" style={{ color: C.dim }}>
           <span>
             Bar {Math.min(e.bar, SET_BARS)}/{SET_BARS}
@@ -241,7 +241,7 @@ export function LiveSet({ track, startLines, ensureAudio, trigger, unlockMedia, 
               setSel(i);
               setSelLine(null);
             }}
-            className="rounded-xl px-2 py-1.5 text-xs font-extrabold"
+            className="rounded-[4px] px-2 py-1.5 text-xs font-extrabold"
             style={{
               background: sel === i ? C.yellow : C.panel2,
               color: sel === i ? "#1A1030" : e.muted[i] ? C.dim : C.ink,
@@ -263,7 +263,7 @@ export function LiveSet({ track, startLines, ensureAudio, trigger, unlockMedia, 
       </BigButton>
 
       {/* live code editor */}
-      <div className="max-h-44 overflow-y-auto rounded-2xl p-2" style={{ background: "#151233", border: `1px solid ${glitchHere ? C.red : C.line}` }}>
+      <div className="max-h-44 overflow-y-auto rounded-[4px] p-2" style={{ background: "#151233", border: `1px solid ${glitchHere ? C.red : C.line}` }}>
         {lines.map((L, i) => (
           <CodeLine
             key={i}
@@ -277,7 +277,7 @@ export function LiveSet({ track, startLines, ensureAudio, trigger, unlockMedia, 
         ))}
       </div>
       {selLine !== null && (
-        <div className="flex flex-wrap gap-1.5 rounded-2xl p-2" style={{ background: C.panel, border: `1px solid ${C.yellow}` }}>
+        <div className="flex flex-wrap gap-1.5 rounded-[4px] p-2" style={{ background: C.panel, border: `1px solid ${C.yellow}` }}>
           <span className="w-full text-xs font-extrabold" style={{ color: C.yellow }}>
             Remix live — change drops next loop 🔁
           </span>

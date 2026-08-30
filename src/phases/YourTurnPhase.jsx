@@ -2,7 +2,7 @@ import React, { useState, useMemo } from "react";
 import { D, END, LOOP, P, S, SY, compile } from "../engine/interpreter.js";
 import { indents, toSonicPi } from "../engine/sonicpi.js";
 import { useActiveLine } from "../hooks/useClock.js";
-import { C, PHASE } from "../theme.js";
+import { C, PHASE, TYPE } from "../theme.js";
 import { CodeLine } from "../ui/CodeLine.jsx";
 import { CopyCodeModal } from "../ui/CopyCodeModal.jsx";
 import { NoteHighway } from "../ui/NoteHighway.jsx";
@@ -42,21 +42,32 @@ export function YourTurnPhase({ level, playInfo, playTag, elapsed, playLines, st
   return (
     <div className={PHASE["gap-3"].grid}>
       <div className={PHASE["gap-3"].watch}>
-      <Mentor text={allMet ? "All goals unlocked — press play and take a bow! 🌟" : yt.mentor} />
-      <div className="rounded-2xl p-3" style={{ background: C.panel, border: `1px solid ${C.line}` }}>
+      <Mentor text={allMet ? "All goals unlocked — press play and take a bow." : yt.mentor} />
+      <div>
         {yt.goals.map((g, i) => (
-          <div key={i} className="flex items-center gap-2 py-0.5 text-sm font-bold" style={{ color: goalsMet[i] ? C.green : C.dim }}>
-            <span>{goalsMet[i] ? "✅" : "⬜"}</span> {g.label}
+          <div key={i} className="flex items-center gap-2 py-1 text-sm" style={{ color: goalsMet[i] ? C.green : C.dim }}>
+            <span
+              aria-hidden="true"
+              style={{
+                width: 13,
+                height: 13,
+                flexShrink: 0,
+                borderRadius: 2,
+                border: `1.5px solid ${goalsMet[i] ? C.green : C.line}`,
+                background: goalsMet[i] ? C.green : "transparent",
+              }}
+            />
+            <span style={{ fontWeight: goalsMet[i] ? 700 : 400 }}>{g.label}</span>
           </div>
         ))}
       </div>
       <NoteHighway playInfo={playInfo} elapsed={elapsed} />
       </div>
       <div className={PHASE["gap-3"].edit}>
-      <div className="rounded-2xl p-2" style={{ background: "#151233", border: `1px solid ${C.line}` }}>
+      <div className="p-2" style={{ background: "#151233", borderRadius: 4, border: `1px solid ${C.line}`, minHeight: 96 }}>
         {effective.length === 0 && (
-          <div className="px-2 py-3 text-center text-sm font-semibold" style={{ color: C.dim }}>
-            Your code goes here — tap chips below to add lines! 👇
+          <div className="px-2 py-3 text-sm" style={{ color: C.dim, fontFamily: TYPE.code }}>
+            # your code goes here — tap a chip below
           </div>
         )}
         {effective.map((L, i) => {
@@ -69,7 +80,7 @@ export function YourTurnPhase({ level, playInfo, playTag, elapsed, playLines, st
               {isInner && !playInfo && (
                 <button
                   onClick={() => setInner(inner.filter((x) => x !== L))}
-                  className="ml-1 rounded-lg px-2 text-xs font-extrabold"
+                  className="ml-1 rounded-[4px] px-2 text-xs font-extrabold"
                   style={{ color: C.pink, background: "rgba(255,92,168,0.12)", height: 26 }}
                 >
                   ✕
@@ -83,7 +94,7 @@ export function YourTurnPhase({ level, playInfo, playTag, elapsed, playLines, st
       {pal.loop && (
         <div className="flex items-center gap-2">
           <span className="text-sm font-extrabold" style={{ color: C.dim }}>
-            🔁 Repeat:
+            Repeat
           </span>
           {[1, 2, 3, 4].map((n) => (
             <Chip key={n} small active={loopCount === n} onClick={() => setLoopCount(n)}>
@@ -95,7 +106,7 @@ export function YourTurnPhase({ level, playInfo, playTag, elapsed, playLines, st
       {pal.synth && (
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-sm font-extrabold" style={{ color: C.dim }}>
-            🎹 Sound:
+            Sound
           </span>
           {["beep", "saw", "square", "pretty_bell"].map((s) => (
             <Chip key={s} small active={synth === s} onClick={() => setSynth(s)}>
@@ -130,7 +141,7 @@ export function YourTurnPhase({ level, playInfo, playTag, elapsed, playLines, st
         ))}
         {inner.length > 0 && (
           <Chip small onClick={() => setInner([])}>
-            🗑 clear
+            clear
           </Chip>
         )}
       </div>
@@ -139,24 +150,24 @@ export function YourTurnPhase({ level, playInfo, playTag, elapsed, playLines, st
         <BigButton
           color={C.aqua}
           disabled={inner.length === 0}
-          onClick={() => (playInfo ? stopAll() : playLines(effective, "mine", () => setPlayedOnce(true)))}
+          why="Tap a chip to write a line"
+          onClick={() => (playInfo ? stopAll(true) : playLines(effective, "mine", () => setPlayedOnce(true)))}
         >
-          {playInfo ? "■ Stop" : "▶ Play my track"}
+          {playInfo ? "Stop" : "Play my track"}
         </BigButton>
-        <BigButton disabled={!(allMet && playedOnce)} onClick={() => completePhase(2)}>
-          Finish level ⭐
+        <BigButton
+          disabled={!(allMet && playedOnce)}
+          why={allMet ? "Now play it once" : "Tick the goals first"}
+          onClick={() => completePhase(2)}
+        >
+          Finish level
         </BigButton>
         {inner.length > 0 && (
           <BigButton color={C.violet} onClick={() => setShowCopy(true)}>
-            📋
+            Copy code
           </BigButton>
         )}
       </div>
-      {allMet && !playedOnce && (
-        <div className="text-center text-xs font-bold" style={{ color: C.yellow }}>
-          Goals done — now play your track to finish! 🎵
-        </div>
-      )}
       {showCopy && <CopyCodeModal text={toSonicPi(effective)} onClose={() => setShowCopy(false)} />}
       </div>
     </div>

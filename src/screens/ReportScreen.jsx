@@ -17,7 +17,7 @@ export function ReportScreen({ stars, records, name, onName, onRestore, onBack }
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center gap-2">
-        <button onClick={onBack} className="rounded-xl px-3 py-2 font-extrabold" style={{ background: C.panel2, border: `1px solid ${C.line}` }} aria-label="Back to the level map">
+        <button onClick={onBack} className="rounded-[4px] px-3 py-2 font-extrabold" style={{ background: C.panel2, border: `1px solid ${C.line}` }} aria-label="Back to the level map">
           ←
         </button>
         <div className="text-base font-extrabold">📋 My progress</div>
@@ -25,7 +25,7 @@ export function ReportScreen({ stars, records, name, onName, onRestore, onBack }
 
       <Mentor text="This is everything you've done so far. Put your name on it, then copy it into Google Classroom or save it for your folder. 🎓" />
 
-      <div className="rounded-2xl p-3" style={{ background: C.panel, border: `1px solid ${C.line}` }}>
+      <div className="rounded-[4px] p-3" style={{ background: C.panel, border: `1px solid ${C.line}` }}>
         <label className="text-xs font-extrabold uppercase" style={{ color: C.dim }} htmlFor="looplab-name">
           Your name
         </label>
@@ -36,7 +36,7 @@ export function ReportScreen({ stars, records, name, onName, onRestore, onBack }
           placeholder="first name or nickname"
           maxLength={16}
           autoCapitalize="words"
-          className="mt-1 w-full rounded-xl px-3 py-2 font-bold outline-none"
+          className="mt-1 w-full rounded-[4px] px-3 py-2 font-bold outline-none"
           style={{ background: "#151233", color: C.ink, border: `1px solid ${C.line}`, fontSize: 16 }}
         />
         <div className="mt-1 text-[11px] font-semibold" style={{ color: C.dim }}>
@@ -45,7 +45,7 @@ export function ReportScreen({ stars, records, name, onName, onRestore, onBack }
       </div>
 
       {/* school -> home, by hand */}
-      <div className="rounded-2xl p-3" style={{ background: C.panel, border: `1px solid ${C.aqua}` }}>
+      <div className="rounded-[4px] p-3" style={{ background: C.panel, border: `1px solid ${C.aqua}` }}>
         <div className="text-xs font-extrabold uppercase" style={{ color: C.aqua }}>
           🔑 My progress code
         </div>
@@ -85,7 +85,7 @@ export function ReportScreen({ stars, records, name, onName, onRestore, onBack }
               autoCapitalize="characters"
               autoCorrect="off"
               spellCheck={false}
-              className="flex-1 rounded-xl px-3 py-2 font-mono font-bold outline-none"
+              className="flex-1 rounded-[4px] px-3 py-2 font-mono font-bold outline-none"
               style={{ background: "#151233", color: C.ink, border: `1px solid ${C.line}`, fontSize: 16 }}
             />
             <Chip
@@ -110,7 +110,7 @@ export function ReportScreen({ stars, records, name, onName, onRestore, onBack }
           </div>
           {restoreMsg && (
             <div
-              className="mt-2 rounded-xl px-3 py-2 text-xs font-bold"
+              className="mt-2 rounded-[4px] px-3 py-2 text-xs font-bold"
               aria-live="polite"
               style={{
                 background: restoreMsg.ok ? "rgba(92,224,126,0.14)" : "rgba(255,154,87,0.14)",
@@ -123,7 +123,7 @@ export function ReportScreen({ stars, records, name, onName, onRestore, onBack }
         </div>
       </div>
 
-      <div className="max-h-64 overflow-y-auto rounded-2xl p-3" style={{ background: "#151233", border: `1px solid ${C.line}` }}>
+      <div className="max-h-64 overflow-y-auto rounded-[4px] p-3" style={{ background: "#151233", border: `1px solid ${C.line}` }}>
         <pre className="whitespace-pre-wrap font-mono" style={{ color: C.aqua, fontSize: 11, lineHeight: 1.6 }}>{text}</pre>
       </div>
 
@@ -147,7 +147,7 @@ export function ReportScreen({ stars, records, name, onName, onRestore, onBack }
         </BigButton>
       </div>
       {saved === "no" && (
-        <div className="rounded-xl px-3 py-2 text-xs font-bold" style={{ background: "rgba(255,154,87,0.14)", color: C.orange }}>
+        <div className="rounded-[4px] px-3 py-2 text-xs font-bold" style={{ background: "rgba(255,154,87,0.14)", color: C.orange }}>
           This device wouldn't let the file save. Use 📋 Copy instead — it has exactly the same words in it.
         </div>
       )}

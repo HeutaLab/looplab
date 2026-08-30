@@ -123,7 +123,7 @@ export function BuildPhase({ level, playInfo, playTag, elapsed, playMulti, stopA
       />
 
       {/* stage checklist */}
-      <div className="rounded-2xl p-3" style={{ background: C.panel, border: `1px solid ${C.line}` }}>
+      <div className="rounded-[4px] p-3" style={{ background: C.panel, border: `1px solid ${C.line}` }}>
         {b.stages.map((st, i) => (
           <div
             key={i}
@@ -140,7 +140,7 @@ export function BuildPhase({ level, playInfo, playTag, elapsed, playMulti, stopA
 
       {!finished && (
         <div
-          className="rounded-2xl p-3"
+          className="rounded-[4px] p-3"
           style={{ background: justDone ? "rgba(92,224,126,0.15)" : C.panel2, border: `2px solid ${justDone ? C.green : C.violet}` }}
         >
           <div className="text-xs font-extrabold uppercase tracking-wide" style={{ color: justDone ? C.green : C.violet }}>
@@ -153,7 +153,7 @@ export function BuildPhase({ level, playInfo, playTag, elapsed, playMulti, stopA
             </div>
           )}
           {showHint && (
-            <div className="mt-2 rounded-xl px-2 py-1 text-xs font-bold" style={{ background: "rgba(255,154,87,0.15)", color: C.orange }}>
+            <div className="mt-2 rounded-[4px] px-2 py-1 text-xs font-bold" style={{ background: "rgba(255,154,87,0.15)", color: C.orange }}>
               💡 {stage.hint}
             </div>
           )}
@@ -192,7 +192,7 @@ export function BuildPhase({ level, playInfo, playTag, elapsed, playMulti, stopA
           )}
         </div>
         {codeMode === "chips" ? (
-          <div className="max-h-52 overflow-y-auto rounded-2xl p-2" style={{ background: "#151233", border: `1px solid ${C.line}` }}>
+          <div className="max-h-52 overflow-y-auto rounded-[4px] p-2" style={{ background: "#151233", border: `1px solid ${C.line}` }}>
             {lines.length === 0 && (
               <div className="px-2 py-3 text-center text-sm font-semibold" style={{ color: C.dim }}>
                 Empty — tap the chips below to write your first line 👇
@@ -206,7 +206,7 @@ export function BuildPhase({ level, playInfo, playTag, elapsed, playMulti, stopA
                 {!playInfo && (
                   <button
                     onClick={() => removeAt(i)}
-                    className="ml-1 rounded-lg px-2 text-xs font-extrabold"
+                    className="ml-1 rounded-[4px] px-2 text-xs font-extrabold"
                     style={{ color: C.pink, background: "rgba(255,92,168,0.12)", height: 24 }}
                   >
                     ✕
@@ -252,8 +252,9 @@ export function BuildPhase({ level, playInfo, playTag, elapsed, playMulti, stopA
         <BigButton
           color={C.aqua}
           disabled={code.every((ls) => !ls.length)}
+          why="Add a line first"
           onClick={() =>
-            playInfo ? stopAll() : playMulti(code, "mine", () => setPlays((p) => p + 1), b.bpm || 60, 2)
+            playInfo ? stopAll(true) : playMulti(code, "mine", () => setPlays((p) => p + 1), b.bpm || 60, 2)
           }
         >
           {playInfo ? "■ Stop" : b.loops.length > 1 ? "▶ Play both loops" : "▶ Play my loop"}

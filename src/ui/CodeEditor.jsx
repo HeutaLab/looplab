@@ -30,7 +30,7 @@ export function CodeEditor({ value, onChange, errors, chipGroups, mode, disabled
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="rounded-2xl p-2" style={{ background: "#151233", border: `1px solid ${errors.length ? C.orange : C.line}` }}>
+      <div className="rounded-[4px] p-2" style={{ background: "#151233", border: `1px solid ${errors.length ? C.orange : C.line}` }}>
         <textarea
           ref={ref}
           value={value}
@@ -51,7 +51,7 @@ export function CodeEditor({ value, onChange, errors, chipGroups, mode, disabled
       {errors.length > 0 && (
         <div className="flex flex-col gap-1" aria-live="polite">
           {errors.map((e, i) => (
-            <div key={i} className="rounded-xl px-3 py-2 text-xs font-bold" style={{ background: "rgba(255,154,87,0.14)", color: C.orange }}>
+            <div key={i} className="rounded-[4px] px-3 py-2 text-xs font-bold" style={{ background: "rgba(255,154,87,0.14)", color: C.orange }}>
               {e.row >= 0 && <span style={{ color: C.dim }}>line {e.row + 1}: </span>}
               {e.msg}
             </div>
@@ -62,7 +62,7 @@ export function CodeEditor({ value, onChange, errors, chipGroups, mode, disabled
       {mode === "typed" && !showChips && (
         <button
           onClick={() => setShowChips(true)}
-          className="self-start rounded-xl px-3 py-2 text-xs font-extrabold"
+          className="self-start rounded-[4px] px-3 py-2 text-xs font-extrabold"
           style={{ background: C.panel2, border: `1px solid ${C.line}`, color: C.aqua }}
         >
           Stuck? Show me the blocks 🧱
@@ -89,7 +89,7 @@ export function CodeEditor({ value, onChange, errors, chipGroups, mode, disabled
           {mode === "typed" && (
             <button
               onClick={() => setShowChips(false)}
-              className="self-start rounded-xl px-2 py-1 text-[11px] font-extrabold"
+              className="self-start rounded-[4px] px-2 py-1 text-[11px] font-extrabold"
               style={{ color: C.dim }}
             >
               Hide the blocks — I've got this ✍️

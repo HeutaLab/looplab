@@ -1,0 +1,285 @@
+/* The Club floor. Its own stylesheet rather than utility classes, because the
+   booth is one composed screen and the parts have to hold their proportions on
+   a projector, an iPad and a thumb. */
+
+.booth {
+  --void: #07060c;
+  --ink: #f3eee4;
+  --dim: #c9c3d4;
+  --amber: #ffb703;
+  --sour: #ff2d1a;
+  --ok: #7dffb3;
+  --code: 18px;
+  --pad: 22px;
+
+  display: flex;
+  flex-direction: column;
+  /* fills the device, less the shell's own padding — a 24-statement loop needs
+     every line it can get before it starts scrolling */
+  height: min(calc(100vh - 84px), 860px);
+  /* dvh, because on a phone 100vh counts the address bar that is covering the
+     bottom of the screen — the buttons would sit under it on Android Chrome
+     and iOS Safari both. Older browsers keep the vh line above. */
+  height: min(calc(100dvh - 84px), 860px);
+  min-height: 520px;
+  background: var(--void);
+  color: var(--ink);
+  font-family: "Atkinson Hyperlegible Next", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+/* header */
+.booth-hdr {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px var(--pad) 8px;
+}
+.booth-back {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 0 10px 0 0;
+  min-width: 44px;
+  min-height: 44px;
+  font: inherit;
+  font-size: 20px;
+  color: var(--dim);
+  cursor: pointer;
+}
+.booth-back:hover { color: var(--ink); }
+.booth-back:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+
+.booth-who {
+  flex: 1 1 auto;
+  font-size: 13px;
+  color: var(--dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.booth-who b {
+  color: var(--ink);
+  font-weight: 700;
+}
+.booth-silence {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 6px 2px;
+  min-height: 44px;
+  font: inherit;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--dim);
+  text-decoration: underline;
+  text-underline-offset: 5px;
+  text-decoration-thickness: 1px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.booth-silence:hover { color: var(--ink); }
+.booth-silence[data-muted="true"] { color: var(--sour); text-decoration-color: var(--sour); }
+.booth-silence:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
+
+/* phases */
+.booth-phases {
+  flex: 0 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-bottom: 1px solid rgba(243, 238, 228, 0.14);
+  padding: 0 var(--pad);
+}
+.booth-phase {
+  appearance: none;
+  background: none;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  min-height: 48px;
+  padding: 6px 4px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
+  font: inherit;
+  color: var(--dim);
+  opacity: 0.55;
+}
+.booth-phase .n { font-size: 16px; font-weight: 700; }
+.booth-phase .s { font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; }
+.booth-phase[data-state="done"] { color: var(--ok); opacity: 1; }
+.booth-phase[data-state="on"] { color: var(--ink); opacity: 1; border-bottom-color: var(--ink); }
+.booth-phase[data-state="on-done"] { color: var(--ok); opacity: 1; border-bottom-color: var(--ok); }
+.booth-phase:focus-visible { outline: 2px solid var(--amber); outline-offset: -3px; }
+
+/* stage */
+.booth-stage {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  gap: var(--pad);
+  padding: var(--pad);
+}
+.booth-pit { position: relative; min-height: 0; min-width: 0; }
+.booth-pit canvas { display: block; width: 100%; height: 100%; }
+
+.booth-write {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  gap: 14px;
+}
+
+/* One block. A long loop scrolls in the middle, so `live_loop :bass do` and
+   `end` never leave the screen — the script is never cut in half. */
+.booth-code {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  font-family: "Atkinson Hyperlegible Mono", ui-monospace, "SF Mono", Menlo, Consolas, "Courier New", monospace;
+  font-size: var(--code);
+  font-weight: 700;
+  line-height: 1.55;
+  color: var(--dim);
+}
+.booth-body {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%);
+}
+.booth-body::-webkit-scrollbar { width: 0; height: 0; }
+
+.booth-ln {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 1px 8px 1px 14px;
+  white-space: pre;
+  border-radius: 2px;
+}
+.booth-ln .bar {
+  position: absolute;
+  left: 0;
+  top: 2px;
+  bottom: 2px;
+  width: 4px;
+  border-radius: 1px;
+  background: transparent;
+}
+.booth-ln[data-now="true"] .bar { background: rgba(255, 183, 3, 0.45); }
+.booth-ln[data-hole="true"] { background: rgba(243, 238, 228, 0.07); }
+.booth-ln[data-hole="true"] .bar { background: var(--amber); }
+.booth-kw { color: var(--ink); }
+.booth-sour { color: var(--sour); }
+.booth-fill { color: var(--amber); }
+.booth-hole {
+  color: var(--amber);
+  border-bottom: 2px dashed var(--amber);
+  padding-bottom: 1px;
+}
+
+.booth-hint {
+  flex: 0 0 auto;
+  margin: 0;
+  min-height: 1.2em; /* held open, so nothing jumps when it speaks */
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--dim);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.booth-hint[data-show="true"] { opacity: 0.9; }
+
+.booth-chips { flex: 0 0 auto; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.booth-legend {
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+.booth-chip {
+  appearance: none;
+  border: 0;
+  border-radius: 999px;
+  background: var(--amber);
+  color: #120c00;
+  font-family: "Atkinson Hyperlegible Mono", ui-monospace, Menlo, "Courier New", monospace;
+  font-weight: 700;
+  font-size: 15px;
+  padding: 0 16px;
+  min-height: 44px;
+  cursor: pointer;
+}
+.booth-chip:hover { background: #ffc634; }
+.booth-chip:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.booth-chip:disabled { opacity: 0.28; cursor: default; }
+
+.booth-actions { flex: 0 0 auto; display: flex; gap: 12px; }
+.booth-btn {
+  appearance: none;
+  flex: 1 1 0;
+  min-height: 48px;
+  border-radius: 999px;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.booth-btn.ghost { background: transparent; border: 1.5px solid var(--ink); color: var(--ink); }
+.booth-btn.solid { background: var(--ink); border: 1.5px solid var(--ink); color: var(--void); }
+.booth-btn[data-on="true"] { background: var(--amber); border-color: var(--amber); color: #120c00; }
+.booth-btn:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
+
+/* one thumb, one lane. The loop keeps a readable minimum here and the page
+   scrolls instead — three visible lines of a 24-line riff is not a script. */
+@media (max-width: 699px) {
+  .booth {
+    --code: 15px;
+    --pad: 14px;
+    height: auto;
+    min-height: calc(100vh - 84px);
+    min-height: calc(100dvh - 84px);
+  }
+  .booth-hdr { padding-right: 54px; } /* clear of the shell's floating sound button */
+  .booth-who { font-size: 12px; }
+  .booth-stage {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: 170px auto;
+    gap: 10px;
+  }
+  .booth-pit { height: 170px; }
+  .booth-write { gap: 10px; }
+  .booth-code { min-height: 260px; }
+  /* the loop runs its full length here, so nothing is scrolling behind a fade */
+  .booth-body { -webkit-mask-image: none; mask-image: none; overflow: visible; }
+}
+
+/* projector */
+@media (min-width: 1200px) {
+  .booth { --code: 22px; --pad: 30px; }
+  .booth-who { font-size: 16px; }
+  .booth-silence { font-size: 14px; }
+  .booth-phase .n { font-size: 19px; }
+  .booth-phase .s { font-size: 12px; }
+  .booth-chip { font-size: 17px; min-height: 48px; }
+  .booth-btn { font-size: 18px; min-height: 54px; }
+  .booth-hint { font-size: 15px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .booth-hint { transition: none; }
+}

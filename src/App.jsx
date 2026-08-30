@@ -13,7 +13,7 @@ import { ReportScreen } from "./screens/ReportScreen.jsx";
 import { TeacherPanel } from "./screens/TeacherPanel.jsx";
 import { device, profiles } from "./state/profiles.js";
 import { mergeProgress } from "./state/progressCode.js";
-import { C } from "./theme.js";
+import { C, TYPE } from "./theme.js";
 import { CelebrateOverlay } from "./ui/CelebrateOverlay.jsx";
 import { BigButton, Chip } from "./ui/controls.jsx";
 
@@ -75,10 +75,12 @@ export default function LoopLab() {
     setScreen("level");
   }
 
-  const shared = { playInfo, playTag, elapsed, playLines, playMulti, stopAll, ensureAudio, trigger, unlockMedia, synthsRef, draft, saveDraft, clearDraft };
+  /* muted and the player's name reach the booth too: "Silence the room" is the
+     same mute the shell owns, so it survives leaving the track. */
+  const shared = { playInfo, playTag, elapsed, playLines, playMulti, stopAll, ensureAudio, trigger, unlockMedia, synthsRef, draft, saveDraft, clearDraft, muted, setMuted, playerName: name };
 
   return (
-    <div className="min-h-screen w-full" style={{ background: C.bg, color: C.ink, fontFamily: "ui-rounded, 'Segoe UI', system-ui, sans-serif" }}>
+    <div className="min-h-screen w-full" style={{ background: C.bg, color: C.ink, fontFamily: TYPE.ui }}>
       <style>{`
         @keyframes cb-pop { 0%{transform:scale(0) rotate(0)} 70%{transform:scale(1.25) rotate(10deg)} 100%{transform:scale(1) rotate(0)} }
         @keyframes cb-fall { 0%{transform:translateY(-40px); opacity:1} 100%{transform:translateY(340px) rotate(200deg); opacity:0} }

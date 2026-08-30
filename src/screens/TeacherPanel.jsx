@@ -30,7 +30,7 @@ export function TeacherPanel({ pin, onPin, onUnlockAll, onResetPlayer, onPlayers
               }}
               inputMode="numeric"
               aria-label="Teacher PIN"
-              className="mt-2 w-full rounded-xl px-3 py-2 text-center font-mono font-extrabold outline-none"
+              className="mt-2 w-full rounded-[4px] px-3 py-2 text-center font-mono font-extrabold outline-none"
               style={{ background: "#151233", color: C.ink, border: `1px solid ${wrong ? C.red : C.line}`, fontSize: 22, letterSpacing: 6 }}
             />
             {wrong && (
@@ -75,7 +75,7 @@ export function TeacherPanel({ pin, onPin, onUnlockAll, onResetPlayer, onPlayers
                 {didReset ? "⚠️ Tap again to erase this player's stars" : "↺ Reset this player"}
               </BigButton>
             </div>
-            <div className="mt-3 rounded-2xl p-2" style={{ background: C.panel2, border: `1px solid ${C.line}` }}>
+            <div className="mt-3 rounded-[4px] p-2" style={{ background: C.panel2, border: `1px solid ${C.line}` }}>
               <div className="text-xs font-extrabold uppercase" style={{ color: C.dim }}>
                 Change the code
               </div>
@@ -86,7 +86,7 @@ export function TeacherPanel({ pin, onPin, onUnlockAll, onResetPlayer, onPlayers
                   inputMode="numeric"
                   placeholder="new 4 digits"
                   aria-label="New teacher PIN"
-                  className="flex-1 rounded-xl px-3 py-2 text-center font-mono font-bold outline-none"
+                  className="flex-1 rounded-[4px] px-3 py-2 text-center font-mono font-bold outline-none"
                   style={{ background: "#151233", color: C.ink, border: `1px solid ${C.line}`, fontSize: 16, letterSpacing: 4 }}
                 />
                 <Chip small disabled={newPin.length !== 4} onClick={() => { onPin(newPin); setNewPin(""); }}>

@@ -108,15 +108,22 @@ export function useAudio({ volume, muted }) {
     } catch (e) {}
   }
 
-  function stopAll() {
+  /* A child who taps ■ Stop has still heard it. The callback that unlocks
+     "Got it! Next", counts a play, or awards the star used to be thrown away
+     here, so stopping early left them looking at a dim button with no way to
+     enable it. Only a Stop the player pressed counts — teardown and moving
+     between screens still discard it, so nothing is awarded on navigation. */
+  function stopAll(counted) {
     clearTimeout(endTimer.current);
     try {
       transport().stop();
       transport().cancel();
     } catch (e) {}
+    const cb = onEndRef.current;
     onEndRef.current = null;
     setPlayInfo(null);
     setPlayTag(null);
+    if (counted && cb) cb();
   }
 
   function schedule(compiled, tag, onEnd) {

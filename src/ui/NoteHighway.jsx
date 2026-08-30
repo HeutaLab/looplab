@@ -2,13 +2,13 @@ import React from "react";
 import { laneOf } from "../engine/interpreter.js";
 import { C, DRUM_EMOJI, LANES, LEAD } from "../theme.js";
 
-export function NoteHighway({ playInfo, elapsed, height = 200, idleText = "Press ▶ Play to see your notes fly!" }) {
+export function NoteHighway({ playInfo, elapsed, height = 200, idleText = "Press play — your notes appear here" }) {
   const H = height;
   const hitY = H - 30;
   const events = playInfo ? playInfo.events : [];
   return (
     <div
-      className="relative w-full overflow-hidden rounded-2xl"
+      className="relative w-full overflow-hidden rounded-[4px]"
       style={{ height: H, background: "linear-gradient(180deg,#171335 0%,#100D28 100%)", border: `1px solid ${C.line}` }}
     >
       {LANES.map((c, i) => (
@@ -22,21 +22,22 @@ export function NoteHighway({ playInfo, elapsed, height = 200, idleText = "Press
         className="absolute left-2 right-2 rounded-full"
         style={{
           top: hitY,
-          height: 5,
-          background: `linear-gradient(90deg,${C.pink},${C.yellow},${C.aqua},${C.violet})`,
-          opacity: playInfo ? 0.95 : 0.35,
-          boxShadow: playInfo ? "0 0 14px rgba(255,92,168,0.55)" : "none",
+          height: 2,
+          borderRadius: 0,
+          /* one line, the same one the booth draws — the rainbow bar read as
+             decoration, and this is the moment a note sounds */
+          background: C.ink,
+          opacity: playInfo ? 1 : 0.4,
         }}
       />
       {!playInfo && (
         <div className="absolute inset-0 flex flex-col items-center justify-center" style={{ color: C.dim }}>
-          <div style={{ fontSize: 24 }}>🎵 🥁 🎹</div>
-          <div className="mt-1 px-4 text-center text-sm font-semibold">{idleText}</div>
+          <div className="px-4 text-center text-sm">{idleText}</div>
         </div>
       )}
       {playInfo && elapsed !== null && elapsed < 0 && (
         <div className="absolute inset-0 flex items-center justify-center text-lg font-extrabold" style={{ color: C.yellow }}>
-          🎬 Ready…
+          Ready
         </div>
       )}
       {playInfo &&
