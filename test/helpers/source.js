@@ -1,5 +1,5 @@
 /* The suite runs the shipping code, not a paraphrase of it: each test pulls the
-   real functions and data out of codebeat-club.jsx as source text and evaluates
+   real functions and data out of looplab.jsx as source text and evaluates
    them. That way a test cannot quietly drift from what actually ships — if a
    name or a structure changes, the extraction throws instead of passing. */
 import fs from "node:fs";
@@ -7,7 +7,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
-export const SRC_PATH = path.resolve(here, "..", "..", "codebeat-club.jsx");
+export const SRC_PATH = path.resolve(here, "..", "..", "looplab.jsx");
 export const src = fs.readFileSync(SRC_PATH, "utf8");
 
 function slice(startRe, endRe) {

@@ -1,7 +1,7 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import CodeBeat from "../codebeat-club.jsx";
+import LoopLab from "../looplab.jsx";
 
 /* A crash inside the component would otherwise leave a blank page with the
    reason only in the console — show it on screen instead. */
@@ -14,7 +14,7 @@ class Boundary extends React.Component {
     return { err };
   }
   componentDidCatch(err, info) {
-    console.error("CodeBeat crashed:", err, info);
+    console.error("LoopLab crashed:", err, info);
   }
   render() {
     if (this.state.err)
@@ -33,12 +33,12 @@ const container = document.getElementById("root");
 /* Vite re-runs this module on every hot update. Reuse the root that already
    exists on the container, or React warns that createRoot() was called twice
    on it and the warning drowns out real errors while you work. */
-const root = (container._codebeatRoot ??= createRoot(container));
+const root = (container._looplabRoot ??= createRoot(container));
 
 root.render(
   <React.StrictMode>
     <Boundary>
-      <CodeBeat />
+      <LoopLab />
     </Boundary>
   </React.StrictMode>
 );

@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useMemo } from "react";
 import * as Tone from "tone";
 
 /* ============================================================
-   CodeBeat 🎧 v2 — learn to code music, then DJ The Club
+   LoopLab 🎧 — learn to code music, then DJ The Club
    Real Sonic Pi syntax · I do / We do / You do · live_loops
    ============================================================ */
 
@@ -1024,7 +1024,12 @@ function useActiveLine(playInfo, elapsed) {
    fall back to localStorage and report which one actually worked — the map
    used to promise "saved automatically" even when nothing was being saved. */
 
-const PROGRESS_KEY = "codebeat:progress";
+const PROGRESS_KEY = "looplab:progress";
+/* This shipped under an earlier name before the rename. A player who already
+   has stars saved under the old key keeps them: load falls through to it, and
+   the next save writes the new key. Do not remove until it is safe to assume
+   nobody is carrying old progress. */
+const LEGACY_PROGRESS_KEY = "codebeat:progress";
 const hasWindow = () => typeof window !== "undefined";
 
 const progressStore = {
@@ -1032,14 +1037,18 @@ const progressStore = {
     if (!hasWindow()) return null;
     try {
       if (window.storage && window.storage.get) {
-        const r = await window.storage.get(PROGRESS_KEY);
-        if (r && r.value != null) return r.value;
+        for (const k of [PROGRESS_KEY, LEGACY_PROGRESS_KEY]) {
+          const r = await window.storage.get(k);
+          if (r && r.value != null) return r.value;
+        }
       }
     } catch (e) {
       /* host storage missing or refused — try the browser next */
     }
     try {
-      return window.localStorage.getItem(PROGRESS_KEY);
+      return (
+        window.localStorage.getItem(PROGRESS_KEY) ?? window.localStorage.getItem(LEGACY_PROGRESS_KEY)
+      );
     } catch (e) {
       /* private mode, or site data blocked */
     }
@@ -1064,7 +1073,7 @@ const progressStore = {
 
 /* ---------- main app ---------- */
 
-export default function CodeBeat() {
+export default function LoopLab() {
   const [screen, setScreen] = useState("map");
   const [levelIdx, setLevelIdx] = useState(0);
   const [phase, setPhase] = useState(0);
@@ -1366,7 +1375,7 @@ function MapScreen({ stars, records, loaded, persist, onOpen, onClub, onUnlockAl
     <div className="flex flex-col gap-4">
       <div className="pt-3 text-center">
         <div className="text-4xl font-extrabold tracking-tight">
-          Code<span style={{ color: C.pink }}>Beat</span> 🎧
+          Loop<span style={{ color: C.pink }}>Lab</span> 🎧
         </div>
         <div className="mt-1 text-sm font-semibold" style={{ color: C.dim }}>
           Learn to code music — then DJ the club
@@ -2776,7 +2785,7 @@ function CelebrateOverlay({ level, hasNext, onMap, onNext, onStay }) {
         </div>
         <div className="text-sm font-semibold" style={{ color: C.dim }}>
           {level.id === "jam"
-            ? "You're officially a CodeBeat DJ! 🎓 The Club is waiting — go bring the house down."
+            ? "You're officially a LoopLab DJ! 🎓 The Club is waiting — go bring the house down."
             : "DJ Loop is impressed. Your music-code powers are growing!"}
         </div>
         <div className="mt-4 flex flex-col gap-2">
