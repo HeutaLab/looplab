@@ -744,6 +744,207 @@ function CodeEditor({ value, onChange, errors, chipGroups, mode, disabled, minRo
   );
 }
 
+/* ---------- who is playing ----------
+   Five children share one school login. Without this they share one set of
+   stars too, and the last one to finish overwrites the rest. */
+
+function PlayersScreen({ players, currentId, onOpen, onAdd, onRemove, onBack }) {
+  const [adding, setAdding] = useState(players.length === 0);
+  const [draft, setDraft] = useState("");
+  const [confirmId, setConfirmId] = useState(null);
+  const full = players.length >= MAX_PROFILES;
+
+  return (
+    <div className="flex flex-col gap-3">
+      <div className="flex items-center gap-2">
+        {onBack && (
+          <button onClick={onBack} className="rounded-xl px-3 py-2 font-extrabold" style={{ background: C.panel2, border: `1px solid ${C.line}` }} aria-label="Back to the level map">
+            ←
+          </button>
+        )}
+        <div className="text-base font-extrabold">👋 Who's playing?</div>
+      </div>
+
+      <Mentor text={players.length ? "Tap your name to carry on where you left off." : "Add your name so the game keeps your stars for you — nobody else's." } />
+
+      <div className="flex flex-col gap-2">
+        {players.map((p) => (
+          <div key={p.id} className="flex items-center gap-2 rounded-2xl p-2" style={{ background: p.id === currentId ? C.panel2 : C.panel, border: `1px solid ${p.id === currentId ? C.yellow : C.line}` }}>
+            <button onClick={() => onOpen(p.id)} className="flex-1 rounded-xl px-3 py-3 text-left font-extrabold" style={{ color: C.ink, fontSize: 16 }}>
+              {p.id === currentId ? "🎧 " : "👤 "}
+              {p.name}
+            </button>
+            {confirmId === p.id ? (
+              <>
+                <Chip small onClick={() => { onRemove(p.id); setConfirmId(null); }}>
+                  ⚠️ Erase {p.name}
+                </Chip>
+                <Chip small onClick={() => setConfirmId(null)}>
+                  Keep
+                </Chip>
+              </>
+            ) : (
+              <Chip small onClick={() => setConfirmId(p.id)}>
+                🗑
+              </Chip>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {adding ? (
+        <div className="rounded-2xl p-3" style={{ background: C.panel, border: `1px solid ${C.aqua}` }}>
+          <label className="text-xs font-extrabold uppercase" style={{ color: C.dim }} htmlFor="new-player">
+            Your first name
+          </label>
+          <input
+            id="new-player"
+            value={draft}
+            onChange={(e) => setDraft(e.target.value.slice(0, 16))}
+            placeholder="first name or nickname"
+            maxLength={16}
+            autoCapitalize="words"
+            className="mt-1 w-full rounded-xl px-3 py-2 font-bold outline-none"
+            style={{ background: "#151233", color: C.ink, border: `1px solid ${C.line}`, fontSize: 16 }}
+          />
+          <div className="mt-1 text-[11px] font-semibold" style={{ color: C.dim }}>
+            First name only. This stays on this device and is never sent anywhere.
+          </div>
+          <div className="mt-2 flex gap-2">
+            <BigButton
+              color={C.aqua}
+              disabled={!draft.trim()}
+              onClick={() => {
+                onAdd(draft);
+                setDraft("");
+                setAdding(false);
+              }}
+            >
+              Let's go 🎧
+            </BigButton>
+            {players.length > 0 && (
+              <BigButton color={C.violet} onClick={() => setAdding(false)}>
+                Cancel
+              </BigButton>
+            )}
+          </div>
+        </div>
+      ) : (
+        <BigButton color={C.aqua} disabled={full} onClick={() => setAdding(true)}>
+          {full ? "This device is full (40 players)" : "➕ New player"}
+        </BigButton>
+      )}
+    </div>
+  );
+}
+
+/* ---------- teacher panel ----------
+   Skip and reset used to sit on the map where any child could tap them, and
+   "start over" erases a player. They live behind a long press and a PIN now:
+   invisible in the student UI, and a wrong PIN reveals nothing at all. */
+
+function TeacherPanel({ pin, onPin, onUnlockAll, onResetPlayer, onPlayers, onClose, playerName }) {
+  const [entered, setEntered] = useState("");
+  const [wrong, setWrong] = useState(false);
+  const [inside, setInside] = useState(false);
+  const [newPin, setNewPin] = useState("");
+  const [didReset, setDidReset] = useState(false);
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(10,8,25,0.92)" }}>
+      <div className="w-full max-w-sm rounded-3xl p-4" style={{ background: C.panel, border: `2px solid ${C.violet}` }}>
+        {!inside ? (
+          <>
+            <div className="text-lg font-extrabold">🔐 Teacher panel</div>
+            <div className="mt-1 text-xs font-semibold" style={{ color: C.dim }}>
+              Enter the 4-digit code.
+            </div>
+            <input
+              autoFocus
+              value={entered}
+              onChange={(e) => {
+                setEntered(e.target.value.replace(/\D/g, "").slice(0, 4));
+                setWrong(false);
+              }}
+              inputMode="numeric"
+              aria-label="Teacher PIN"
+              className="mt-2 w-full rounded-xl px-3 py-2 text-center font-mono font-extrabold outline-none"
+              style={{ background: "#151233", color: C.ink, border: `1px solid ${wrong ? C.red : C.line}`, fontSize: 22, letterSpacing: 6 }}
+            />
+            {wrong && (
+              <div className="mt-1 text-xs font-bold" style={{ color: C.red }}>
+                Not that one.
+              </div>
+            )}
+            <div className="mt-3 flex gap-2">
+              <BigButton
+                color={C.violet}
+                onClick={() => (entered === String(pin) ? setInside(true) : (setWrong(true), setEntered("")))}
+              >
+                Unlock
+              </BigButton>
+              <BigButton color={C.aqua} onClick={onClose}>
+                Close
+              </BigButton>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="text-lg font-extrabold">🔐 Teacher panel</div>
+            <div className="mt-1 text-xs font-semibold" style={{ color: C.dim }}>
+              Current player: <span style={{ color: C.yellow }}>{playerName || "nobody"}</span>
+            </div>
+            <div className="mt-3 flex flex-col gap-2">
+              <BigButton color={C.aqua} onClick={onPlayers}>
+                👥 Manage players
+              </BigButton>
+              <BigButton color={C.violet} onClick={onUnlockAll}>
+                ⏩ Unlock every level
+              </BigButton>
+              <BigButton
+                color={C.orange}
+                onClick={() => {
+                  if (didReset) {
+                    onResetPlayer();
+                    setDidReset(false);
+                  } else setDidReset(true);
+                }}
+              >
+                {didReset ? "⚠️ Tap again to erase this player's stars" : "↺ Reset this player"}
+              </BigButton>
+            </div>
+            <div className="mt-3 rounded-2xl p-2" style={{ background: C.panel2, border: `1px solid ${C.line}` }}>
+              <div className="text-xs font-extrabold uppercase" style={{ color: C.dim }}>
+                Change the code
+              </div>
+              <div className="mt-1 flex gap-2">
+                <input
+                  value={newPin}
+                  onChange={(e) => setNewPin(e.target.value.replace(/\D/g, "").slice(0, 4))}
+                  inputMode="numeric"
+                  placeholder="new 4 digits"
+                  aria-label="New teacher PIN"
+                  className="flex-1 rounded-xl px-3 py-2 text-center font-mono font-bold outline-none"
+                  style={{ background: "#151233", color: C.ink, border: `1px solid ${C.line}`, fontSize: 16, letterSpacing: 4 }}
+                />
+                <Chip small disabled={newPin.length !== 4} onClick={() => { onPin(newPin); setNewPin(""); }}>
+                  Save
+                </Chip>
+              </div>
+              <div className="mt-1 text-[11px] font-semibold" style={{ color: C.dim }}>
+                Stored on this device, not with a player. Default is {DEFAULT_PIN}.
+              </div>
+            </div>
+            <div className="mt-3">
+              <BigButton onClick={onClose}>Done</BigButton>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function ReportScreen({ stars, records, name, onName, onBack }) {
   const [copied, setCopied] = useState(null);
   const [saved, setSaved] = useState(null);
@@ -775,7 +976,7 @@ function ReportScreen({ stars, records, name, onName, onBack }) {
           style={{ background: "#151233", color: C.ink, border: `1px solid ${C.line}`, fontSize: 16 }}
         />
         <div className="mt-1 text-[11px] font-semibold" style={{ color: C.dim }}>
-          First name only — this stays on this device and is never sent anywhere.
+          This is the name on your player. Changing it here renames you everywhere — it stays on this device and is never sent anywhere.
         </div>
       </div>
 
@@ -1527,49 +1728,143 @@ function downloadReport(text, name) {
 
 const PROGRESS_KEY = "looplab:progress";
 const NAME_KEY = "looplab:name";
-/* This shipped under an earlier name before the rename. A player who already
-   has stars saved under the old key keeps them: load falls through to it, and
-   the next save writes the new key. Do not remove until it is safe to assume
-   nobody is carrying old progress. */
+/* This shipped under an earlier name before the rename, and before that as one
+   bucket per device rather than per player. Both are read once and folded into
+   a profile, so nobody loses stars to a version change. */
 const LEGACY_PROGRESS_KEY = "codebeat:progress";
+const PROFILES_KEY = "looplab:profiles";
+const DEVICE_KEY = "looplab:device";
+const profileKey = (id) => `looplab:profile:${id}`;
+const MAX_PROFILES = 40;
+const DEFAULT_PIN = "2468";
+
 const hasWindow = () => typeof window !== "undefined";
 
-const progressStore = {
-  async load() {
+/* One keyed store over both worlds: the artifact host provides window.storage,
+   a plain browser does not. Every write reports whether it actually landed —
+   the map used to promise "saved automatically" while nothing was saved. */
+const store = {
+  async get(key) {
     if (!hasWindow()) return null;
     try {
       if (window.storage && window.storage.get) {
-        for (const k of [PROGRESS_KEY, LEGACY_PROGRESS_KEY]) {
-          const r = await window.storage.get(k);
-          if (r && r.value != null) return r.value;
-        }
+        const r = await window.storage.get(key);
+        if (r && r.value != null) return r.value;
       }
     } catch (e) {
       /* host storage missing or refused — try the browser next */
     }
     try {
-      return (
-        window.localStorage.getItem(PROGRESS_KEY) ?? window.localStorage.getItem(LEGACY_PROGRESS_KEY)
-      );
+      return window.localStorage.getItem(key);
     } catch (e) {
       /* private mode, or site data blocked */
     }
     return null;
   },
-  async save(value) {
+  async set(key, value) {
     if (!hasWindow()) return false;
     let ok = false;
     try {
       if (window.storage && window.storage.set) {
-        await window.storage.set(PROGRESS_KEY, value);
+        await window.storage.set(key, value);
         ok = true;
       }
     } catch (e) {}
     try {
-      window.localStorage.setItem(PROGRESS_KEY, value);
+      window.localStorage.setItem(key, value);
       ok = true;
     } catch (e) {}
     return ok;
+  },
+  async del(key) {
+    if (!hasWindow()) return;
+    try {
+      if (window.storage && window.storage.delete) await window.storage.delete(key);
+    } catch (e) {}
+    try {
+      window.localStorage.removeItem(key);
+    } catch (e) {}
+  },
+};
+
+const parse = (raw, fallback) => {
+  try {
+    const d = raw ? JSON.parse(raw) : null;
+    return d ?? fallback;
+  } catch (e) {
+    return fallback; // a corrupt save must not lock a child out of the game
+  }
+};
+const emptyProgress = () => ({ v: 1, stars: LEVELS.map(() => 0), records: {} });
+const cleanName = (n) => String(n ?? "").replace(/\s+/g, " ").trim().slice(0, 16);
+
+/* Five children share one school login, so progress cannot be one bucket per
+   device. Each player gets their own key, listed in an index the launch screen
+   reads. Names are local to the device and never leave it. */
+const profiles = {
+  async list() {
+    const arr = parse(await store.get(PROFILES_KEY), []);
+    return Array.isArray(arr) ? arr.filter((p) => p && p.id) : [];
+  },
+  async saveList(list) {
+    return store.set(PROFILES_KEY, JSON.stringify(list.slice(0, MAX_PROFILES)));
+  },
+  async progress(id) {
+    return parse(await store.get(profileKey(id)), emptyProgress());
+  },
+  async saveProgress(id, data) {
+    return store.set(profileKey(id), JSON.stringify({ v: 1, ...data }));
+  },
+  async create(name) {
+    const list = await profiles.list();
+    if (list.length >= MAX_PROFILES) return null;
+    const id = "p_" + Math.random().toString(36).slice(2, 8);
+    const p = { id, name: cleanName(name) || "Player", lastPlayed: Date.now() };
+    await profiles.saveList([p, ...list]);
+    await profiles.saveProgress(id, emptyProgress());
+    return p;
+  },
+  async touch(id) {
+    const list = await profiles.list();
+    const next = list.map((p) => (p.id === id ? { ...p, lastPlayed: Date.now() } : p));
+    await profiles.saveList(next);
+  },
+  async rename(id, name) {
+    const list = await profiles.list();
+    await profiles.saveList(list.map((p) => (p.id === id ? { ...p, name: cleanName(name) || p.name } : p)));
+  },
+  /* Deleting removes that player's key and nobody else's. */
+  async remove(id) {
+    const list = await profiles.list();
+    await profiles.saveList(list.filter((p) => p.id !== id));
+    await store.del(profileKey(id));
+  },
+  /* One-time: a device that played before profiles existed has stars in a
+     single bucket. Fold them into a first player rather than stranding them. */
+  async migrate() {
+    const list = await profiles.list();
+    if (list.length) return list;
+    const raw = (await store.get(PROGRESS_KEY)) ?? (await store.get(LEGACY_PROGRESS_KEY));
+    if (!raw) return [];
+    const old = parse(raw, null);
+    if (!old || !Array.isArray(old.stars) || !old.stars.some((n) => n > 0)) return [];
+    const name = cleanName(await store.get(NAME_KEY)) || "Player 1";
+    const id = "p_" + Math.random().toString(36).slice(2, 8);
+    const p = { id, name, lastPlayed: Date.now() };
+    await profiles.saveList([p]);
+    await profiles.saveProgress(id, { stars: old.stars, records: old.records || {} });
+    return [p];
+  },
+};
+
+/* Device settings, deliberately not per profile: the PIN belongs to the
+   teacher and the machine, not to whoever is holding it. */
+const device = {
+  async read() {
+    return parse(await store.get(DEVICE_KEY), { pin: DEFAULT_PIN });
+  },
+  async write(d) {
+    return store.set(DEVICE_KEY, JSON.stringify(d));
   },
 };
 
@@ -1577,33 +1872,52 @@ const progressStore = {
 
 export default function LoopLab() {
   const [screen, setScreen] = useState("map");
+  const [teacher, setTeacher] = useState(false);
+  const holdRef = useRef(null);
+  /* Three seconds on the title. Long enough that no child finds it by
+     accident, and it leaves nothing on screen to find. */
+  const holdStart = () => {
+    clearTimeout(holdRef.current);
+    holdRef.current = setTimeout(() => setTeacher(true), 3000);
+  };
+  const holdEnd = () => clearTimeout(holdRef.current);
   const [levelIdx, setLevelIdx] = useState(0);
   const [phase, setPhase] = useState(0);
   const [stars, setStars] = useState(() => LEVELS.map(() => 0));
   const [records, setRecords] = useState({});
   const [loaded, setLoaded] = useState(false);
   const [persist, setPersist] = useState(null); // null = not tried yet, false = nothing can store it
-  /* A name only so the teacher's copy has one on it. Device-local, never sent
-     anywhere, and the obvious thing for T-1 profiles to take over. */
-  const [name, setName] = useState("");
+  const [players, setPlayers] = useState([]);
+  const [playerId, setPlayerId] = useState(null);
+  const [pin, setPin] = useState(DEFAULT_PIN);
+  const player = players.find((p) => p.id === playerId) || null;
+  const name = player ? player.name : "";
 
-  // load saved progress once
+  /* On launch: fold any pre-profile progress into a first player, then open
+     the most recent one. Nobody is asked "who are you?" twice in a lesson —
+     the map header carries a visible "not you?" instead. */
   useEffect(() => {
     let alive = true;
     (async () => {
       try {
-        try {
-          const n = window.localStorage.getItem(NAME_KEY);
-          if (alive && n) setName(n);
-        } catch (e) {}
-        const raw = await progressStore.load();
-        const d = raw ? JSON.parse(raw) : null;
-        if (alive && d) {
-          if (Array.isArray(d.stars)) setStars(LEVELS.map((_, i) => d.stars[i] || 0));
-          if (d.records && typeof d.records === "object") setRecords(d.records);
+        const d = await device.read();
+        if (alive && d && d.pin) setPin(String(d.pin));
+        await profiles.migrate();
+        const list = await profiles.list();
+        if (!alive) return;
+        setPlayers(list);
+        if (list.length) {
+          const last = [...list].sort((a, b) => (b.lastPlayed || 0) - (a.lastPlayed || 0))[0];
+          const prog = await profiles.progress(last.id);
+          if (!alive) return;
+          setPlayerId(last.id);
+          setStars(LEVELS.map((_, i) => (prog.stars && prog.stars[i]) || 0));
+          setRecords(prog.records && typeof prog.records === "object" ? prog.records : {});
+        } else {
+          setScreen("players"); // first run on this device
         }
       } catch (e) {
-        /* first run, or a corrupt save — start fresh */
+        /* first run, or a corrupt save — start fresh rather than lock anyone out */
       }
       if (alive) setLoaded(true);
     })();
@@ -1614,15 +1928,44 @@ export default function LoopLab() {
 
   // save whenever progress changes, and remember whether it really landed
   useEffect(() => {
-    if (!loaded) return;
+    if (!loaded || !playerId) return;
     let alive = true;
-    progressStore.save(JSON.stringify({ stars, records })).then((ok) => {
+    profiles.saveProgress(playerId, { stars, records }).then((ok) => {
       if (alive) setPersist(ok);
     });
     return () => {
       alive = false;
     };
-  }, [stars, records, loaded]);
+  }, [stars, records, loaded, playerId]);
+
+  /* Switching player swaps the whole progress state, so two children on one
+     machine never see each other's stars. */
+  async function openPlayer(id) {
+    const prog = await profiles.progress(id);
+    setPlayerId(id);
+    setStars(LEVELS.map((_, i) => (prog.stars && prog.stars[i]) || 0));
+    setRecords(prog.records && typeof prog.records === "object" ? prog.records : {});
+    await profiles.touch(id);
+    setPlayers(await profiles.list());
+    setScreen("map");
+  }
+  async function addPlayer(n) {
+    const p = await profiles.create(n);
+    if (!p) return;
+    setPlayers(await profiles.list());
+    await openPlayer(p.id);
+  }
+  async function removePlayer(id) {
+    await profiles.remove(id);
+    const list = await profiles.list();
+    setPlayers(list);
+    if (id === playerId) {
+      setPlayerId(null);
+      setStars(LEVELS.map(() => 0));
+      setRecords({});
+      setScreen("players");
+    }
+  }
   const [trackIdx, setTrackIdx] = useState(0);
   const [playInfo, setPlayInfo] = useState(null);
   const [playTag, setPlayTag] = useState(null);
@@ -1797,16 +2140,15 @@ export default function LoopLab() {
             records={records}
             loaded={loaded}
             persist={persist}
+            playerName={name}
+            onHoldStart={holdStart}
+            onHoldEnd={holdEnd}
             onOpen={openLevel}
             onReport={() => setScreen("report")}
+            onSwitch={() => setScreen("players")}
             onClub={() => {
               stopAll();
               setScreen("club");
-            }}
-            onUnlockAll={() => setStars(LEVELS.map(() => 3))}
-            onReset={() => {
-              setStars(LEVELS.map(() => 0));
-              setRecords({});
             }}
           />
         )}
@@ -1825,18 +2167,54 @@ export default function LoopLab() {
             {...shared}
           />
         )}
+        {teacher && (
+          <TeacherPanel
+            pin={pin}
+            playerName={name}
+            onPin={async (np) => {
+              setPin(np);
+              await device.write({ pin: np });
+            }}
+            onUnlockAll={() => {
+              setStars(LEVELS.map(() => 3));
+              setTeacher(false);
+            }}
+            onResetPlayer={() => {
+              setStars(LEVELS.map(() => 0));
+              setRecords({});
+              setTeacher(false);
+            }}
+            onPlayers={() => {
+              setTeacher(false);
+              setScreen("players");
+            }}
+            onClose={() => setTeacher(false)}
+          />
+        )}
+
+        {screen === "players" && (
+          <PlayersScreen
+            players={players}
+            currentId={playerId}
+            onOpen={openPlayer}
+            onAdd={addPlayer}
+            onRemove={removePlayer}
+            onBack={playerId ? () => setScreen("map") : null}
+          />
+        )}
+
         {screen === "report" && (
           <ReportScreen
             stars={stars}
             records={records}
             name={name}
-            onName={(n) => {
-              setName(n);
-              try {
-                window.localStorage.setItem(NAME_KEY, n);
-              } catch (e) {
-                /* private mode — the report still works, the name just won't stick */
-              }
+            onName={async (n) => {
+              /* One name, on the player. The report used to keep its own,
+                 which meant two places to change it and a report that could
+                 disagree with the map header. */
+              if (!playerId) return;
+              setPlayers((ps) => ps.map((p) => (p.id === playerId ? { ...p, name: n } : p)));
+              await profiles.rename(playerId, n);
             }}
             onBack={() => setScreen("map")}
           />
@@ -1894,18 +2272,29 @@ export default function LoopLab() {
 
 /* ---------- map ---------- */
 
-function MapScreen({ stars, records, loaded, persist, onOpen, onClub, onReport, onUnlockAll, onReset }) {
-  const [confirmReset, setConfirmReset] = useState(false);
+function MapScreen({ stars, records, loaded, persist, playerName, onOpen, onClub, onReport, onSwitch, onHoldStart, onHoldEnd }) {
   const clubOpen = stars[1] >= 3;
   const golds = Object.values(records).filter((r) => r === "gold").length;
   return (
     <div className="flex flex-col gap-4">
       <div className="pt-3 text-center">
         <div className="text-4xl font-extrabold tracking-tight">
+<div
+          onPointerDown={onHoldStart}
+          onPointerUp={onHoldEnd}
+          onPointerLeave={onHoldEnd}
+          onPointerCancel={onHoldEnd}
+          onContextMenu={(e) => e.preventDefault()}
+          style={{ WebkitTouchCallout: "none", WebkitUserSelect: "none", userSelect: "none" }}
+        >
           Loop<span style={{ color: C.pink }}>Lab</span> 🎧
+        </div>
         </div>
         <div className="mt-1 text-sm font-semibold" style={{ color: C.dim }}>
           Learn to code music — then DJ the club
+        </div>
+        <div className="mt-1 text-center text-xs font-extrabold" style={{ color: C.yellow }}>
+          {playerName ? `🎧 ${playerName}` : ""}
         </div>
       </div>
       <Mentor text="Train in the Studio, then take the booth in The Club: fix real dance tracks, then perform them live and keep the crowd jumping. Let's go!" />
@@ -1985,21 +2374,8 @@ function MapScreen({ stars, records, loaded, persist, onOpen, onClub, onReport, 
         <Chip small onClick={onReport}>
           📋 My progress
         </Chip>
-        {stars.some((s) => s < 3) && (
-          <Chip small onClick={onUnlockAll}>
-            ⏩ Skip to The Club
-          </Chip>
-        )}
-        <Chip
-          small
-          onClick={() => {
-            if (confirmReset) {
-              onReset();
-              setConfirmReset(false);
-            } else setConfirmReset(true);
-          }}
-        >
-          {confirmReset ? "⚠️ Tap again to erase" : "↺ Start over"}
+        <Chip small onClick={onSwitch}>
+          👤 Not you? Switch player
         </Chip>
       </div>
     </div>
