@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+/* The component paints its own background and type; this is only what sits
+   behind it in a standalone browser tab. */
+body {
+  margin: 0;
+  background: #110f26;
+  color: #f4f2ff;
+  font-family: ui-rounded, "SF Pro Rounded", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
