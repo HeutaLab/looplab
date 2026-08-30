@@ -1,0 +1,19 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "looplab",
+  "compatibility_date": "2026-08-25",
+
+  // Static site only — there is no Worker script. LoopLab runs entirely in the
+  // browser and talks to nothing: no accounts, no API, no telemetry. That is a
+  // deliberate safeguarding position, not an oversight, so there is no `main`
+  // here and there should not be one without a decision to change that.
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "single-page-application"
+  },
+
+  // Attaching the custom domain creates the DNS record and the certificate.
+  "routes": [{ "pattern": "looplab.heutalab.com", "custom_domain": true }],
+
+  "observability": { "enabled": true }
+}
