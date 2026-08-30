@@ -71,6 +71,28 @@ g("players keep separate progress");
   check("the remaining player's progress is untouched", JSON.stringify((await profiles.progress(sam.id)).stars) === JSON.stringify([3, 3, 2, 0, 0, 0]));
 }
 
+// ---------- 2b. unfinished work survives the lesson ending ----------
+g("work in progress");
+{
+  const w = browser();
+  const { profiles } = make(w);
+  const sam = await profiles.create("Sam");
+  const inProgress = {
+    level: { random: { texts: ["use_bpm 130\nplay choose([60,64])"], code: [[{ t: "bpm", v: 130 }]], stageIdx: 1, plays: 2 } },
+    club: { rave: { texts: ["sample :bd_haus"], loopLines: [[{ t: "sample", v: "bd_haus" }]] } },
+  };
+  await profiles.saveProgress(sam.id, { stars: [1, 0, 0, 0, 0, 0], records: {}, inProgress });
+  const back = await profiles.progress(sam.id);
+  check("typed code survives a reload", back.inProgress.level.random.texts[0].includes("use_bpm 130"), JSON.stringify(back.inProgress && back.inProgress.level));
+  check("the stage they were on survives", back.inProgress.level.random.stageIdx === 1);
+  check("soundcheck repairs survive", back.inProgress.club.rave.loopLines[0][0].v === "bd_haus");
+
+  // and it is per player, like everything else
+  const alex = await profiles.create("Alex");
+  const a = await profiles.progress(alex.id);
+  check("a new player inherits nobody's unfinished work", !a.inProgress || Object.keys(a.inProgress).length === 0, JSON.stringify(a.inProgress));
+}
+
 // ---------- 3. nobody loses stars to a version change ----------
 g("migration from the one-bucket era");
 {

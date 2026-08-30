@@ -945,10 +945,14 @@ function TeacherPanel({ pin, onPin, onUnlockAll, onResetPlayer, onPlayers, onClo
   );
 }
 
-function ReportScreen({ stars, records, name, onName, onBack }) {
+function ReportScreen({ stars, records, name, onName, onRestore, onBack }) {
   const [copied, setCopied] = useState(null);
   const [saved, setSaved] = useState(null);
+  const [codeCopied, setCodeCopied] = useState(false);
+  const [entry, setEntry] = useState("");
+  const [restoreMsg, setRestoreMsg] = useState(null);
   const text = buildReport({ name, stars, records });
+  const myCode = encodeProgress(stars, records);
 
   return (
     <div className="flex flex-col gap-3">
@@ -977,6 +981,85 @@ function ReportScreen({ stars, records, name, onName, onBack }) {
         />
         <div className="mt-1 text-[11px] font-semibold" style={{ color: C.dim }}>
           This is the name on your player. Changing it here renames you everywhere — it stays on this device and is never sent anywhere.
+        </div>
+      </div>
+
+      {/* school -> home, by hand */}
+      <div className="rounded-2xl p-3" style={{ background: C.panel, border: `1px solid ${C.aqua}` }}>
+        <div className="text-xs font-extrabold uppercase" style={{ color: C.aqua }}>
+          🔑 My progress code
+        </div>
+        <div className="mt-1 select-all text-center font-mono font-extrabold" style={{ color: C.yellow, fontSize: 24, letterSpacing: 2 }}>
+          {myCode}
+        </div>
+        <div className="mt-1 text-center text-[11px] font-semibold" style={{ color: C.dim }}>
+          ✍️ Write this in your book. Type it in at home to carry on there.
+        </div>
+        <div className="mt-2 flex flex-wrap gap-2">
+          <Chip
+            small
+            onClick={() => {
+              try {
+                if (navigator.clipboard && navigator.clipboard.writeText)
+                  navigator.clipboard.writeText(myCode).then(() => setCodeCopied(true), () => setCodeCopied(false));
+              } catch (e) {}
+            }}
+          >
+            {codeCopied ? "✅ Copied" : "📋 Copy code"}
+          </Chip>
+        </div>
+
+        <div className="mt-3 border-t pt-2" style={{ borderColor: C.line }}>
+          <label className="text-xs font-extrabold uppercase" style={{ color: C.dim }} htmlFor="restore-code">
+            Got a code? Type it here
+          </label>
+          <div className="mt-1 flex gap-2">
+            <input
+              id="restore-code"
+              value={entry}
+              onChange={(e) => {
+                setEntry(e.target.value.slice(0, 16));
+                setRestoreMsg(null);
+              }}
+              placeholder="LL-XXXX-XXXX"
+              autoCapitalize="characters"
+              autoCorrect="off"
+              spellCheck={false}
+              className="flex-1 rounded-xl px-3 py-2 font-mono font-bold outline-none"
+              style={{ background: "#151233", color: C.ink, border: `1px solid ${C.line}`, fontSize: 16 }}
+            />
+            <Chip
+              small
+              disabled={!entry.trim()}
+              onClick={() => {
+                const got = decodeProgress(entry);
+                if (!got) {
+                  setRestoreMsg({ ok: false, text: "That code didn't work — check the letters and try again. Nothing has changed." });
+                  return;
+                }
+                const added = onRestore(got);
+                setRestoreMsg({
+                  ok: true,
+                  text: added ? "Got it — your progress is back. 🎧" : "That code is already in here — nothing to add.",
+                });
+                setEntry("");
+              }}
+            >
+              Restore
+            </Chip>
+          </div>
+          {restoreMsg && (
+            <div
+              className="mt-2 rounded-xl px-3 py-2 text-xs font-bold"
+              aria-live="polite"
+              style={{
+                background: restoreMsg.ok ? "rgba(92,224,126,0.14)" : "rgba(255,154,87,0.14)",
+                color: restoreMsg.ok ? C.green : C.orange,
+              }}
+            >
+              {restoreMsg.text}
+            </div>
+          )}
         </div>
       </div>
 
@@ -1628,6 +1711,92 @@ function useActiveLine(playInfo, elapsed) {
   return line;
 }
 
+/* ---------- progress codes ----------
+   A child who plays at school starts from zero at home. No accounts and no
+   network, so the progress travels the only way left: a short code they can
+   copy into their book and type in at the other end.
+
+   32 bits: version(4) + stars 6x2 + records 6x2 + reserved(4), rendered in
+   Crockford base32 (no I, L, O or U, so nothing reads as a 1 or a 0) with a
+   check character, formatted LL-XXXX-XXXX. Restoring merges upward — it can
+   only ever give a child more than they had, never less. */
+
+const B32 = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"; // Crockford: no I, L, O, U
+const CODE_V = 1;
+const RECORD_RANK = { bronze: 1, silver: 2, gold: 3 };
+const RANK_RECORD = { 1: "bronze", 2: "silver", 3: "gold" };
+
+/* Crockford's confusable set, so a code copied by hand off a whiteboard still
+   works: I and L read as 1, O reads as 0. */
+const B32_FIX = { I: "1", L: "1", O: "0", U: "V" };
+function normaliseCode(raw) {
+  // Strip everything that is not a letter or digit FIRST: a leading space used
+  // to defeat the prefix strip, so " LL-..." read as a bad code.
+  const t = String(raw ?? "").toUpperCase().replace(/[^0-9A-Z]/g, "");
+  // Drop the LL prefix only when doing so leaves a full-length code, so a body
+  // that happens to start with those characters is not silently truncated.
+  const body = t.length === 10 && t.startsWith("LL") ? t.slice(2) : t;
+  return body
+    .split("")
+    .map((c) => B32_FIX[c] ?? c)
+    .join("");
+}
+
+function encodeProgress(stars, records) {
+  let bits = 0n;
+  bits = (bits << 4n) | BigInt(CODE_V & 0xf);
+  for (let i = 0; i < 6; i++) bits = (bits << 2n) | BigInt(Math.max(0, Math.min(3, stars[i] || 0)));
+  for (const t of TRACKS) bits = (bits << 2n) | BigInt(RECORD_RANK[records[t.id]] || 0);
+  bits = (bits << 4n) | 0n; // reserved for whatever comes next
+  let body = "";
+  for (let i = 6; i >= 0; i--) body += B32[Number((bits >> BigInt(i * 5)) & 31n)];
+  let sum = 0;
+  for (const c of body) sum += B32.indexOf(c);
+  return `LL-${body.slice(0, 4)}-${body.slice(4)}${B32[sum % 32]}`;
+}
+
+function decodeProgress(raw) {
+  const t = normaliseCode(raw);
+  if (t.length !== 8) return null;
+  const body = t.slice(0, 7);
+  let sum = 0;
+  for (const c of body) {
+    const i = B32.indexOf(c);
+    if (i < 0) return null;
+    sum += i;
+  }
+  if (B32[sum % 32] !== t[7]) return null; // a mistyped letter fails here
+  let bits = 0n;
+  for (const c of body) bits = (bits << 5n) | BigInt(B32.indexOf(c));
+  const reserved = Number(bits & 15n);
+  bits >>= 4n;
+  const records = {};
+  for (let i = TRACKS.length - 1; i >= 0; i--) {
+    const r = Number(bits & 3n);
+    bits >>= 2n;
+    if (r) records[TRACKS[i].id] = RANK_RECORD[r];
+  }
+  const stars = [];
+  for (let i = 5; i >= 0; i--) {
+    stars[i] = Number(bits & 3n);
+    bits >>= 2n;
+  }
+  const v = Number(bits & 15n);
+  if (v !== CODE_V) return null;
+  return { stars, records, reserved };
+}
+
+/* Merge upward only: bringing a code home can add stars, never take them. A
+   child who did more at home than at school does not get punished for it. */
+function mergeProgress(cur, incoming) {
+  const stars = LEVELS.map((_, i) => Math.max(cur.stars[i] || 0, incoming.stars[i] || 0));
+  const records = { ...cur.records };
+  for (const [id, r] of Object.entries(incoming.records)) {
+    if ((RECORD_RANK[records[id]] || 0) < (RECORD_RANK[r] || 0)) records[id] = r;
+  }
+  return { stars, records };
+}
+
 /* ---------- the teacher's copy ----------
    Nothing leaves the device on its own, so the report has to leave by hand:
    copied into Google Classroom in the lesson, or saved as a file for the
@@ -1889,6 +2058,16 @@ export default function LoopLab() {
   const [persist, setPersist] = useState(null); // null = not tried yet, false = nothing can store it
   const [players, setPlayers] = useState([]);
   const [playerId, setPlayerId] = useState(null);
+  /* Work in progress, so a lesson ending or a tab closing does not throw away
+     a loop a child spent ten minutes typing. Kept per player, alongside stars. */
+  const [draft, setDraft] = useState({});
+  const draftTimer = useRef(null);
+  /* Volume belongs to the machine and the room, not to whoever is holding it,
+     so it lives with the device settings beside the teacher PIN. */
+  const [volume, setVolume] = useState(0.6);
+  const [muted, setMuted] = useState(false);
+  const [askHeadphones, setAskHeadphones] = useState(false);
+  const [showAudio, setShowAudio] = useState(false);
   const [pin, setPin] = useState(DEFAULT_PIN);
   const player = players.find((p) => p.id === playerId) || null;
   const name = player ? player.name : "";
@@ -1902,6 +2081,15 @@ export default function LoopLab() {
       try {
         const d = await device.read();
         if (alive && d && d.pin) setPin(String(d.pin));
+        if (alive && d && typeof d.volume === "number") {
+          setVolume(d.volume);
+          volumeRef.current = d.volume;
+        }
+        if (alive && d && d.muted) {
+          setMuted(true);
+          mutedRef.current = true;
+        }
+        if (alive && !d.heardHeadphones) setAskHeadphones(true);
         await profiles.migrate();
         const list = await profiles.list();
         if (!alive) return;
@@ -1913,6 +2101,7 @@ export default function LoopLab() {
           setPlayerId(last.id);
           setStars(LEVELS.map((_, i) => (prog.stars && prog.stars[i]) || 0));
           setRecords(prog.records && typeof prog.records === "object" ? prog.records : {});
+          setDraft(prog.inProgress && typeof prog.inProgress === "object" ? prog.inProgress : {});
         } else {
           setScreen("players"); // first run on this device
         }
@@ -1930,13 +2119,42 @@ export default function LoopLab() {
   useEffect(() => {
     if (!loaded || !playerId) return;
     let alive = true;
-    profiles.saveProgress(playerId, { stars, records }).then((ok) => {
+    profiles.saveProgress(playerId, { stars, records, inProgress: draft }).then((ok) => {
       if (alive) setPersist(ok);
     });
     return () => {
       alive = false;
     };
-  }, [stars, records, loaded, playerId]);
+  }, [stars, records, draft, loaded, playerId]);
+
+  useEffect(() => {
+    volumeRef.current = volume;
+    mutedRef.current = muted;
+    applyVolume(masterRef.current, volume, muted);
+    (async () => {
+      try {
+        const d = await device.read();
+        await device.write({ ...d, volume, muted });
+      } catch (e) {}
+    })();
+  }, [volume, muted]);
+
+  /* Debounced, because this fires on every keystroke in the editor. A failed
+     save must never interrupt play, so nothing here can throw into the UI. */
+  function saveDraft(scope, id, data) {
+    clearTimeout(draftTimer.current);
+    draftTimer.current = setTimeout(() => {
+      setDraft((d) => ({ ...d, [scope]: { ...(d[scope] || {}), [id]: data } }));
+    }, 500);
+  }
+  function clearDraft(scope, id) {
+    clearTimeout(draftTimer.current);
+    setDraft((d) => {
+      const next = { ...(d[scope] || {}) };
+      delete next[id];
+      return { ...d, [scope]: next };
+    });
+  }
 
   /* Switching player swaps the whole progress state, so two children on one
      machine never see each other's stars. */
@@ -1945,6 +2163,7 @@ export default function LoopLab() {
     setPlayerId(id);
     setStars(LEVELS.map((_, i) => (prog.stars && prog.stars[i]) || 0));
     setRecords(prog.records && typeof prog.records === "object" ? prog.records : {});
+    setDraft(prog.inProgress && typeof prog.inProgress === "object" ? prog.inProgress : {});
     await profiles.touch(id);
     setPlayers(await profiles.list());
     setScreen("map");
@@ -1972,6 +2191,9 @@ export default function LoopLab() {
   const [celebrate, setCelebrate] = useState(false);
 
   const synthsRef = useRef(null);
+  const masterRef = useRef(null);
+  const volumeRef = useRef(0.6);
+  const mutedRef = useRef(false);
   const endTimer = useRef(null);
   const onEndRef = useRef(null);
   const silentRef = useRef(null);
@@ -1992,13 +2214,28 @@ export default function LoopLab() {
     } catch (e) {}
   }
 
+  /* 0..1 from the slider, decibels for Tone. Zero is silence, not -0dB. */
+  function applyVolume(node, v, muted) {
+    if (!node) return;
+    try {
+      node.volume.value = v <= 0 ? -Infinity : Tone.gainToDb(Math.min(1, v));
+      node.mute = !!muted;
+    } catch (e) {}
+  }
+
   async function ensureAudio() {
     await Tone.start();
     try {
       if (Tone.context.state !== "running") await Tone.context.resume();
     } catch (e) {}
     if (!synthsRef.current) {
-      const master = new Tone.Limiter(-1).toDestination();
+      /* One node the whole game runs through, so a single slider moves every
+         synth and drum together, and mute silences the room while the note
+         highway keeps animating — a teacher can demo a track in silence. */
+      const out = new Tone.Volume(0).toDestination();
+      masterRef.current = out;
+      applyVolume(out, volumeRef.current, mutedRef.current);
+      const master = new Tone.Limiter(-1).connect(out);
       const mk = (type, vol) =>
         new Tone.PolySynth(Tone.Synth, {
           oscillator: { type },
@@ -2120,7 +2357,7 @@ export default function LoopLab() {
     setScreen("level");
   }
 
-  const shared = { playInfo, playTag, elapsed, playLines, playMulti, stopAll, ensureAudio, trigger, unlockMedia, synthsRef };
+  const shared = { playInfo, playTag, elapsed, playLines, playMulti, stopAll, ensureAudio, trigger, unlockMedia, synthsRef, draft, saveDraft, clearDraft };
 
   return (
     <div className="min-h-screen w-full" style={{ background: C.bg, color: C.ink, fontFamily: "ui-rounded, 'Segoe UI', system-ui, sans-serif" }}>
@@ -2133,6 +2370,76 @@ export default function LoopLab() {
       {/* Mobile-first: a phone gets the same single column it always had.
          Wider screens just get more room for the same layout, so a laptop
          or a classroom projector is not showing a phone-shaped sliver. */}
+      {/* Sound control, in the shell rather than a screen, so mute survives
+          moving between the map, a level and the booth. */}
+      <div className="fixed right-2 top-2 z-40 flex flex-col items-end gap-1">
+        <button
+          onClick={() => setShowAudio((v) => !v)}
+          aria-label={muted ? "Sound is muted — open sound settings" : "Open sound settings"}
+          className="rounded-xl px-3 py-2 font-extrabold"
+          style={{ background: C.panel2, border: `1px solid ${muted ? C.orange : C.line}`, color: muted ? C.orange : C.ink }}
+        >
+          {muted ? "🔇" : volume > 0.5 ? "🔊" : volume > 0 ? "🔉" : "🔈"}
+        </button>
+        {showAudio && (
+          <div className="rounded-2xl p-3" style={{ background: C.panel, border: `1px solid ${C.line}`, width: 220 }}>
+            <div className="text-[11px] font-extrabold uppercase" style={{ color: C.dim }}>
+              Volume
+            </div>
+            <input
+              type="range"
+              min={0}
+              max={1}
+              step={0.05}
+              value={volume}
+              onChange={(e) => setVolume(parseFloat(e.target.value))}
+              aria-label="Master volume"
+              className="mt-1 w-full"
+              style={{ accentColor: C.aqua }}
+            />
+            <div className="mt-1 flex items-center justify-between">
+              <span className="text-[11px] font-bold" style={{ color: C.dim }}>
+                {Math.round(volume * 100)}%
+              </span>
+              <Chip small onClick={() => setMuted((m) => !m)}>
+                {muted ? "🔈 Unmute" : "🔇 Mute"}
+              </Chip>
+            </div>
+            {muted && (
+              <div className="mt-2 text-[11px] font-bold" style={{ color: C.orange }}>
+                Muted — the notes still fly, so you can show the screen without the sound.
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {askHeadphones && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-5" style={{ background: "rgba(10,8,25,0.9)" }}>
+          <div className="w-full max-w-sm rounded-3xl p-5 text-center" style={{ background: C.panel, border: `2px solid ${C.aqua}` }}>
+            <div className="text-4xl">🎧</div>
+            <div className="mt-1 text-xl font-extrabold">Headphones on?</div>
+            <div className="mt-1 text-sm font-semibold" style={{ color: C.dim }}>
+              This one makes noise. Plug your headphones in so you can hear your track — and so everyone else can hear theirs.
+            </div>
+            <div className="mt-4">
+              <BigButton
+                color={C.aqua}
+                onClick={async () => {
+                  setAskHeadphones(false);
+                  try {
+                    const d = await device.read();
+                    await device.write({ ...d, heardHeadphones: true });
+                  } catch (e) {}
+                }}
+              >
+                Ready 🎧
+              </BigButton>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="mx-auto max-w-md px-3 pb-10 pt-4 md:max-w-2xl lg:max-w-6xl">
         {screen === "map" && (
           <MapScreen
@@ -2182,6 +2489,7 @@ export default function LoopLab() {
             onResetPlayer={() => {
               setStars(LEVELS.map(() => 0));
               setRecords({});
+              setDraft({});
               setTeacher(false);
             }}
             onPlayers={() => {
@@ -2215,6 +2523,16 @@ export default function LoopLab() {
               if (!playerId) return;
               setPlayers((ps) => ps.map((p) => (p.id === playerId ? { ...p, name: n } : p)));
               await profiles.rename(playerId, n);
+            }}
+            onRestore={(incoming) => {
+              /* Merge upward only — a code can add stars, never remove them. */
+              const merged = mergeProgress({ stars, records }, incoming);
+              const changed = JSON.stringify(merged) !== JSON.stringify({ stars, records });
+              if (changed) {
+                setStars(merged.stars);
+                setRecords(merged.records);
+              }
+              return changed;
             }}
             onBack={() => setScreen("map")}
           />
@@ -2817,11 +3135,17 @@ const CHIP_GROUPS = {
   rand: { label: "Random timing", items: [{ label: "sleep rrand(0.25,0.5)", make: () => ({ t: "sleepRand", v: [0.25, 0.5] }) }] },
 };
 
-function BuildPhase({ level, playInfo, playTag, elapsed, playMulti, stopAll, completePhase }) {
+function BuildPhase({ level, playInfo, playTag, elapsed, playMulti, stopAll, completePhase, draft, saveDraft, clearDraft }) {
   const b = level.build;
-  const [code, setCode] = useState(() => b.loops.map(() => []));
-  const [stageIdx, setStageIdx] = useState(0);
-  const [plays, setPlays] = useState(0);
+  /* Restore whatever this player had open here last time. Read once on mount,
+     so a save landing mid-lesson never yanks the editor out from under them. */
+  const saved = (draft && draft.level && draft.level[level.id]) || null;
+  const [resumed] = useState(() => !!saved);
+  const [code, setCode] = useState(() =>
+    saved && Array.isArray(saved.code) && saved.code.length === b.loops.length ? saved.code : b.loops.map(() => [])
+  );
+  const [stageIdx, setStageIdx] = useState(() => (saved && Number.isInteger(saved.stageIdx) ? Math.min(saved.stageIdx, b.stages.length) : 0));
+  const [plays, setPlays] = useState(() => (saved && Number.isInteger(saved.plays) ? saved.plays : 0));
   const [showHint, setShowHint] = useState(false);
   const [showCopy, setShowCopy] = useState(false);
   const [justDone, setJustDone] = useState(false);
@@ -2877,8 +3201,19 @@ function BuildPhase({ level, playInfo, playTag, elapsed, playMulti, stopAll, com
   /* In a typing mode the text is what the student owns and the line objects are
      derived from it, so every stage check downstream keeps working unchanged. */
   const codeMode = b.codeMode || "chips";
-  const [texts, setTexts] = useState(() => b.loops.map(() => ""));
+  const [texts, setTexts] = useState(() =>
+    saved && Array.isArray(saved.texts) && saved.texts.length === b.loops.length ? saved.texts : b.loops.map(() => "")
+  );
   const [errors, setErrors] = useState(() => b.loops.map(() => []));
+
+  /* Persist on every change, debounced upstream. Wrapped so a storage failure
+     can never interrupt a child mid-sentence. */
+  useEffect(() => {
+    try {
+      if (finished) clearDraft("level", level.id);
+      else saveDraft("level", level.id, { code, texts, stageIdx, plays });
+    } catch (e) {}
+  }, [code, texts, stageIdx, plays, finished, level.id]);
 
   const setText = (t) => {
     const parsed = parseCode(t);
@@ -2903,7 +3238,15 @@ function BuildPhase({ level, playInfo, playTag, elapsed, playMulti, stopAll, com
   return (
     <div className={PHASE["gap-3"].grid}>
       <div className={PHASE["gap-3"].watch}>
-      <Mentor text={finished ? "Every stage complete — you wrote that whole thing yourself. That's real live-coding! 🏆" : b.mentor} />
+      <Mentor
+        text={
+          finished
+            ? "Every stage complete — you wrote that whole thing yourself. That's real live-coding! 🏆"
+            : resumed
+            ? "Picking up where you left off 🎧 — your code is just as you had it."
+            : b.mentor
+        }
+      />
 
       {/* stage checklist */}
       <div className="rounded-2xl p-3" style={{ background: C.panel, border: `1px solid ${C.line}` }}>
@@ -3148,6 +3491,7 @@ function DJScreen(props) {
           {...props}
           onDone={(lines) => {
             props.stopAll();
+            props.clearDraft("club", track.id); // banked — the set uses these now
             setFixedLines(lines);
             setStage("live");
           }}
@@ -3182,13 +3526,29 @@ function DJScreen(props) {
 
 /* ---------- Soundcheck: fix the track ---------- */
 
-function Soundcheck({ track, playInfo, playTag, elapsed, playLines, stopAll, onDone }) {
-  const [loopLines, setLoopLines] = useState(() => applyBugs(track));
+function Soundcheck({ track, playInfo, playTag, elapsed, playLines, stopAll, onDone, draft, saveDraft, clearDraft }) {
+  /* Repairs already made survive the tab closing — an hour of listening for a
+     sour note is not something to ask a child to do twice. */
+  const saved = (draft && draft.club && draft.club[track.id]) || null;
+  const [resumed] = useState(() => !!saved);
+  const [loopLines, setLoopLines] = useState(() =>
+    saved && Array.isArray(saved.loopLines) && saved.loopLines.length === track.loops.length ? saved.loopLines : applyBugs(track)
+  );
   /* The club runs the same ramp as the studio: tap to debug on the first
      tracks, chips-that-type in the middle, typing alone by Rave Siren. */
   const codeMode = track.codeMode || "chips";
-  const [texts, setTexts] = useState(() => applyBugs(track).map((ls) => codeToText(ls)));
+  const [texts, setTexts] = useState(() =>
+    saved && Array.isArray(saved.texts) && saved.texts.length === track.loops.length
+      ? saved.texts
+      : applyBugs(track).map((ls) => codeToText(ls))
+  );
   const [errors, setErrors] = useState(() => track.loops.map(() => []));
+
+  useEffect(() => {
+    try {
+      saveDraft("club", track.id, { loopLines, texts });
+    } catch (e) {}
+  }, [loopLines, texts, track.id]);
   const [sel, setSel] = useState(0);
   const [selLine, setSelLine] = useState(null);
   const [hints, setHints] = useState(false);
@@ -3238,6 +3598,8 @@ function Soundcheck({ track, playInfo, playTag, elapsed, playLines, stopAll, onD
         text={
           allFixed
             ? "Soundcheck complete — this track SLAPS again! The booth is yours. 🎛"
+            : resumed && bugsLeft > 0 && bugsLeft < track.bugs.length
+            ? `Picking up where you left off 🎧 — ${bugsLeft} bug${bugsLeft === 1 ? "" : "s"} still to find.`
             : bugsLeft === 0
               ? `All ${track.bugs.length} bugs fixed — nice ears! ${strayLines === 1 ? "One line" : `${strayLines} lines`} still ${strayLines === 1 ? "doesn't" : "don't"} match the studio version though. Hit 💡 Hints to see which, or put it back and we're away. 🎧`
               : `This track came back from the studio with ${track.bugs.length} bugs. Solo each loop, compare with the fixed version, and repair it by ear. ${bugsLeft} bug${bugsLeft === 1 ? "" : "s"} left!`
