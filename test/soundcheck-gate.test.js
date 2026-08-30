@@ -54,5 +54,43 @@ for (const track of TRACKS) {
   check(`${track.id}: a self-inflicted wrong note blocks the booth`, leaked === 0,
         `${tested} single-line changes tested, ${leaked} passed the gate`);
 }
+// ---- typing lets the student change how many lines there are ----
+console.log("\ntyped tracks: the gate must survive a changed line count");
+for (const track of TRACKS.filter((t) => t.codeMode && t.codeMode !== "chips")) {
+  const repaired = repairAll(track, clone(applyBugs(track)));
+
+  const deleted = clone(repaired);
+  deleted[0] = deleted[0].slice(0, -1); // student deletes a line while typing
+  let crashed = null;
+  let g;
+  try { g = gate(track, deleted); } catch (e) { crashed = e.message; }
+  check(`${track.id}: a deleted line does not crash the gate`, !crashed, crashed || "");
+  check(`${track.id}: a deleted line blocks the booth`, !crashed && !g.allFixed);
+
+  const added = clone(repaired);
+  added[0] = [...added[0], { t: "play", v: 99 }]; // and an extra line
+  crashed = null;
+  try { g = gate(track, added); } catch (e) { crashed = e.message; }
+  check(`${track.id}: an extra line does not crash the gate`, !crashed, crashed || "");
+  check(`${track.id}: an extra line blocks the booth`, !crashed && !g.allFixed);
+
+  // `play 0.5` where `sleep 0.5` belongs: same number, wrong command. The
+  // values match, so only comparing values would wave this through.
+  const wrongCmd = clone(repaired);
+  const sleepAt = wrongCmd[0].findIndex((L) => L.t === "sleep");
+  if (sleepAt >= 0) {
+    wrongCmd[0][sleepAt] = { t: "play", v: wrongCmd[0][sleepAt].v };
+    let c = null, gg;
+    try { gg = gate(track, wrongCmd); } catch (e) { c = e.message; }
+    check(`${track.id}: wrong command with the right number is caught`, !c && !gg.allFixed, c || "gate said it was fine");
+  }
+
+  const emptied = clone(repaired);
+  emptied[0] = []; // cleared the whole loop
+  crashed = null;
+  try { g = gate(track, emptied); } catch (e) { crashed = e.message; }
+  check(`${track.id}: an emptied loop does not crash the gate`, !crashed, crashed || "");
+}
+
 console.log(`\n${fail === 0 ? "ALL PASS" : fail + " FAILURES"}`);
 process.exit(fail ? 1 : 0);

@@ -634,6 +634,116 @@ function Chip({ onClick, active, children, small, disabled }) {
   );
 }
 
+/* ---------- the typing bridge, on screen ----------
+   One editor serves all three modes, with progressively less scaffolding:
+
+     chips   tap only, no typing            (levels 1-4, first club tracks)
+     hybrid  type, and chips type FOR you   (level 5, Piano Sunrise)
+     typed   type, chips hidden behind a tap (level 6, Rave Siren onward)
+
+   In hybrid the chip does not add a line object — it inserts its text at the
+   cursor. The child watches the syntax appear, then starts typing it himself.
+   That is the bridge: the same editor throughout, the scaffolding falling away.
+   Dropping back to the chips is always one tap and is never called failure. */
+
+function CodeEditor({ value, onChange, errors, chipGroups, mode, disabled, minRows = 8 }) {
+  const ref = useRef(null);
+  const [showChips, setShowChips] = useState(mode !== "typed");
+
+  function insert(text) {
+    const el = ref.current;
+    const cur = value ?? "";
+    let at = cur.length;
+    if (el && typeof el.selectionStart === "number") at = el.selectionStart;
+    // land on a line of its own, the way the line would have been added
+    const before = cur.slice(0, at);
+    const after = cur.slice(at);
+    const needsNL = before.length && !before.endsWith("\n");
+    const next = before + (needsNL ? "\n" : "") + text + (after.startsWith("\n") || !after.length ? "" : "\n") + after;
+    onChange(next);
+    requestAnimationFrame(() => {
+      if (!el) return;
+      const pos = before.length + (needsNL ? 1 : 0) + text.length;
+      el.focus();
+      el.setSelectionRange(pos, pos);
+    });
+  }
+
+  const rows = Math.max(minRows, (value ?? "").split("\n").length + 1);
+
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="rounded-2xl p-2" style={{ background: "#151233", border: `1px solid ${errors.length ? C.orange : C.line}` }}>
+        <textarea
+          ref={ref}
+          value={value}
+          disabled={disabled}
+          onChange={(e) => onChange(e.target.value)}
+          spellCheck={false}
+          autoCapitalize="none"
+          autoCorrect="off"
+          autoComplete="off"
+          rows={rows}
+          aria-label="Your Sonic Pi code"
+          placeholder={"Write your code here…\nplay 60\nsleep 0.5"}
+          className="w-full resize-none bg-transparent font-mono outline-none"
+          style={{ color: C.ink, fontSize: 14, lineHeight: 1.7, minHeight: 120 }}
+        />
+      </div>
+
+      {errors.length > 0 && (
+        <div className="flex flex-col gap-1" aria-live="polite">
+          {errors.map((e, i) => (
+            <div key={i} className="rounded-xl px-3 py-2 text-xs font-bold" style={{ background: "rgba(255,154,87,0.14)", color: C.orange }}>
+              {e.row >= 0 && <span style={{ color: C.dim }}>line {e.row + 1}: </span>}
+              {e.msg}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {mode === "typed" && !showChips && (
+        <button
+          onClick={() => setShowChips(true)}
+          className="self-start rounded-xl px-3 py-2 text-xs font-extrabold"
+          style={{ background: C.panel2, border: `1px solid ${C.line}`, color: C.aqua }}
+        >
+          Stuck? Show me the blocks 🧱
+        </button>
+      )}
+
+      {showChips && chipGroups.length > 0 && (
+        <div className="flex flex-col gap-1.5">
+          <div className="text-[11px] font-extrabold uppercase" style={{ color: C.dim }}>
+            {mode === "chips" ? "Tap to add a line" : "Tap to type it for you"}
+          </div>
+          {chipGroups.map(([k, g]) => (
+            <div key={k} className="flex flex-wrap items-center gap-1.5">
+              <span className="text-[11px] font-extrabold uppercase" style={{ color: C.dim, minWidth: 62 }}>
+                {g.label}
+              </span>
+              {g.items.map((it) => (
+                <Chip key={it.label} small disabled={disabled} onClick={() => insert(lineText(it.make()))}>
+                  {it.label}
+                </Chip>
+              ))}
+            </div>
+          ))}
+          {mode === "typed" && (
+            <button
+              onClick={() => setShowChips(false)}
+              className="self-start rounded-xl px-2 py-1 text-[11px] font-extrabold"
+              style={{ color: C.dim }}
+            >
+              Hide the blocks — I've got this ✍️
+            </button>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function CopyCodeModal({ text, onClose }) {
   const [copied, setCopied] = useState(null); // null | "yes" | "manual"
   return (
@@ -820,7 +930,10 @@ const LEVELS = [
       hint: "Not locked in yet — hear the goal and count: every note lasts one whole beat.",
     },
     build: {
-      mentor: "Now you write it yourself, one stage at a time. Each stage checks itself — finish it and the next unlocks. 🧱",
+      /* Halfway across the bridge: the editor is real, but a chip still types
+         the line for you when you want it. */
+      codeMode: "hybrid",
+      mentor: "Now you write it yourself, one stage at a time — typing real code, with the blocks there if you want them. Each stage checks itself. 🧱",
       bpm: 126,
       showBeats: true,
       loops: [
@@ -895,7 +1008,10 @@ const LEVELS = [
       hint: "Nearly! One chip sets a dance-floor tempo, one is a list of notes, one is a list of drums.",
     },
     build: {
-      mentor: "Final build. Stage by stage, make a loop that never plays the same way twice — then take it to Sonic Pi. 🎲",
+      /* The far side: typing only, with the blocks one tap away for anyone
+         who needs them — never framed as a step backwards. */
+      codeMode: "typed",
+      mentor: "Final build — this one you type yourself. Stage by stage, make a loop that never plays the same way twice, then take it to Sonic Pi. 🎲",
       bpm: 130,
       showBeats: false,
       loops: [{ name: "generative", icon: "🎲", allow: ["bpm", "notes", "drums", "sleeps", "synth", "chooseNote", "chooseDrum", "rand"] }],
@@ -968,6 +1084,7 @@ const CLAPS = seq(null, [[null, 1], ["sn_dolf", 1], [null, 1], ["sn_dolf", 1]]);
 const TRACKS = [
   {
     id: "warehouse",
+    codeMode: "chips",
     title: "Warehouse 909",
     style: "Classic House",
     bpm: 128,
@@ -999,6 +1116,7 @@ const TRACKS = [
   },
   {
     id: "acid",
+    codeMode: "chips",
     title: "Acid Alley",
     style: "Acid",
     bpm: 133,
@@ -1036,6 +1154,7 @@ const TRACKS = [
   },
   {
     id: "sunrise",
+    codeMode: "hybrid",
     title: "Piano Sunrise",
     style: "Piano House",
     bpm: 126,
@@ -1067,6 +1186,7 @@ const TRACKS = [
   },
   {
     id: "rave",
+    codeMode: "typed",
     title: "Rave Siren",
     style: "Oldskool Rave",
     bpm: 138,
@@ -1111,6 +1231,7 @@ const TRACKS = [
   },
   {
     id: "deep",
+    codeMode: "typed",
     title: "Deep Down",
     style: "Deep House",
     bpm: 125,
@@ -1148,6 +1269,7 @@ const TRACKS = [
   },
   {
     id: "hardfloor",
+    codeMode: "typed",
     title: "Hardfloor Finale",
     style: "Peak-Time Techno",
     bpm: 140,
@@ -2187,6 +2309,21 @@ function BuildPhase({ level, playInfo, playTag, elapsed, playMulti, stopAll, com
     }
   }, [stageOk, finished]);
 
+  /* In a typing mode the text is what the student owns and the line objects are
+     derived from it, so every stage check downstream keeps working unchanged. */
+  const codeMode = b.codeMode || "chips";
+  const [texts, setTexts] = useState(() => b.loops.map(() => ""));
+  const [errors, setErrors] = useState(() => b.loops.map(() => []));
+
+  const setText = (t) => {
+    const parsed = parseCode(t);
+    setTexts(texts.map((x, i) => (i === activeLoop ? t : x)));
+    setErrors(errors.map((x, i) => (i === activeLoop ? parsed.errors : x)));
+    // only lines that actually parse reach the checker — a half-typed line
+    // must never count as progress, and must never be treated as a mistake
+    setCode(code.map((ls, i) => (i === activeLoop ? parsed.lines : ls)));
+  };
+
   const add = (mk) => {
     if (code[activeLoop].length >= 20) return;
     setCode(code.map((ls, i) => (i === activeLoop ? [...ls, mk()] : ls)));
@@ -2272,49 +2409,62 @@ function BuildPhase({ level, playInfo, playTag, elapsed, playMulti, stopAll, com
             </span>
           )}
         </div>
-        <div className="max-h-52 overflow-y-auto rounded-2xl p-2" style={{ background: "#151233", border: `1px solid ${C.line}` }}>
-          {lines.length === 0 && (
-            <div className="px-2 py-3 text-center text-sm font-semibold" style={{ color: C.dim }}>
-              Empty — tap the chips below to write your first line 👇
-            </div>
-          )}
-          {lines.map((L, i) => (
-            <div key={i} className="flex items-center">
-              <div className="flex-1">
-                <CodeLine L={L} small indent={ind[i]} />
+        {codeMode === "chips" ? (
+          <div className="max-h-52 overflow-y-auto rounded-2xl p-2" style={{ background: "#151233", border: `1px solid ${C.line}` }}>
+            {lines.length === 0 && (
+              <div className="px-2 py-3 text-center text-sm font-semibold" style={{ color: C.dim }}>
+                Empty — tap the chips below to write your first line 👇
               </div>
-              {!playInfo && (
-                <button
-                  onClick={() => removeAt(i)}
-                  className="ml-1 rounded-lg px-2 text-xs font-extrabold"
-                  style={{ color: C.pink, background: "rgba(255,92,168,0.12)", height: 24 }}
-                >
-                  ✕
-                </button>
-              )}
-            </div>
-          ))}
-        </div>
+            )}
+            {lines.map((L, i) => (
+              <div key={i} className="flex items-center">
+                <div className="flex-1">
+                  <CodeLine L={L} small indent={ind[i]} />
+                </div>
+                {!playInfo && (
+                  <button
+                    onClick={() => removeAt(i)}
+                    className="ml-1 rounded-lg px-2 text-xs font-extrabold"
+                    style={{ color: C.pink, background: "rgba(255,92,168,0.12)", height: 24 }}
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <CodeEditor
+            value={texts[activeLoop]}
+            onChange={setText}
+            errors={errors[activeLoop]}
+            mode={codeMode}
+            disabled={!!playInfo}
+            chipGroups={Object.entries(CHIP_GROUPS).filter(([k]) => allowed.includes(k) && unlocked.groups.has(k))}
+          />
+        )}
         <div className="mt-1 font-mono text-xs font-bold" style={{ color: C.violet }}>
           end
         </div>
       </div>
 
-      {/* palette */}
-      {Object.entries(CHIP_GROUPS)
-        .filter(([k]) => allowed.includes(k) && unlocked.groups.has(k))
-        .map(([k, g]) => (
-          <div key={k} className="flex flex-wrap items-center gap-1.5">
-            <span className="text-[11px] font-extrabold uppercase" style={{ color: C.dim, minWidth: 62 }}>
-              {g.label}
-            </span>
-            {g.items.map((it) => (
-              <Chip key={it.label} small onClick={() => add(it.make)}>
-                {it.label}
-              </Chip>
-            ))}
-          </div>
-        ))}
+      {/* palette — in a typing mode the chips live inside the editor, where
+          they type the line rather than append it */}
+      {codeMode === "chips" &&
+        Object.entries(CHIP_GROUPS)
+          .filter(([k]) => allowed.includes(k) && unlocked.groups.has(k))
+          .map(([k, g]) => (
+            <div key={k} className="flex flex-wrap items-center gap-1.5">
+              <span className="text-[11px] font-extrabold uppercase" style={{ color: C.dim, minWidth: 62 }}>
+                {g.label}
+              </span>
+              {g.items.map((it) => (
+                <Chip key={it.label} small onClick={() => add(it.make)}>
+                  {it.label}
+                </Chip>
+              ))}
+            </div>
+          ))}
 
       <div className="flex flex-wrap gap-2">
         <BigButton
@@ -2469,6 +2619,11 @@ function DJScreen(props) {
 
 function Soundcheck({ track, playInfo, playTag, elapsed, playLines, stopAll, onDone }) {
   const [loopLines, setLoopLines] = useState(() => applyBugs(track));
+  /* The club runs the same ramp as the studio: tap to debug on the first
+     tracks, chips-that-type in the middle, typing alone by Rave Siren. */
+  const codeMode = track.codeMode || "chips";
+  const [texts, setTexts] = useState(() => applyBugs(track).map((ls) => codeToText(ls)));
+  const [errors, setErrors] = useState(() => track.loops.map(() => []));
   const [sel, setSel] = useState(0);
   const [selLine, setSelLine] = useState(null);
   const [hints, setHints] = useState(false);
@@ -2480,12 +2635,23 @@ function Soundcheck({ track, playInfo, playTag, elapsed, playLines, stopAll, onD
      still passed — and carried that wrong note into the live set. Lines the
      player changed themselves are counted separately so the mentor can say
      which of the two is going on. */
-  const diffs = track.loops.map((lp, li) =>
-    lp.lines.map((L, i) => (String(L.v ?? "") !== String(loopLines[li][i].v ?? "") ? i : -1)).filter((i) => i >= 0)
-  );
+  /* Typing lets a student add or delete lines, so this can no longer assume the
+     two sides are the same length — indexing past the end used to throw. A
+     length change is itself a mismatch: the studio version is the target. */
+  const diffs = track.loops.map((lp, li) => {
+    const mine = loopLines[li] || [];
+    const n = Math.max(lp.lines.length, mine.length);
+    const out = [];
+    for (let i = 0; i < n; i++) {
+      const a = lp.lines[i], b = mine[i];
+      if (!a || !b || String(a.v ?? "") !== String(b.v ?? "") || a.t !== b.t) out.push(i);
+    }
+    return out;
+  });
   const fixedPerLoop = diffs.map((d) => d.length === 0);
-  const bugsLeft = diffs.reduce((n, d, li) => n + d.filter((i) => loopLines[li][i].bug).length, 0);
-  const strayLines = diffs.reduce((n, d, li) => n + d.filter((i) => !loopLines[li][i].bug).length, 0);
+  const isBugLine = (li, i) => !!(loopLines[li] && loopLines[li][i] && loopLines[li][i].bug);
+  const bugsLeft = diffs.reduce((n, d, li) => n + d.filter((i) => isBugLine(li, i)).length, 0);
+  const strayLines = diffs.reduce((n, d, li) => n + d.filter((i) => !isBugLine(li, i)).length, 0);
   const allFixed = bugsLeft === 0 && strayLines === 0;
 
   const lines = loopLines[sel];
@@ -2525,21 +2691,42 @@ function Soundcheck({ track, playInfo, playTag, elapsed, playLines, stopAll, onD
           );
         })}
       </div>
-      <div className="max-h-56 overflow-y-auto rounded-2xl p-2" style={{ background: "#151233", border: `1px solid ${C.line}` }}>
-        {lines.map((L, i) => (
-          <CodeLine
-            key={i}
-            L={L}
-            small
-            indent={ind[i]}
-            active={playTag === "mine" && activeLine === i + 1}
-            selected={selLine === i}
-            warn={hints && String(L.v) !== String(orig[i].v)}
-            onTap={L.t === "synth" ? null : () => setSelLine(selLine === i ? null : i)}
-          />
-        ))}
-      </div>
-      {selLine !== null && (
+      {codeMode === "chips" ? (
+        <div className="max-h-56 overflow-y-auto rounded-2xl p-2" style={{ background: "#151233", border: `1px solid ${C.line}` }}>
+          {lines.map((L, i) => (
+            <CodeLine
+              key={i}
+              L={L}
+              small
+              indent={ind[i]}
+              active={playTag === "mine" && activeLine === i + 1}
+              selected={selLine === i}
+              warn={hints && orig[i] && String(L.v) !== String(orig[i].v)}
+              onTap={L.t === "synth" ? null : () => setSelLine(selLine === i ? null : i)}
+            />
+          ))}
+        </div>
+      ) : (
+        <CodeEditor
+          value={texts[sel]}
+          onChange={(t) => {
+            const parsed = parseCode(t);
+            setTexts(texts.map((x, i) => (i === sel ? t : x)));
+            setErrors(errors.map((x, i) => (i === sel ? parsed.errors : x)));
+            // keep the bug marker on lines the student has not retyped, so the
+            // mentor can still tell a planted bug from their own edit
+            const prev = loopLines[sel] || [];
+            const tagged = parsed.lines.map((L, i) => (prev[i] && prev[i].bug && prev[i].t === L.t ? { ...L, bug: true } : L));
+            setLoopLines(loopLines.map((ls, i) => (i === sel ? tagged : ls)));
+          }}
+          errors={errors[sel]}
+          mode={codeMode}
+          disabled={!!playInfo}
+          minRows={10}
+          chipGroups={Object.entries(CHIP_GROUPS).filter(([k]) => ["drums", "notes", "sleeps", "synth"].includes(k))}
+        />
+      )}
+      {codeMode === "chips" && selLine !== null && (
         <div className="flex flex-wrap gap-1.5 rounded-2xl p-2" style={{ background: C.panel, border: `1px solid ${C.yellow}` }}>
           <span className="w-full text-xs font-extrabold" style={{ color: C.yellow }}>
             Change line to:
