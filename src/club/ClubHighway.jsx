@@ -37,34 +37,15 @@ function tint(col, a) {
    away, a LIGHTNESS step, and the channel's own name printed under its lane.
    Colour makes it quick; shape makes it certain. */
 
-const PERC_INK = ["#EDE6D8", "#8E96A8"]; /* drums, then any further percussion */
-const PITCH_INK = ["#A78BFF", "#5AA8F0", "#4FE3F5"]; /* deep, middle, bright */
+/* Nothing here is tinted, softened or muted. The floor is black and the
+   tokens carry all of the colour — full strength, whether the lane is the
+   one you are writing or not. Shape still carries identity for anyone who
+   cannot separate the hues; colour is what makes it quick. */
+import { CHANNEL } from "../theme.js";
 
-/* one shape per lane, in track order — five is more than any record uses */
 const SHAPES = ["circle", "square", "diamond", "hexagon", "triangle"];
 export const channelShape = (idx) => SHAPES[idx % SHAPES.length];
-
-function meanNote(loop) {
-  const n = loop.lines.filter((L) => L.t === "play" && typeof L.v === "number").map((L) => L.v);
-  return n.length ? n.reduce((a, b) => a + b, 0) / n.length : null;
-}
-
-/* Pitch decides WHICH colour, but by rank inside this track rather than by
-   interpolation: the lowest melodic loop always takes the deep end and the
-   highest always takes the bright one. Interpolating put six of the six bass
-   lanes within a few units of the same violet, which looked principled and
-   measured worse than the arbitrary palette it replaced. */
-export function channelInk(track, idx) {
-  const means = track.loops.map(meanNote);
-  if (means[idx] === null) {
-    const rank = means.slice(0, idx).filter((m) => m === null).length;
-    return PERC_INK[rank % PERC_INK.length];
-  }
-  const melodic = means.map((m, i) => ({ m, i })).filter((x) => x.m !== null).sort((a, b) => a.m - b.m);
-  const rank = melodic.findIndex((x) => x.i === idx);
-  const slot = melodic.length === 1 ? 0 : Math.round((rank * (PITCH_INK.length - 1)) / (melodic.length - 1));
-  return PITCH_INK[slot];
-}
+export const channelInk = (track, idx) => CHANNEL[idx % CHANNEL.length];
 
 /* the lane's shape, traced at radius r — the certainty channel */
 function tracePath(ctx, shape, x, y, r) {
@@ -195,10 +176,10 @@ export function ClubHighway({ track, loopLines, playInfo, elapsed, focus, hole, 
         ctx.lineTo(xOf(rx, 1), topY);
         ctx.lineTo(rx, hitY);
         ctx.closePath();
-        ctx.fillStyle = tint(ink, on ? 0.075 : 0.015);
+        ctx.fillStyle = tint(ink, on ? 0.11 : 0.05);
         ctx.fill();
-        ctx.strokeStyle = tint(ink, on ? 0.45 : 0.12);
-        ctx.lineWidth = on ? 1.5 : 1;
+        ctx.strokeStyle = tint(ink, on ? 0.95 : 0.55);
+        ctx.lineWidth = on ? 2.5 : 1.5;
         ctx.stroke();
 
         /* the channel says its own name, in its own colour */
@@ -206,7 +187,7 @@ export function ClubHighway({ track, loopLines, playInfo, elapsed, focus, hole, 
         ctx.font = `700 ${ls.toFixed(1)}px "Atkinson Hyperlegible Mono", ui-monospace, Menlo, "Courier New", monospace`;
         ctx.textAlign = "center";
         ctx.textBaseline = "top";
-        ctx.fillStyle = on ? tint(ink, 0.95) : mute(ink, 0.55);
+        ctx.fillStyle = tint(ink, on ? 1 : 0.8);
         const label = ":" + s.track.loops[li].name;
         const lw = ctx.measureText(label).width;
         ctx.fillText(label, lx + laneW / 2 + 7, hitY + 23);
@@ -296,20 +277,19 @@ export function ClubHighway({ track, loopLines, playInfo, elapsed, focus, hole, 
         const shrink = 1 - CONV * g;
         const x = xOf(pad + (tok.lane + 0.5) * laneW, g);
         const y = yOf(g);
-        const full = Math.min(21, H * 0.1);
+        const full = Math.min(24, H * 0.07) * 1.45;
         const r = full * tok.weight * (tok.hole ? 1.4 : 1) * shrink;
         if (r < 4) continue;
 
         const onFocus = tok.li === s.focus;
-        const base = channelInk(s.track, tok.li);
-        const ink = onFocus ? base : mute(base, 0.5);
-        ctx.globalAlpha = (1 - 0.45 * g) * (onFocus ? 1 : 0.66) * (live ? 1 : 0.85) * (0.42 + 0.58 * tok.weight);
+        const ink = channelInk(s.track, tok.li);
+        ctx.globalAlpha = (1 - 0.3 * g) * (onFocus ? 1 : 0.82) * (live ? 1 : 0.85) * (0.55 + 0.45 * tok.weight);
         const shape = channelShape(tok.li);
         tracePath(ctx, shape, x, y, r);
 
         if (tok.hole) {
           ctx.setLineDash([4.5 * shrink + 1.5, 3.5 * shrink + 1.5]);
-          ctx.strokeStyle = CLUB.amber;
+          ctx.strokeStyle = CLUB.write;
           ctx.lineWidth = Math.max(1, 2 * shrink);
           ctx.stroke();
           ctx.setLineDash([]);
@@ -330,7 +310,7 @@ export function ClubHighway({ track, loopLines, playInfo, elapsed, focus, hole, 
         if (r >= 8.5) {
           ctx.textAlign = "center";
           ctx.textBaseline = "middle";
-          ctx.fillStyle = tok.hole ? CLUB.amber : "#0c0910";
+          ctx.fillStyle = tok.hole ? CLUB.write : "#0c0910";
           const rows = tok.lines;
           let size = r * (rows.length > 1 ? 0.4 : 0.46);
           const font = (px) => `700 ${px.toFixed(2)}px "Atkinson Hyperlegible Mono", ui-monospace, Menlo, "Courier New", monospace`;

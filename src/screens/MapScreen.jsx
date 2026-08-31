@@ -81,7 +81,7 @@ export function MapScreen({ stars, records, loaded, persist, playerName, onOpen,
         className="p-4 text-left"
         style={{
           background: clubOpen ? CLUB.void : "#17142F",
-          border: `1px solid ${clubOpen ? CLUB.amber : C.line}`,
+          border: `1px solid ${clubOpen ? CLUB.ink : C.line}`,
           borderRadius: 4,
           opacity: clubOpen ? 1 : 0.5,
         }}

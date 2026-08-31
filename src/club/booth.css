@@ -6,8 +6,10 @@
   --void: #07060c;
   --ink: #f3eee4;
   --dim: #c9c3d4;
-  --amber: #ffb703;
-  --sour: #ff2d1a;
+  /* the two colours that carry meaning, kept clear of the four lane hues:
+     red is the drums now, and amber sat on top of the claps */
+  --write: #ffffff;
+  --sour: #ff2d9e;
   --ok: #7dffb3;
   --code: 18px;
   --pad: 22px;
@@ -51,7 +53,7 @@
   cursor: pointer;
 }
 .booth-back:hover { color: var(--ink); }
-.booth-back:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+.booth-back:focus-visible { outline: 2px solid var(--write); outline-offset: 2px; }
 
 .booth-who {
   flex: 1 1 auto;
@@ -84,7 +86,7 @@
 }
 .booth-silence:hover { color: var(--ink); }
 .booth-silence[data-muted="true"] { color: var(--sour); text-decoration-color: var(--sour); }
-.booth-silence:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
+.booth-silence:focus-visible { outline: 2px solid var(--write); outline-offset: 3px; }
 
 /* phases */
 .booth-phases {
@@ -116,7 +118,7 @@
 .booth-phase[data-state="done"] { color: var(--ok); opacity: 1; }
 .booth-phase[data-state="on"] { color: var(--ink); opacity: 1; border-bottom-color: var(--ink); }
 .booth-phase[data-state="on-done"] { color: var(--ok); opacity: 1; border-bottom-color: var(--ok); }
-.booth-phase:focus-visible { outline: 2px solid var(--amber); outline-offset: -3px; }
+.booth-phase:focus-visible { outline: 2px solid var(--write); outline-offset: -3px; }
 
 /* stage */
 .booth-stage {
@@ -182,13 +184,13 @@
 }
 .booth-ln[data-now="true"] .bar { background: rgba(255, 183, 3, 0.45); }
 .booth-ln[data-hole="true"] { background: rgba(243, 238, 228, 0.07); }
-.booth-ln[data-hole="true"] .bar { background: var(--amber); }
+.booth-ln[data-hole="true"] .bar { background: var(--write); }
 .booth-kw { color: var(--ink); }
 .booth-sour { color: var(--sour); }
-.booth-fill { color: var(--amber); }
+.booth-fill { color: var(--write); }
 .booth-hole {
-  color: var(--amber);
-  border-bottom: 2px dashed var(--amber);
+  color: var(--write);
+  border-bottom: 2px dashed var(--write);
   padding-bottom: 1px;
 }
 
@@ -215,7 +217,7 @@
   appearance: none;
   border: 0;
   border-radius: 999px;
-  background: var(--amber);
+  background: var(--write);
   color: #120c00;
   font-family: "Atkinson Hyperlegible Mono", ui-monospace, Menlo, "Courier New", monospace;
   font-weight: 700;
@@ -224,7 +226,7 @@
   min-height: 44px;
   cursor: pointer;
 }
-.booth-chip:hover { background: #ffc634; }
+.booth-chip:hover { background: #d8d4dd; }
 .booth-chip:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 .booth-chip:disabled { opacity: 0.28; cursor: default; }
 
@@ -241,8 +243,8 @@
 }
 .booth-btn.ghost { background: transparent; border: 1.5px solid var(--ink); color: var(--ink); }
 .booth-btn.solid { background: var(--ink); border: 1.5px solid var(--ink); color: var(--void); }
-.booth-btn[data-on="true"] { background: var(--amber); border-color: var(--amber); color: #120c00; }
-.booth-btn:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
+.booth-btn[data-on="true"] { background: var(--write); border-color: var(--write); color: #0c0910; }
+.booth-btn:focus-visible { outline: 2px solid var(--write); outline-offset: 3px; }
 
 /* one thumb, one lane. The loop keeps a readable minimum here and the page
    scrolls instead — three visible lines of a 24-line riff is not a script. */
@@ -289,8 +291,8 @@
 .booth-type { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .booth-type input {
   background: var(--void);
-  color: var(--amber);
-  border: 1.5px solid var(--amber);
+  color: var(--write);
+  border: 1.5px solid var(--write);
   border-radius: 3px;
   font-family: "Atkinson Hyperlegible Mono", ui-monospace, Menlo, "Courier New", monospace;
   font-weight: 700;

@@ -6,7 +6,7 @@ import { Mentor } from "../ui/controls.jsx";
 
 export function ClubScreen({ records, stars, onPick, back }) {
   const done = levelsDone(stars);
-  const medal = { bronze: "#c98a5b", silver: "#c9c3d4", gold: CLUB.amber };
+  const medal = { bronze: "#c98a5b", silver: "#c9c3d4", gold: CLUB.ink };
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center gap-3">
@@ -42,7 +42,7 @@ export function ClubScreen({ records, stars, onPick, back }) {
             >
               <span
                 className="text-xs font-bold tabular-nums"
-                style={{ fontFamily: TYPE.code, color: unlocked ? CLUB.amber : CLUB.dim, minWidth: 44 }}
+                style={{ fontFamily: TYPE.code, color: unlocked ? CLUB.ink : CLUB.dim, minWidth: 44 }}
               >
                 {tr.bpm}
               </span>
