@@ -16,6 +16,19 @@ function tint(hex, a) {
   return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`;
 }
 
+/* Colour has to say which channel this is without shouting over the rhythm.
+   A lane you are only listening to gets its hue pulled most of the way
+   towards a neutral: still identifiably blue or violet, no longer competing
+   with position and size for the eye. The lane you are writing keeps its
+   colour at full strength, so the loudest thing in the pit is always the
+   thing you are working on. */
+function mute(hex, amount) {
+  const n = parseInt(hex.slice(1), 16);
+  const g = [0x8f, 0x8a, 0x9c];
+  const c = [(n >> 16) & 255, (n >> 8) & 255, n & 255].map((v, i) => Math.round(v + (g[i] - v) * amount));
+  return `rgb(${c[0]},${c[1]},${c[2]})`;
+}
+
 /* Simultaneous notes in one loop are a chord — the track data writes those as
    consecutive `play` lines with no sleep between, which is real Sonic Pi and
    would otherwise stack three tokens on the same spot. */
@@ -102,9 +115,9 @@ export function ClubHighway({ track, loopLines, playInfo, elapsed, focus, hole, 
         ctx.lineTo(xOf(rx, 1), topY);
         ctx.lineTo(rx, hitY);
         ctx.closePath();
-        ctx.fillStyle = tint(ink, on ? 0.07 : 0.022);
+        ctx.fillStyle = tint(ink, on ? 0.075 : 0.015);
         ctx.fill();
-        ctx.strokeStyle = tint(ink, on ? 0.5 : 0.18);
+        ctx.strokeStyle = tint(ink, on ? 0.45 : 0.12);
         ctx.lineWidth = on ? 1.5 : 1;
         ctx.stroke();
 
@@ -113,12 +126,37 @@ export function ClubHighway({ track, loopLines, playInfo, elapsed, focus, hole, 
         ctx.font = `700 ${ls.toFixed(1)}px "Atkinson Hyperlegible Mono", ui-monospace, Menlo, "Courier New", monospace`;
         ctx.textAlign = "center";
         ctx.textBaseline = "top";
-        ctx.fillStyle = tint(ink, on ? 0.95 : 0.6);
+        ctx.fillStyle = on ? tint(ink, 0.95) : mute(ink, 0.55);
         ctx.fillText(":" + s.track.loops[li].name, lx + laneW / 2, hitY + 23);
       });
 
-      /* the now-line — this is when the statement sounds */
       const live = !!s.playInfo && s.elapsed !== null;
+      const t0 = live ? s.elapsed : 0;
+
+      /* The pulse.
+
+         Nothing in the pit carried the beat before: tokens floated up a plain
+         black lane, so the one thing a dance track is actually made of was
+         the one thing you could not see. These are the bar lines a DJ counts,
+         flowing towards the now-line at the same speed as the music, with the
+         downbeat brighter. They also do the teaching that the numbers cannot:
+         the gap between two tokens is `sleep 0.5`, and now you can see that it
+         is half a beat wide. */
+      const beat = 60 / s.track.bpm;
+      const lastX = pad + lanes.length * laneW;
+      for (let b = Math.ceil(t0 / beat) * beat; b - t0 <= VIEW; b += beat) {
+        const bg = gOf(Math.min(1, (b - t0) / VIEW));
+        const by = yOf(bg);
+        const down = Math.round(b / beat) % 4 === 0;
+        ctx.beginPath();
+        ctx.moveTo(xOf(pad, bg), by);
+        ctx.lineTo(xOf(lastX, bg), by);
+        ctx.strokeStyle = `rgba(243,238,228,${((down ? 0.38 : 0.14) * (1 - 0.45 * bg)).toFixed(3)})`;
+        ctx.lineWidth = down ? 2 : 1;
+        ctx.stroke();
+      }
+
+      /* the now-line — this is when the statement sounds */
       ctx.beginPath();
       ctx.moveTo(2, hitY);
       ctx.lineTo(W - 2, hitY);
@@ -129,7 +167,7 @@ export function ClubHighway({ track, loopLines, playInfo, elapsed, focus, hole, 
       ctx.globalAlpha = 1;
 
       const events = live ? s.playInfo.events : s.idle.events;
-      const t = live ? s.elapsed : 0;
+      const t = t0;
 
       const toks = [];
       for (const group of groupEvents(events)) {
@@ -160,8 +198,9 @@ export function ClubHighway({ track, loopLines, playInfo, elapsed, focus, hole, 
         const r = full * (tok.hole ? 1.28 : 1) * shrink;
         if (r < 4) continue;
 
-        const ink = CHANNEL[tok.li % CHANNEL.length];
-        ctx.globalAlpha = (1 - 0.5 * g) * (tok.li === s.focus ? 1 : 0.72) * (live ? 1 : 0.85);
+        const onFocus = tok.li === s.focus;
+        const ink = onFocus ? CHANNEL[tok.li % CHANNEL.length] : mute(CHANNEL[tok.li % CHANNEL.length], 0.5);
+        ctx.globalAlpha = (1 - 0.45 * g) * (onFocus ? 1 : 0.66) * (live ? 1 : 0.85);
         ctx.beginPath();
         ctx.arc(x, y, r, 0, Math.PI * 2);
 
