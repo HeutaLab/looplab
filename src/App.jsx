@@ -257,6 +257,7 @@ export default function LoopLab() {
         {screen === "club" && (
           <ClubScreen
             records={records}
+            stars={stars}
             onPick={(i) => {
               stopAll();
               setTrackIdx(i);

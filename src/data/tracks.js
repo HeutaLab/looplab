@@ -254,6 +254,28 @@ export function applyBugs(track) {
   });
 }
 
+/* Which records a player can take off the shelf.
+
+   This used to be a chain: each track needed a record on the one above it, so
+   a child who had three-starred every Studio level still walked into the crate
+   and found four padlocks. In a one-hour lesson most of the room never saw
+   past Acid Alley.
+
+   Studio stars open it instead, and the thresholds line up with the skills the
+   tracks actually ask for — the typed tracks sit behind the levels that teach
+   typing. There is slack at the top on purpose: the finale wants 15 of a
+   possible 18, so three missing stars never locks a child out of the end of
+   the game. The old record chain still works as a second route, so this can
+   only ever open more than before, never less. */
+export const TRACK_STARS = [0, 0, 9, 11, 13, 15];
+
+export function trackOpen(i, stars, records) {
+  const total = (stars || []).reduce((n, s) => n + s, 0);
+  if (total >= TRACK_STARS[i]) return true;
+  const above = TRACKS[i - 1];
+  return !!(above && records && records[above.id]);
+}
+
 export function optionsFor(L, pool) {
   if (L.t === "play") return (pool || [48, 52, 55, 60, 64, 67, 72]).map(String);
   if (L.t === "sleep") return ["0.25", "0.5", "0.75", "1", "1.5", "2"];

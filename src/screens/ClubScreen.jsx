@@ -1,10 +1,11 @@
 import React from "react";
-import { TRACKS } from "../data/tracks.js";
+import { TRACKS, TRACK_STARS, trackOpen } from "../data/tracks.js";
 import { pick } from "../engine/interpreter.js";
 import { C, CLUB, TYPE } from "../theme.js";
 import { Mentor } from "../ui/controls.jsx";
 
-export function ClubScreen({ records, onPick, back }) {
+export function ClubScreen({ records, stars, onPick, back }) {
+  const total = (stars || []).reduce((n, s) => n + s, 0);
   const medal = { bronze: "#c98a5b", silver: "#c9c3d4", gold: CLUB.amber };
   return (
     <div className="flex flex-col gap-3">
@@ -25,7 +26,7 @@ export function ClubScreen({ records, onPick, back }) {
           circle, which is the same card every app on a school iPad uses. */}
       <div style={{ background: CLUB.void, borderRadius: 4, border: `1px solid ${C.line}` }}>
         {TRACKS.map((tr, i) => {
-          const unlocked = i < 2 || records[TRACKS[i - 1].id];
+          const unlocked = trackOpen(i, stars, records);
           const rec = records[tr.id];
           return (
             <button
@@ -50,7 +51,9 @@ export function ClubScreen({ records, onPick, back }) {
                   {tr.title}
                 </span>
                 <span className="block text-xs" style={{ color: CLUB.dim }}>
-                  {unlocked ? `${tr.style} · ${tr.bugs.length} bugs to find` : "Earn a record on the track above to unlock"}
+                  {unlocked
+                    ? `${tr.style} \u00b7 ${tr.bugs.length} bugs to find`
+                    : `Opens at ${TRACK_STARS[i]} Studio stars — you have ${total}`}
                 </span>
               </span>
               {rec && (

@@ -1,11 +1,15 @@
 import React from "react";
 import { LEVELS } from "../data/levels.js";
+import { TRACKS, trackOpen } from "../data/tracks.js";
 import { C, CHANNEL, CLUB, TYPE } from "../theme.js";
 import { Chip, Mentor, Rule, Stars } from "../ui/controls.jsx";
 
 export function MapScreen({ stars, records, loaded, persist, playerName, onOpen, onClub, onReport, onSwitch, onHoldStart, onHoldEnd }) {
   const clubOpen = stars[1] >= 3;
   const golds = Object.values(records).filter((r) => r === "gold").length;
+  /* The crate grows with the Studio, so the door says how much of it is
+     open — a child can see that finishing a level opens a record. */
+  const openTracks = TRACKS.filter((_, i) => trackOpen(i, stars, records)).length;
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-end justify-between gap-x-4 gap-y-1 pt-2">
@@ -87,7 +91,9 @@ export function MapScreen({ stars, records, loaded, persist, playerName, onOpen,
         </div>
         <div className="mt-0.5 text-xs" style={{ color: clubOpen ? CLUB.dim : C.dim }}>
           {clubOpen
-            ? `6 tracks · 125–140 BPM · fix them, then play them live · ${golds} gold record${golds === 1 ? "" : "s"}`
+            ? openTracks < TRACKS.length
+              ? `${openTracks} of ${TRACKS.length} records open \u00b7 finish Studio levels to open more`
+              : `All ${TRACKS.length} records open \u00b7 ${golds} gold${golds === 1 ? "" : "s"}`
             : "Finish Level 2 (Loop Magic) to get past the bouncer"}
         </div>
       </button>
