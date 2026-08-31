@@ -257,21 +257,29 @@ export function applyBugs(track) {
 /* Which records a player can take off the shelf.
 
    This used to be a chain: each track needed a record on the one above it, so
-   a child who had three-starred every Studio level still walked into the crate
-   and found four padlocks. In a one-hour lesson most of the room never saw
-   past Acid Alley.
+   a child who had finished every Studio level still walked into the crate and
+   found four padlocks. In a one-hour lesson most of the room never saw past
+   Acid Alley.
 
-   Studio stars open it instead, and the thresholds line up with the skills the
-   tracks actually ask for — the typed tracks sit behind the levels that teach
-   typing. There is slack at the top on purpose: the finale wants 15 of a
-   possible 18, so three missing stars never locks a child out of the end of
-   the game. The old record chain still works as a second route, so this can
-   only ever open more than before, never less. */
-export const TRACK_STARS = [0, 0, 9, 11, 13, 15];
+   Finished Studio levels open it instead — a level counts when it is worth
+   all three stars. The order follows the difficulty of the tracks, but not
+   strictly the order the Studio teaches in: Level 5 introduces hybrid typing
+   and Level 6 introduces typing proper, so matching them exactly would put
+   four of the six tracks behind the last level in the game, which is the
+   problem this is fixing. A child therefore meets a typed track slightly
+   before the Studio formally teaches typing — which is safe, because the
+   Club's typed modes are scaffolded too and nothing here punishes a wrong
+   answer.
+
+   The finale asks for five of six, so the last Studio level is never what
+   stands between a child and the end of the game. The old record chain still
+   works as a second route, so this can only ever open more than before. */
+export const TRACK_LEVELS = [0, 0, 3, 4, 5, 5];
+
+export const levelsDone = (stars) => (stars || []).filter((s) => s >= 3).length;
 
 export function trackOpen(i, stars, records) {
-  const total = (stars || []).reduce((n, s) => n + s, 0);
-  if (total >= TRACK_STARS[i]) return true;
+  if (levelsDone(stars) >= TRACK_LEVELS[i]) return true;
   const above = TRACKS[i - 1];
   return !!(above && records && records[above.id]);
 }

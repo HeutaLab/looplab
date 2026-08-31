@@ -1,11 +1,11 @@
 import React from "react";
-import { TRACKS, TRACK_STARS, trackOpen } from "../data/tracks.js";
+import { TRACKS, TRACK_LEVELS, levelsDone, trackOpen } from "../data/tracks.js";
 import { pick } from "../engine/interpreter.js";
 import { C, CLUB, TYPE } from "../theme.js";
 import { Mentor } from "../ui/controls.jsx";
 
 export function ClubScreen({ records, stars, onPick, back }) {
-  const total = (stars || []).reduce((n, s) => n + s, 0);
+  const done = levelsDone(stars);
   const medal = { bronze: "#c98a5b", silver: "#c9c3d4", gold: CLUB.amber };
   return (
     <div className="flex flex-col gap-3">
@@ -53,7 +53,7 @@ export function ClubScreen({ records, stars, onPick, back }) {
                 <span className="block text-xs" style={{ color: CLUB.dim }}>
                   {unlocked
                     ? `${tr.style} \u00b7 ${tr.bugs.length} bugs to find`
-                    : `Opens at ${TRACK_STARS[i]} Studio stars — you have ${total}`}
+                    : `Opens when you finish ${TRACK_LEVELS[i]} Studio levels \u2014 you have finished ${done}`}
                 </span>
               </span>
               {rec && (
