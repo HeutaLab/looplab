@@ -176,14 +176,17 @@ export function ClubHighway({ track, loopLines, playInfo, elapsed, focus, hole, 
         if (lane < 0) continue;
         const dt = ev.time - t;
         if (dt < -0.06 || dt > VIEW) continue;
-        const key = `${ev.loopIdx}:${ev.line}`;
+        /* a chord arrives as three play lines at one instant, and the hole
+           may be any of the three — keying the token off the first note alone
+           left Piano Sunrise's hole unmarked on the highway */
+        const keys = group.map((g) => `${g.loopIdx}:${g.line}`);
         toks.push({
           dt,
           lane,
           li: ev.loopIdx,
           lines: labelFor(group),
-          hole: s.hole === key,
-          sour: s.sour.has(key),
+          hole: keys.some((k) => s.hole === k),
+          sour: keys.some((k) => s.sour.has(k)),
         });
       }
       toks.sort((a, b) => b.dt - a.dt); /* far first */

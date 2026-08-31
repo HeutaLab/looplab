@@ -283,3 +283,31 @@
 @media (prefers-reduced-motion: reduce) {
   .booth-hint { transition: none; }
 }
+
+/* Typing, for the records that ask for it. The field is a tube: you write
+   into the lit part of the machine, the same place the code lives. */
+.booth-type { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.booth-type input {
+  background: var(--void);
+  color: var(--amber);
+  border: 1.5px solid var(--amber);
+  border-radius: 3px;
+  font-family: "Atkinson Hyperlegible Mono", ui-monospace, Menlo, "Courier New", monospace;
+  font-weight: 700;
+  font-size: 15px;
+  padding: 0 12px;
+  min-height: 44px;
+  width: 9ch;
+}
+.booth-type input::placeholder { color: var(--dim); opacity: 0.6; }
+.booth-type input:disabled { opacity: 0.4; }
+.booth-type input:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+/* dropping back to the chips is one tap and is never called failure */
+.booth-chip.booth-ghost {
+  background: transparent;
+  color: var(--dim);
+  border: 1px solid var(--dim);
+  font-size: 13px;
+}
+.booth-chip.booth-ghost:hover { color: var(--ink); border-color: var(--ink); background: transparent; }

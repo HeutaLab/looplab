@@ -66,7 +66,10 @@ export function BoothScreen({
   const [fills, setFills] = useState(() => (saved && saved.boothFills) || {});
   const [phase, setPhase] = useState("we");
   const [hint, setHint] = useState("");
+  const [typed, setTyped] = useState("");
   const solo = useSolo();
+  const mode = track.codeMode || "chips";
+  const [showChips, setShowChips] = useState(false);
   const want = useRef(null);
   const bodyRef = useRef(null);
 
@@ -149,12 +152,19 @@ export function BoothScreen({
 
   /* ---------- writing ---------- */
 
-  function tapChip(c) {
+  function write(kind, raw) {
     if (!site) return;
-    const v = c.t === "sample" ? c.v : parseFloat(c.v);
+    const v = kind === "sample" ? String(raw).replace(/^:/, "") : parseFloat(raw);
+    if (kind !== "sample" && !Number.isFinite(v)) {
+      /* never an error message — the hole simply has not been written yet */
+      setHint(site.hint);
+      return;
+    }
     setFills({ ...fills, [holeKey]: v });
-    setHint(c.t === site.type && String(c.v) === String(site.clean) ? "" : site.hint);
+    setHint(kind === site.type && String(v) === String(site.clean) ? "" : site.hint);
+    setTyped("");
   }
+  const tapChip = (c) => write(c.t, c.v);
 
   /* The chips stay on screen when there is no hole open — locked, not gone, so
      the row never collapses and the writing tools never vanish mid-lesson. */
@@ -320,19 +330,59 @@ export function BoothScreen({
             {hint}
           </p>
 
+          {/* How you write depends on the record, the same ramp the Studio
+              runs: tap a chip on the first tracks, type it by Rave Siren.
+              Dropping back to the chips is always one tap and is never
+              called failure. */}
           <div className="booth-chips">
-            <span className="booth-legend">Write with these</span>
-            {chips.map((c, i) => (
-              <button
-                key={i}
-                type="button"
-                className="booth-chip"
-                disabled={phase === "i" || !site}
-                onClick={() => tapChip(c)}
+            {mode !== "chips" && (
+              <form
+                className="booth-type"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  if (typed.trim()) write(site ? site.type : "play", typed.trim());
+                }}
               >
-                {lineText({ t: c.t, v: c.t === "sample" ? c.v : c.v })}
+                <label className="booth-legend" htmlFor="booth-input">
+                  Type it
+                </label>
+                <input
+                  id="booth-input"
+                  value={typed}
+                  onChange={(e) => setTyped(e.target.value)}
+                  disabled={phase === "i" || !site}
+                  placeholder={site ? (site.type === "sample" ? ":bd_haus" : site.type === "sleep" ? "0.5" : "45") : ""}
+                  inputMode={site && site.type === "sample" ? "text" : "decimal"}
+                  autoCapitalize="off"
+                  autoCorrect="off"
+                  spellCheck="false"
+                />
+                <button type="submit" className="booth-chip" disabled={phase === "i" || !site || !typed.trim()}>
+                  Write
+                </button>
+              </form>
+            )}
+            {(mode !== "typed" || showChips) && (
+              <>
+                <span className="booth-legend">Write with these</span>
+                {chips.map((c, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    className="booth-chip"
+                    disabled={phase === "i" || !site}
+                    onClick={() => tapChip(c)}
+                  >
+                    {lineText({ t: c.t, v: c.t === "sample" ? c.v : c.v })}
+                  </button>
+                ))}
+              </>
+            )}
+            {mode === "typed" && (
+              <button type="button" className="booth-chip booth-ghost" onClick={() => setShowChips((v) => !v)}>
+                {showChips ? "Hide the chips" : "Stuck? Show the chips"}
               </button>
-            ))}
+            )}
           </div>
 
           <div className="booth-actions">
