@@ -7,7 +7,7 @@ import { CodeEditor } from "../ui/CodeEditor.jsx";
 import { CodeLine } from "../ui/CodeLine.jsx";
 import { CopyCodeModal } from "../ui/CopyCodeModal.jsx";
 import { NoteHighway } from "../ui/NoteHighway.jsx";
-import { BigButton, Chip, Mentor } from "../ui/controls.jsx";
+import { BigButton, Chip, Mark, Mentor } from "../ui/controls.jsx";
 
 export function BuildPhase({ level, playInfo, playTag, elapsed, playMulti, stopAll, completePhase, draft, saveDraft, clearDraft }) {
   const b = level.build;
@@ -115,9 +115,9 @@ export function BuildPhase({ level, playInfo, playTag, elapsed, playMulti, stopA
       <Mentor
         text={
           finished
-            ? "Every stage complete — you wrote that whole thing yourself. That's real live-coding! 🏆"
+            ? "Every stage complete — you wrote that whole thing yourself. That's real live-coding."
             : resumed
-            ? "Picking up where you left off 🎧 — your code is just as you had it."
+            ? "Picking up where you left off — your code is just as you had it."
             : b.mentor
         }
       />
@@ -130,7 +130,7 @@ export function BuildPhase({ level, playInfo, playTag, elapsed, playMulti, stopA
             className="flex items-start gap-2 py-0.5 text-sm font-bold"
             style={{ color: i < stageIdx ? C.green : i === stageIdx ? C.ink : C.dim, opacity: i > stageIdx ? 0.6 : 1 }}
           >
-            <span>{i < stageIdx ? "✅" : i === stageIdx ? "🔨" : "🔒"}</span>
+            <Mark state={i < stageIdx ? "done" : i === stageIdx ? "now" : "locked"} />
             <span>
               Stage {i + 1}: {st.title}
             </span>
@@ -144,7 +144,7 @@ export function BuildPhase({ level, playInfo, playTag, elapsed, playMulti, stopA
           style={{ background: justDone ? "rgba(92,224,126,0.15)" : C.panel2, border: `2px solid ${justDone ? C.green : C.violet}` }}
         >
           <div className="text-xs font-extrabold uppercase tracking-wide" style={{ color: justDone ? C.green : C.violet }}>
-            {justDone ? "✅ Stage complete!" : `Stage ${stageIdx + 1} · write it in :${b.loops[activeLoop].name}`}
+            {justDone ? "Stage complete" : `Stage ${stageIdx + 1} · write it in :${b.loops[activeLoop].name}`}
           </div>
           <div className="mt-1 text-sm font-semibold">{stage.brief}</div>
           {stage.requirePlay && (
@@ -154,7 +154,7 @@ export function BuildPhase({ level, playInfo, playTag, elapsed, playMulti, stopA
           )}
           {showHint && (
             <div className="mt-2 rounded-[4px] px-2 py-1 text-xs font-bold" style={{ background: "rgba(255,154,87,0.15)", color: C.orange }}>
-              💡 {stage.hint}
+              {stage.hint}
             </div>
           )}
         </div>
@@ -170,11 +170,11 @@ export function BuildPhase({ level, playInfo, playTag, elapsed, playMulti, stopA
           {b.loops.map((lp, i) =>
             unlocked.loops.has(i) ? (
               <Chip key={lp.name} small active={activeLoop === i} onClick={() => setLoopOverride(i)}>
-                {lp.icon} :{lp.name}
+                :{lp.name}
               </Chip>
             ) : (
               <Chip key={lp.name} small disabled>
-                🔒 :{lp.name}
+                :{lp.name}
               </Chip>
             )
           )}
@@ -187,7 +187,7 @@ export function BuildPhase({ level, playInfo, playTag, elapsed, playMulti, stopA
           <span>live_loop :{b.loops[activeLoop].name} do</span>
           {b.showBeats && (
             <span style={{ color: Math.abs(beats - 4) < 0.01 ? C.green : C.dim }}>
-              {beats} / 4 beats {Math.abs(beats - 4) < 0.01 ? "✅" : ""}
+              {beats} / 4 beats
             </span>
           )}
         </div>
@@ -195,7 +195,7 @@ export function BuildPhase({ level, playInfo, playTag, elapsed, playMulti, stopA
           <div className="max-h-52 overflow-y-auto rounded-[4px] p-2" style={{ background: "#151233", border: `1px solid ${C.line}` }}>
             {lines.length === 0 && (
               <div className="px-2 py-3 text-center text-sm font-semibold" style={{ color: C.dim }}>
-                Empty — tap the chips below to write your first line 👇
+                # empty — tap a chip below to write your first line
               </div>
             )}
             {lines.map((L, i) => (
@@ -205,6 +205,7 @@ export function BuildPhase({ level, playInfo, playTag, elapsed, playMulti, stopA
                 </div>
                 {!playInfo && (
                   <button
+                    aria-label="Remove this line"
                     onClick={() => removeAt(i)}
                     className="ml-1 rounded-[4px] px-2 text-xs font-extrabold"
                     style={{ color: C.pink, background: "rgba(255,92,168,0.12)", height: 24 }}
@@ -261,18 +262,18 @@ export function BuildPhase({ level, playInfo, playTag, elapsed, playMulti, stopA
         </BigButton>
         {!finished && (
           <BigButton color={C.orange} onClick={() => setShowHint(true)}>
-            💡 Hint
+            Hint
           </BigButton>
         )}
         {code.some((ls) => ls.length) && (
           <BigButton color={C.violet} onClick={() => setShowCopy(true)}>
-            📋
+            Copy code
           </BigButton>
         )}
-        {finished && <BigButton onClick={() => completePhase(2)}>Finish level ⭐</BigButton>}
+        {finished && <BigButton onClick={() => completePhase(2)}>Finish level</BigButton>}
         {lines.length > 0 && !finished && (
           <Chip small onClick={() => setCode(code.map((ls, i) => (i === activeLoop ? [] : ls)))}>
-            🗑 clear loop
+            clear loop
           </Chip>
         )}
       </div>

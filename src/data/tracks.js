@@ -20,8 +20,8 @@ export const TRACKS = [
     emoji: "🏭",
     blurb: "Four-on-the-floor and offbeat stabs — the sound that started it all.",
     loops: [
-      { name: "drums", icon: "🥁", lines: HOUSE_DRUMS, pool: null, startOn: true },
-      { name: "claps", icon: "👏", lines: CLAPS, pool: null, startOn: false },
+ { name:"drums", icon:"", lines: HOUSE_DRUMS, pool: null, startOn: true },
+ { name:"claps", icon:"", lines: CLAPS, pool: null, startOn: false },
       {
         name: "bass",
         icon: "🎸",
@@ -59,7 +59,7 @@ export const TRACKS = [
         pool: null,
         startOn: true,
       },
-      { name: "claps", icon: "👏", lines: CLAPS, pool: null, startOn: false },
+ { name:"claps", icon:"", lines: CLAPS, pool: null, startOn: false },
       {
         name: "acid",
         icon: "🧪",
@@ -90,8 +90,8 @@ export const TRACKS = [
     emoji: "🌅",
     blurb: "Warm bell chords and a rolling bass — hands in the air at dawn.",
     loops: [
-      { name: "drums", icon: "🥁", lines: HOUSE_DRUMS, pool: null, startOn: true },
-      { name: "claps", icon: "👏", lines: CLAPS, pool: null, startOn: false },
+ { name:"drums", icon:"", lines: HOUSE_DRUMS, pool: null, startOn: true },
+ { name:"claps", icon:"", lines: CLAPS, pool: null, startOn: false },
       {
         name: "keys",
         icon: "🎹",
@@ -174,7 +174,7 @@ export const TRACKS = [
         pool: null,
         startOn: true,
       },
-      { name: "claps", icon: "👏", lines: CLAPS, pool: null, startOn: false },
+ { name:"claps", icon:"", lines: CLAPS, pool: null, startOn: false },
       {
         name: "sub",
         icon: "🎸",
@@ -205,8 +205,8 @@ export const TRACKS = [
     emoji: "🔥",
     blurb: "140 BPM, offbeat bass, siren lead. Close the night. Bring the house down.",
     loops: [
-      { name: "drums", icon: "🥁", lines: HOUSE_DRUMS, pool: null, startOn: true },
-      { name: "claps", icon: "👏", lines: CLAPS, pool: null, startOn: false },
+ { name:"drums", icon:"", lines: HOUSE_DRUMS, pool: null, startOn: true },
+ { name:"claps", icon:"", lines: CLAPS, pool: null, startOn: false },
       {
         name: "bass",
         icon: "🎸",

@@ -16,7 +16,7 @@ export function ClubScreen({ records, onPick, back }) {
           <div className="text-[11px] font-bold uppercase" style={{ color: C.dim, letterSpacing: "0.16em" }}>
             The Club
           </div>
-          <div className="text-lg font-bold">Pick a record</div>
+          <h1 className="text-lg font-bold">Pick a record</h1>
         </div>
       </div>
       <Mentor text="Here's the crate: six dance-floor tracks written in real live loops. Each one came back from the studio with bugs. Find them by ear, fix them, then play the track live." />

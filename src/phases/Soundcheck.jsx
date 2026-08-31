@@ -82,15 +82,15 @@ export function Soundcheck({ track, playInfo, playTag, elapsed, playLines, stopA
       <Mentor
         text={
           allFixed
-            ? "Soundcheck complete — this track SLAPS again! The booth is yours. 🎛"
+            ? "Soundcheck complete — this track slaps again. The booth is yours."
             : resumed && bugsLeft > 0 && bugsLeft < track.bugs.length
-            ? `Picking up where you left off 🎧 — ${bugsLeft} bug${bugsLeft === 1 ? "" : "s"} still to find.`
+            ? `Picking up where you left off — ${bugsLeft} bug${bugsLeft === 1 ? "" : "s"} still to find.`
             : bugsLeft === 0
-              ? `All ${track.bugs.length} bugs fixed — nice ears! ${strayLines === 1 ? "One line" : `${strayLines} lines`} still ${strayLines === 1 ? "doesn't" : "don't"} match the studio version though. Hit 💡 Hints to see which, or put it back and we're away. 🎧`
+              ? `All ${track.bugs.length} bugs fixed — nice ears! ${strayLines === 1 ? "One line" : `${strayLines} lines`} still ${strayLines === 1 ? "doesn't" : "don't"} match the studio version though. Open Hints to see which, or put it back and we're away.`
               : `This track came back from the studio with ${track.bugs.length} bugs. Solo each loop, compare with the fixed version, and repair it by ear. ${bugsLeft} bug${bugsLeft === 1 ? "" : "s"} left!`
         }
       />
-      <NoteHighway playInfo={playInfo} elapsed={elapsed} height={150} idleText="Solo a loop to hunt the bugs 🐛" />
+      <NoteHighway playInfo={playInfo} elapsed={elapsed} height={150} idleText="Solo a loop to hear the bugs" />
       </div>
       <div className={PHASE["gap-3"].edit}>
       <div className="flex flex-wrap gap-2">
@@ -98,7 +98,8 @@ export function Soundcheck({ track, playInfo, playTag, elapsed, playLines, stopA
           const clean = fixedPerLoop[i];
           return (
             <Chip key={lp.name} small active={sel === i} onClick={() => { setSel(i); setSelLine(null); }}>
-              {lp.icon} {lp.name} {clean ? "✅" : "🐛"}
+              {lp.name}
+              <span style={{ opacity: 0.7 }}>{clean ? " clean" : " bug"}</span>
             </Chip>
           );
         })}
@@ -155,16 +156,16 @@ export function Soundcheck({ track, playInfo, playTag, elapsed, playLines, stopA
           color={C.aqua}
           onClick={() => (playTag === "mine" ? stopAll(true) : playLines([LOOP(2), ...lines, END()], "mine", null, track.bpm))}
         >
-          {playTag === "mine" ? "■ Stop" : "▶ Solo this loop"}
+          {playTag === "mine" ? "Stop" : "Solo this loop"}
         </BigButton>
         <BigButton
           color={C.violet}
           onClick={() => (playTag === "target" ? stopAll(true) : playLines([LOOP(2), ...orig, END()], "target", null, track.bpm))}
         >
-          {playTag === "target" ? "■ Stop" : "🎧 Hear it fixed"}
+          {playTag === "target" ? "Stop" : "Hear it fixed"}
         </BigButton>
         <BigButton color={C.orange} onClick={() => setHints(true)}>
-          💡 Hints
+          Hints
         </BigButton>
       </div>
       {hints && !allFixed && (
@@ -184,7 +185,7 @@ export function Soundcheck({ track, playInfo, playTag, elapsed, playLines, stopA
         }
         onClick={() => onDone(loopLines.map((ls) => ls.map((x) => ({ ...x }))))}
       >
-        🎛 Soundcheck done — take the booth!
+        Soundcheck done — take the booth
       </BigButton>
       </div>
     </div>

@@ -19,7 +19,7 @@ export function LevelScreen(props) {
           <div className="text-[11px] font-bold uppercase" style={{ color: C.dim, letterSpacing: "0.16em" }}>
             Level {levelIdx + 1}
           </div>
-          <div className="text-lg font-bold">{level.title}</div>
+          <h1 className="text-lg font-bold">{level.title}</h1>
         </div>
         <Stars n={stars} size={15} />
       </div>
@@ -52,7 +52,10 @@ export function LevelScreen(props) {
                 opacity: unlocked ? 1 : 0.45,
               }}
             >
-              <span className="text-base font-bold">{unlocked ? p.label : "🔒"}</span>
+              <span className="text-base font-bold">
+                {p.label}
+                {!unlocked && <span className="sr-only"> (locked)</span>}
+              </span>
               <span className="text-[10px] font-bold uppercase" style={{ letterSpacing: "0.14em" }}>
                 {p.sub}
               </span>

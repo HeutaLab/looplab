@@ -7,7 +7,7 @@ export function CopyCodeModal({ text, onClose }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(10,8,25,0.9)" }}>
       <div className="w-full max-w-sm rounded-3xl p-4" style={{ background: C.panel, border: `2px solid ${C.aqua}` }}>
-        <div className="text-lg font-extrabold">🎹 Your real Sonic Pi code</div>
+        <h2 className="text-lg font-bold">Your real Sonic Pi code</h2>
         <div className="mt-1 text-xs font-semibold" style={{ color: C.dim }}>
           Paste this into the free Sonic Pi app (sonic-pi.net) and press Run — it's the real thing!
         </div>
@@ -35,7 +35,7 @@ export function CopyCodeModal({ text, onClose }) {
               }
             }}
           >
-            {copied === "yes" ? "✅ Copied!" : copied === "manual" ? "☝️ Tap the code, then copy" : "📋 Copy"}
+            {copied === "yes" ? "Copied" : copied === "manual" ? "Tap the code, then copy" : "Copy"}
           </BigButton>
           <BigButton color={C.violet} onClick={onClose}>
             Close

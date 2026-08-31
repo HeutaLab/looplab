@@ -43,7 +43,7 @@ export function YourTurnPhase({ level, playInfo, playTag, elapsed, playLines, st
     <div className={PHASE["gap-3"].grid}>
       <div className={PHASE["gap-3"].watch}>
       <Mentor text={allMet ? "All goals unlocked — press play and take a bow." : yt.mentor} />
-      <div>
+      <div aria-live="polite">
         {yt.goals.map((g, i) => (
           <div key={i} className="flex items-center gap-2 py-1 text-sm" style={{ color: goalsMet[i] ? C.green : C.dim }}>
             <span
@@ -79,6 +79,7 @@ export function YourTurnPhase({ level, playInfo, playTag, elapsed, playLines, st
               </div>
               {isInner && !playInfo && (
                 <button
+                  aria-label="Remove this line"
                   onClick={() => setInner(inner.filter((x) => x !== L))}
                   className="ml-1 rounded-[4px] px-2 text-xs font-extrabold"
                   style={{ color: C.pink, background: "rgba(255,92,168,0.12)", height: 26 }}

@@ -20,10 +20,10 @@ export function ReportScreen({ stars, records, name, onName, onRestore, onBack }
         <button onClick={onBack} className="rounded-[4px] px-3 py-2 font-extrabold" style={{ background: C.panel2, border: `1px solid ${C.line}` }} aria-label="Back to the level map">
           ←
         </button>
-        <div className="text-base font-extrabold">📋 My progress</div>
+        <h1 className="text-lg font-bold">My progress</h1>
       </div>
 
-      <Mentor text="This is everything you've done so far. Put your name on it, then copy it into Google Classroom or save it for your folder. 🎓" />
+      <Mentor text="This is everything you've done so far. Put your name on it, then copy it into Google Classroom or save it for your folder." />
 
       <div className="rounded-[4px] p-3" style={{ background: C.panel, border: `1px solid ${C.line}` }}>
         <label className="text-xs font-extrabold uppercase" style={{ color: C.dim }} htmlFor="looplab-name">
@@ -47,13 +47,13 @@ export function ReportScreen({ stars, records, name, onName, onRestore, onBack }
       {/* school -> home, by hand */}
       <div className="rounded-[4px] p-3" style={{ background: C.panel, border: `1px solid ${C.aqua}` }}>
         <div className="text-xs font-extrabold uppercase" style={{ color: C.aqua }}>
-          🔑 My progress code
+          My progress code
         </div>
         <div className="mt-1 select-all text-center font-mono font-extrabold" style={{ color: C.yellow, fontSize: 24, letterSpacing: 2 }}>
           {myCode}
         </div>
         <div className="mt-1 text-center text-[11px] font-semibold" style={{ color: C.dim }}>
-          ✍️ Write this in your book. Type it in at home to carry on there.
+          Write this in your book. Type it in at home to carry on there.
         </div>
         <div className="mt-2 flex flex-wrap gap-2">
           <Chip
@@ -65,7 +65,7 @@ export function ReportScreen({ stars, records, name, onName, onRestore, onBack }
               } catch (e) {}
             }}
           >
-            {codeCopied ? "✅ Copied" : "📋 Copy code"}
+            {codeCopied ? "Copied" : "Copy code"}
           </Chip>
         </div>
 
@@ -100,7 +100,7 @@ export function ReportScreen({ stars, records, name, onName, onRestore, onBack }
                 const added = onRestore(got);
                 setRestoreMsg({
                   ok: true,
-                  text: added ? "Got it — your progress is back. 🎧" : "That code is already in here — nothing to add.",
+                  text: added ? "Got it — your progress is back." : "That code is already in here — nothing to add.",
                 });
                 setEntry("");
               }}
@@ -140,15 +140,15 @@ export function ReportScreen({ stars, records, name, onName, onRestore, onBack }
             }
           }}
         >
-          {copied === "yes" ? "✅ Copied!" : copied === "manual" ? "☝️ Select the text above" : "📋 Copy for Classroom"}
+          {copied === "yes" ? "Copied" : copied === "manual" ? "Select the text above" : "Copy for Classroom"}
         </BigButton>
         <BigButton color={C.violet} onClick={() => setSaved(downloadReport(text, name) ? "yes" : "no")}>
-          {saved === "yes" ? "✅ Saved!" : saved === "no" ? "Couldn't save — copy instead" : "⬇ Save my evidence"}
+          {saved === "yes" ? "Saved" : saved === "no" ? "Couldn't save — copy instead" : "Save my evidence"}
         </BigButton>
       </div>
       {saved === "no" && (
         <div className="rounded-[4px] px-3 py-2 text-xs font-bold" style={{ background: "rgba(255,154,87,0.14)", color: C.orange }}>
-          This device wouldn't let the file save. Use 📋 Copy instead — it has exactly the same words in it.
+          This device wouldn't let the file save. Use Copy instead — it has exactly the same words in it.
         </div>
       )}
     </div>

@@ -17,7 +17,7 @@ export function TeacherPanel({ pin, onPin, onUnlockAll, onResetPlayer, onPlayers
       <div className="w-full max-w-sm rounded-3xl p-4" style={{ background: C.panel, border: `2px solid ${C.violet}` }}>
         {!inside ? (
           <>
-            <div className="text-lg font-extrabold">🔐 Teacher panel</div>
+            <h1 className="text-lg font-bold">Teacher panel</h1>
             <div className="mt-1 text-xs font-semibold" style={{ color: C.dim }}>
               Enter the 4-digit code.
             </div>
@@ -52,16 +52,16 @@ export function TeacherPanel({ pin, onPin, onUnlockAll, onResetPlayer, onPlayers
           </>
         ) : (
           <>
-            <div className="text-lg font-extrabold">🔐 Teacher panel</div>
+            <h1 className="text-lg font-bold">Teacher panel</h1>
             <div className="mt-1 text-xs font-semibold" style={{ color: C.dim }}>
               Current player: <span style={{ color: C.yellow }}>{playerName || "nobody"}</span>
             </div>
             <div className="mt-3 flex flex-col gap-2">
               <BigButton color={C.aqua} onClick={onPlayers}>
-                👥 Manage players
+                Manage players
               </BigButton>
               <BigButton color={C.violet} onClick={onUnlockAll}>
-                ⏩ Unlock every level
+                Unlock every level
               </BigButton>
               <BigButton
                 color={C.orange}
@@ -72,7 +72,7 @@ export function TeacherPanel({ pin, onPin, onUnlockAll, onResetPlayer, onPlayers
                   } else setDidReset(true);
                 }}
               >
-                {didReset ? "⚠️ Tap again to erase this player's stars" : "↺ Reset this player"}
+                {didReset ? "Tap again to erase this player's stars" : "Reset this player"}
               </BigButton>
             </div>
             <div className="mt-3 rounded-[4px] p-2" style={{ background: C.panel2, border: `1px solid ${C.line}` }}>

@@ -13,13 +13,13 @@ export const LEVELS = [
       after: "See how each line became a flying note, and sleep made the gaps? That's the whole secret!",
     },
     together: {
-      mentor: "This song is Twinkle Twinkle — but two pieces fell out! Tap the chips to fix it, and check with your ears. 👂",
+ mentor: "This song is Twinkle Twinkle — but two pieces fell out! Tap the chips to fix it, and check with your ears.",
       lines: [P(60), S(0.5), P(60), S(0.5), { t: "play", blank: "67" }, S(0.5), P(67), { t: "sleep", blank: "0.5" }, P(69), S(0.5), P(69), S(0.5), P(67)],
       chips: ["67", "0.5", "44", "2"],
-      hint: "Hmm, not quite the goal track — tap 🎧 Hear the goal, then try different chips!",
+ hint: "Hmm, not quite the goal track — tap Hear the goal, then try different chips!",
     },
     yourTurn: {
-      mentor: "Your turn! Build your very own melody. Any notes you like — there are no wrong answers, only goals to unlock. 🚀",
+ mentor: "Your turn! Build your very own melody. Any notes you like — there are no wrong answers, only goals to unlock.",
       palette: { notes: [48, 52, 55, 60, 64, 67, 72], sleeps: [0.25, 0.5, 1], drums: null, loop: false, synth: false },
       goals: [
         { label: "Use play at least 4 times", test: (s) => s.plays >= 4 },
@@ -42,10 +42,10 @@ export const LEVELS = [
       mentor: "Let's finish this bouncy loop together. How many times should it repeat, and which note is missing?",
       lines: [{ t: "loop", blank: "4" }, P(62), S(0.25), { t: "play", blank: "69" }, S(0.25), END()],
       chips: ["4", "69", "99", "0.25"],
-      hint: "Almost! Listen to the goal — count the repeats, and hunt for the right note. 🎧",
+ hint: "Almost! Listen to the goal — count the repeats, and hunt for the right note.",
     },
     yourTurn: {
-      mentor: "Build a pattern, then flip on Repeat to loop it. Tiny code, big music! 🔁",
+ mentor: "Build a pattern, then flip on Repeat to loop it. Tiny code, big music!",
       palette: { notes: [48, 52, 55, 60, 64, 67, 72], sleeps: [0.25, 0.5, 1], drums: null, loop: true, synth: false },
       goals: [
         { label: "Turn on Repeat (that's a loop!)", test: (s) => s.loopCount >= 2 },
@@ -65,7 +65,7 @@ export const LEVELS = [
       after: "Kick, hat, snare, hat — that pattern is in thousands of songs. Now you know its code!",
     },
     together: {
-      mentor: "Two drums escaped from this beat! Where do the hat and the snare go? Trust your ears. 👂",
+ mentor: "Two drums escaped from this beat! Where do the hat and the snare go? Trust your ears.",
       lines: [
         LOOP(2),
         D("bd_haus"),
@@ -82,7 +82,7 @@ export const LEVELS = [
       hint: "Not quite the groove — hear the goal again. The tss comes before the crack!",
     },
     yourTurn: {
-      mentor: "Build YOUR drum beat. Mix kicks, snares and hats — then loop it and dance. 🕺",
+ mentor: "Build YOUR drum beat. Mix kicks, snares and hats — then loop it and dance.",
       palette: { notes: null, sleeps: [0.25, 0.5, 1], drums: DRUMS, loop: true, synth: false },
       goals: [
         { label: "Use 2 different drum sounds", test: (s) => s.distinctDrums >= 2 },
@@ -108,7 +108,7 @@ export const LEVELS = [
       hint: "So close! The goal uses the buzzy sound — and the second note is a little higher than 48.",
     },
     yourTurn: {
-      mentor: "This is it — your graduation jam! Pick a sound, drop a beat, write a melody, loop it all. Make it YOURS. 🌟",
+ mentor: "This is it — your graduation jam! Pick a sound, drop a beat, write a melody, loop it all. Make it YOURS.",
       palette: { notes: [48, 52, 55, 60, 64, 67, 72], sleeps: [0.25, 0.5, 1], drums: DRUMS, loop: true, synth: true },
       goals: [
         { label: "Choose a sound with use_synth", test: (s) => s.synth !== "beep" },
@@ -144,12 +144,12 @@ export const LEVELS = [
       /* Halfway across the bridge: the editor is real, but a chip still types
          the line for you when you want it. */
       codeMode: "hybrid",
-      mentor: "Now you write it yourself, one stage at a time — typing real code, with the blocks there if you want them. Each stage checks itself. 🧱",
+ mentor: "Now you write it yourself, one stage at a time — typing real code, with the blocks there if you want them. Each stage checks itself.",
       bpm: 126,
       showBeats: true,
       loops: [
-        { name: "drums", icon: "🥁", allow: ["drums", "sleeps"] },
-        { name: "bass", icon: "🎸", allow: ["notes", "sleeps", "synth"] },
+ { name:"drums", icon:"", allow: ["drums","sleeps"] },
+ { name:"bass", icon:"", allow: ["notes","sleeps","synth"] },
       ],
       stages: [
         {
@@ -222,10 +222,10 @@ export const LEVELS = [
       /* The far side: typing only, with the blocks one tap away for anyone
          who needs them — never framed as a step backwards. */
       codeMode: "typed",
-      mentor: "Final build — this one you type yourself. Stage by stage, make a loop that never plays the same way twice, then take it to Sonic Pi. 🎲",
+ mentor: "Final build — this one you type yourself. Stage by stage, make a loop that never plays the same way twice, then take it to Sonic Pi.",
       bpm: 130,
       showBeats: false,
-      loops: [{ name: "generative", icon: "🎲", allow: ["bpm", "notes", "drums", "sleeps", "synth", "chooseNote", "chooseDrum", "rand"] }],
+ loops: [{ name:"generative", icon:"", allow: ["bpm","notes","drums","sleeps","synth","chooseNote","chooseDrum","rand"] }],
       stages: [
         {
           title: "Set the tempo",
@@ -263,7 +263,7 @@ export const LEVELS = [
         {
           title: "Your generative track",
           allow: ["notes", "drums", "synth", "rand"],
-          brief: "Finish it: 10+ lines in the loop. Then play it and copy it into real Sonic Pi. 🎹",
+ brief: "Finish it: 10+ lines in the loop. Then play it and copy it into real Sonic Pi.",
           hint: "Add a use_synth, more choose lines, or a `sleep rrand(...)` for random timing.",
           loop: 0,
           requirePlay: 3,
@@ -275,9 +275,9 @@ export const LEVELS = [
 ];
 
 export const PHASES = [
-  { key: "watch", label: "I do", sub: "Watch", icon: "👀" },
-  { key: "together", label: "We do", sub: "Together", icon: "🤝" },
-  { key: "yourTurn", label: "You do", sub: "Your turn", icon: "🚀" },
+ { key:"watch", label: "I do", sub:"Watch", icon:"" },
+ { key:"together", label: "We do", sub:"Together", icon:"" },
+ { key:"yourTurn", label: "You do", sub:"Your turn", icon:"" },
 ];
 
 /* ---------- The Club: track crate ----------

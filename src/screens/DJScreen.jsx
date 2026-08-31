@@ -27,17 +27,15 @@ export function DJScreen(props) {
       {/* the booth carries its own header — a second one above it would just
           push the loop off the screen */}
       {!(booth && stage === "soundcheck") && (
-        <div className="flex items-center gap-2">
-          <button onClick={back} className="rounded-[4px] px-3 py-2 font-extrabold" style={{ background: C.panel2, border: `1px solid ${C.line}` }}>
+        <div className="flex items-center gap-3">
+          <button onClick={back} aria-label="Back to the crate" className="text-xl" style={{ color: C.dim, minWidth: 44 }}>
             ←
           </button>
           <div className="flex-1">
-            <div className="text-base font-extrabold">
-              {track.emoji} {track.title}
+            <div className="text-[11px] font-bold uppercase" style={{ color: C.dim, letterSpacing: "0.16em" }}>
+              {track.style} &middot; {track.bpm} BPM
             </div>
-            <div className="text-xs font-semibold" style={{ color: C.aqua }}>
-              {track.style} · {track.bpm} BPM
-            </div>
+            <h1 className="text-lg font-bold">{track.title}</h1>
           </div>
         </div>
       )}
@@ -65,7 +63,7 @@ export function DJScreen(props) {
       )}
       {!booth && (
         <div className="text-center text-[11px] font-semibold" style={{ color: C.dim }}>
-          🔇 No sound? Turn the volume up, switch off silent mode, and tap ▶ again.
+          No sound? Turn the volume up, switch off silent mode, and tap play again.
         </div>
       )}
     </div>

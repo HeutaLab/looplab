@@ -1,12 +1,12 @@
 import React from "react";
-import { C } from "../theme.js";
+import { C, CHANNEL, TYPE } from "../theme.js";
 
 /* DJ Loop still talks, but not out of a chat bubble with a robot avatar —
    that is every assistant on the internet. The voice is typographic now: a
    named speaker and a rule, the way a script marks who is talking. */
 export function Mentor({ text }) {
   return (
-    <div style={{ borderLeft: `2px solid ${C.violet}`, paddingLeft: 12 }}>
+    <div role="status" aria-live="polite" style={{ borderLeft: `2px solid ${C.violet}`, paddingLeft: 12 }}>
       <div
         className="text-[10px] font-bold uppercase"
         style={{ color: C.violet, letterSpacing: "0.16em" }}
@@ -14,7 +14,21 @@ export function Mentor({ text }) {
         DJ Loop
       </div>
       <div className="text-sm" style={{ color: C.ink, lineHeight: 1.45, maxWidth: "62ch" }}>
-        {text}
+        {/* DJ Loop names code in backticks. Those used to reach the screen as
+            literal ` characters — a markdown habit leaking into what a child
+            reads. Now they set the word in the code face, so the sentence
+            shows the difference between talking about sleep and writing it. */}
+        {String(text)
+          .split(/`([^`]+)`/)
+          .map((part, i) =>
+            i % 2 ? (
+              <code key={i} style={{ fontFamily: TYPE.code, color: C.yellow, fontSize: "0.94em" }}>
+                {part}
+              </code>
+            ) : (
+              part
+            )
+          )}
       </div>
     </div>
   );
@@ -79,6 +93,67 @@ export function Stars({ n, size = 13 }) {
   );
 }
 
+/* Done / doing / locked, drawn rather than spelled with emoji.
+
+   An emoji is a picture of somebody else's making at whatever size the
+   platform decides, it reads out loud as "white heavy check mark", and where
+   it was the only difference between two states it was carrying meaning that
+   colour alone cannot carry either. This mark scales with its text, takes the
+   colour it is given, and always ships a word alongside it for the reader who
+   cannot see it. */
+export function Mark({ state, size = 14 }) {
+  const stroke = state === "done" ? C.green : state === "now" ? C.yellow : C.line;
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" aria-hidden="true" style={{ flexShrink: 0 }}>
+      <rect x="1.5" y="1.5" width="13" height="13" rx="2" fill={state === "done" ? C.green : "none"} stroke={stroke} strokeWidth="1.5" />
+      {state === "done" && <path d="M4.5 8.2l2.4 2.4 4.6-5" fill="none" stroke="#14102A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />}
+      {state === "now" && <circle cx="8" cy="8" r="2.6" fill={C.yellow} />}
+      {state === "locked" && <path d="M5.5 8h5" stroke={C.line} strokeWidth="1.5" strokeLinecap="round" />}
+    </svg>
+  );
+}
+
+/* The crowd, drawn.
+
+   It was a row of ["🙌","🕺","💃","🎉","🙋"] — the single most generic thing
+   in the app, and on a school Windows machine half of them render as boxes.
+   This is the same idea made of shapes: more figures as the hype climbs,
+   arms up once the floor is really going, in the channel colours so the
+   room belongs to the same product as the track. */
+export function Crowd({ hype }) {
+  const n = Math.max(3, Math.round(hype / 7));
+  const up = hype > 55;
+  return (
+    <div className="flex items-end justify-center gap-[3px] overflow-hidden" style={{ height: 34 }} aria-hidden="true">
+      {Array.from({ length: n }, (_, i) => {
+        const c = CHANNEL[i % CHANNEL.length];
+        const h = 14 + ((i * 5) % 9);
+        return (
+          <svg
+            key={i}
+            width="9"
+            height="26"
+            viewBox="0 0 9 26"
+            style={{
+              opacity: 0.35 + Math.min(0.65, hype / 140),
+              animation: up ? `cb-bounce ${0.5 + (i % 3) * 0.12}s ease-in-out infinite` : "none",
+            }}
+          >
+            <circle cx="4.5" cy={26 - h - 4} r="2.6" fill={c} />
+            <rect x="2.6" y={26 - h} width="3.8" height={h} rx="1.6" fill={c} />
+            {up && (
+              <>
+                <path d={`M2.4 ${26 - h + 2} L0.9 ${26 - h - 4}`} stroke={c} strokeWidth="1.6" strokeLinecap="round" />
+                <path d={`M6.6 ${26 - h + 2} L8.1 ${26 - h - 4}`} stroke={c} strokeWidth="1.6" strokeLinecap="round" />
+              </>
+            )}
+          </svg>
+        );
+      })}
+    </div>
+  );
+}
+
 /* A quiet section rule. The app used to mark sections with an emoji and a
    line of shouty caps; the caps do the job on their own. */
 export function Rule({ children }) {
@@ -101,7 +176,7 @@ export function Chip({ onClick, active, children, small, disabled }) {
       className="font-mono font-bold"
       style={{
         padding: small ? "0 12px" : "0 14px",
-        minHeight: small ? 38 : 44,
+        minHeight: 44, /* small changes the padding and the type, never the target */
         borderRadius: 999,
         fontSize: small ? 13 : 14,
         background: active ? C.yellow : "transparent",

@@ -8,7 +8,7 @@ import { indents } from "../engine/sonicpi.js";
 import { C, LEAD, PHASE } from "../theme.js";
 import { CodeLine } from "../ui/CodeLine.jsx";
 import { NoteHighway } from "../ui/NoteHighway.jsx";
-import { BigButton, Chip, Mentor } from "../ui/controls.jsx";
+import { BigButton, Chip, Crowd, Mentor } from "../ui/controls.jsx";
 
 export function LiveSet({ track, startLines, ensureAudio, trigger, unlockMedia, stopAll, onFinish }) {
   const [running, setRunning] = useState(false);
@@ -36,7 +36,7 @@ export function LiveSet({ track, startLines, ensureAudio, trigger, unlockMedia, 
       queued: 0,      // bars handed to the scheduler
       barTimes: [],   // set-relative start time of each queued bar
       interval: null,
-      msg: "Drums are rolling — build it up! Unmute loops to bring parts in. 🔊",
+      msg: "Drums are rolling — build it up. Turn loops on to bring parts in.",
     };
   }
 
@@ -76,7 +76,7 @@ export function LiveSet({ track, startLines, ensureAudio, trigger, unlockMedia, 
       e.audioStart += behind + 0.1;
       e.perfStart += (behind + 0.1) * 1000;
       e.visEvents.length = 0;
-      e.msg = "👋 Welcome back — picking the set up from here.";
+      e.msg = "Welcome back — picking the set up from here.";
     }
 
     // ---- scheduler: hand bars to Tone and to the highway, LEAD ahead ----
@@ -109,21 +109,21 @@ export function LiveSet({ track, startLines, ensureAudio, trigger, unlockMedia, 
         e.request.left--;
         if (requestMet(e)) {
           e.hype += 15;
-          e.msg = "🙌 The crowd LOVED that! Hype up!";
+          e.msg = "The crowd loved that. Hype up!";
           e.request = null;
         } else if (e.request.left <= 0) {
           e.hype -= 10;
-          e.msg = "😕 The crowd gave up on that request…";
+          e.msg = "The crowd gave up on that request.";
           e.request = null;
         }
       } else if (e.bar >= 4 && (e.bar - 4) % 8 === 0 && e.bar < SET_BARS - 6) {
         e.request = makeRequest(e, track);
-        if (e.request) e.msg = `🗣 "${e.request.text}"`;
+        if (e.request) e.msg = `"${e.request.text}"`;
       }
       // glitch lifecycle
       if (!e.glitch && (e.bar === 10 || e.bar === 24 || e.bar === 38)) {
         e.glitch = makeGlitch(e, track);
-        if (e.glitch) e.msg = `⚠️ GLITCH in the ${track.loops[e.glitch.loop].name} loop — fix it live!`;
+        if (e.glitch) e.msg = `Glitch in the ${track.loops[e.glitch.loop].name} loop — fix it live!`;
       }
       if (e.glitch) {
         e.glitch.age++;
@@ -131,7 +131,7 @@ export function LiveSet({ track, startLines, ensureAudio, trigger, unlockMedia, 
         if (String(gl.v) === String(e.glitch.orig)) {
           e.glitch = null;
           e.hype += 12;
-          e.msg = "🔧 Live fix! The floor goes wild!";
+          e.msg = "Live fix — the floor goes wild!";
         }
       }
       e.hype = Math.max(0, Math.min(100, e.hype));
@@ -171,7 +171,7 @@ export function LiveSet({ track, startLines, ensureAudio, trigger, unlockMedia, 
     return (
       <div className="flex flex-col gap-3">
         <Mentor text="The floor is packed and the lights are down. Start with the drums, build the track up loop by loop, answer the crowd's requests, and fix any glitches LIVE — your edits drop in on the next loop, just like a real live_loop. Ready?" />
-        <BigButton onClick={startSet}>🔴 START THE SET</BigButton>
+        <BigButton onClick={startSet}>Start the set</BigButton>
       </div>
     );
 
@@ -196,14 +196,10 @@ export function LiveSet({ track, startLines, ensureAudio, trigger, unlockMedia, 
             }}
           />
         </div>
-        <div className="mt-1 overflow-hidden whitespace-nowrap text-center" style={{ fontSize: 15 }}>
-          {Array.from({ length: Math.max(2, Math.round(e.hype / 9)) }, (_, i) => (
-            <span key={i} className="inline-block" style={{ animation: e.hype > 55 ? `cb-bounce ${0.5 + (i % 3) * 0.12}s infinite` : "none" }}>
-              {["🙌", "🕺", "💃", "🎉", "🙋"][i % 5]}
-            </span>
-          ))}
+        <div className="mt-1">
+          <Crowd hype={e.hype} />
         </div>
-        <div className="mt-1 text-center text-xs font-bold" style={{ color: e.request ? C.yellow : C.dim }}>
+        <div className="mt-1 text-center text-xs font-bold" role="status" aria-live="polite" style={{ color: e.request ? C.yellow : C.dim }}>
           {e.msg} {e.request ? `(${e.request.left} bars left)` : ""}
         </div>
       </div>
@@ -215,7 +211,7 @@ export function LiveSet({ track, startLines, ensureAudio, trigger, unlockMedia, 
       {/* BPM + end */}
       <div className="flex items-center gap-2">
         <span className="text-xs font-extrabold" style={{ color: C.dim }}>
-          ⏱ BPM
+          BPM
         </span>
         <Chip small onClick={() => (e.bpm = Math.max(118, e.bpm - 2))}>
           −
@@ -228,7 +224,7 @@ export function LiveSet({ track, startLines, ensureAudio, trigger, unlockMedia, 
         </Chip>
         <div className="flex-1" />
         <Chip small onClick={endSet}>
-          ⏹ End set
+          End set
         </Chip>
       </div>
 
@@ -248,7 +244,10 @@ export function LiveSet({ track, startLines, ensureAudio, trigger, unlockMedia, 
               border: `2px solid ${e.glitch && e.glitch.loop === i ? C.red : sel === i ? C.yellow : C.line}`,
             }}
           >
-            {lp.icon} {lp.name} {e.glitch && e.glitch.loop === i ? "⚠️" : e.muted[i] ? "🔇" : "🔊"}
+            {lp.name}
+            <span style={{ opacity: 0.75 }}>
+              {e.glitch && e.glitch.loop === i ? " glitch" : e.muted[i] ? " off" : " on"}
+            </span>
           </button>
         ))}
       </div>
@@ -256,10 +255,10 @@ export function LiveSet({ track, startLines, ensureAudio, trigger, unlockMedia, 
         color={e.muted[sel] ? C.green : C.orange}
         onClick={() => {
           e.muted[sel] = !e.muted[sel];
-          e.msg = e.muted[sel] ? `Cut the ${track.loops[sel].name}. 🔇` : `${track.loops[sel].name} drops next bar! 🔊`;
+          e.msg = e.muted[sel] ? `Cut the ${track.loops[sel].name}.` : `${track.loops[sel].name} drops next bar.`;
         }}
       >
-        {e.muted[sel] ? `🔊 Bring in the ${track.loops[sel].name} (next bar)` : `🔇 Cut the ${track.loops[sel].name}`}
+        {e.muted[sel] ? `Bring in the ${track.loops[sel].name} (next bar)` : `Cut the ${track.loops[sel].name}`}
       </BigButton>
 
       {/* live code editor */}
@@ -279,7 +278,7 @@ export function LiveSet({ track, startLines, ensureAudio, trigger, unlockMedia, 
       {selLine !== null && (
         <div className="flex flex-wrap gap-1.5 rounded-[4px] p-2" style={{ background: C.panel, border: `1px solid ${C.yellow}` }}>
           <span className="w-full text-xs font-extrabold" style={{ color: C.yellow }}>
-            Remix live — change drops next loop 🔁
+            Remix live — the change drops next loop
           </span>
           {optionsFor(lines[selLine], track.loops[sel].pool).map((o) => (
             <Chip
@@ -300,7 +299,7 @@ export function LiveSet({ track, startLines, ensureAudio, trigger, unlockMedia, 
       )}
       {editNote && (
         <div className="text-center text-xs font-bold" style={{ color: C.aqua }}>
-          🔁 Edit locked in — it drops on the next loop!
+          Edit locked in — it drops on the next loop
         </div>
       )}
       </div>

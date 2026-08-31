@@ -10,7 +10,7 @@ export function MapScreen({ stars, records, loaded, persist, playerName, onOpen,
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-end justify-between gap-x-4 gap-y-1 pt-2">
         <div>
-          <div
+          <h1
             className="text-4xl font-bold"
             style={{ letterSpacing: "-0.02em", WebkitTouchCallout: "none", WebkitUserSelect: "none", userSelect: "none" }}
             onPointerDown={onHoldStart}
@@ -20,7 +20,7 @@ export function MapScreen({ stars, records, loaded, persist, playerName, onOpen,
             onContextMenu={(e) => e.preventDefault()}
           >
             Loop<span style={{ color: C.pink }}>Lab</span>
-          </div>
+          </h1>
           <div className="mt-0.5 text-sm" style={{ color: C.dim }}>
             Learn to code music — then DJ the club
           </div>

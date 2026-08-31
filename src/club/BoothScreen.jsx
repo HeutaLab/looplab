@@ -235,9 +235,9 @@ export function BoothScreen({
         <button type="button" className="booth-back" onClick={back} aria-label="Back to the crate">
           &larr;
         </button>
-        <div className="booth-who">
+        <h1 className="booth-who">
           {playerName} &middot; <b>{track.title}</b> &middot; {track.bpm} BPM
-        </div>
+        </h1>
         <button
           type="button"
           className="booth-silence"
@@ -316,7 +316,7 @@ export function BoothScreen({
             </div>
           </pre>
 
-          <p className="booth-hint" data-show={hint ? "true" : "false"}>
+          <p className="booth-hint" role="status" aria-live="polite" data-show={hint ? "true" : "false"}>
             {hint}
           </p>
 

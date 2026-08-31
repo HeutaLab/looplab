@@ -21,7 +21,11 @@ export function CodeLine({ L, indent, active, warn, onTap, selected, small, chil
             {txt}
           </span>
         ))}
-      {warn && <span className="ml-1">⚠️</span>}
+      {warn && (
+        <span className="ml-1 text-[10px] font-bold uppercase" style={{ color: C.orange, letterSpacing: "0.1em" }}>
+          check
+        </span>
+      )}
     </div>
   );
   return onTap ? (

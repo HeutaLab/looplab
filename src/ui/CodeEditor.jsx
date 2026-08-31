@@ -65,7 +65,7 @@ export function CodeEditor({ value, onChange, errors, chipGroups, mode, disabled
           className="self-start rounded-[4px] px-3 py-2 text-xs font-extrabold"
           style={{ background: C.panel2, border: `1px solid ${C.line}`, color: C.aqua }}
         >
-          Stuck? Show me the blocks 🧱
+          Stuck? Show me the blocks
         </button>
       )}
 
@@ -92,7 +92,7 @@ export function CodeEditor({ value, onChange, errors, chipGroups, mode, disabled
               className="self-start rounded-[4px] px-2 py-1 text-[11px] font-extrabold"
               style={{ color: C.dim }}
             >
-              Hide the blocks — I've got this ✍️
+              Hide the blocks — I've got this
             </button>
           )}
         </div>
