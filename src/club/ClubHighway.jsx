@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef } from "react";
 import { compileLoops } from "../engine/interpreter.js";
-import { CHANNEL, CLUB, LEAD } from "../theme.js";
+import { CLUB } from "../theme.js";
 
 /* The highway is the ear. It shows what the track is about to sound, one lane
    per live_loop, tokens written as the Sonic Pi that makes them. It is not a
@@ -11,9 +11,9 @@ import { CHANNEL, CLUB, LEAD } from "../theme.js";
    silence. The one exception is the hole, which has to be visible because it
    is the thing being written. */
 
-function tint(hex, a) {
-  const n = parseInt(hex.slice(1), 16);
-  return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`;
+function tint(col, a) {
+  const c = rgbOf(col);
+  return `rgba(${c[0]},${c[1]},${c[2]},${a})`;
 }
 
 /* Colour has to say which channel this is without shouting over the rhythm.
@@ -22,10 +22,57 @@ function tint(hex, a) {
    with position and size for the eye. The lane you are writing keeps its
    colour at full strength, so the loudest thing in the pit is always the
    thing you are working on. */
-function mute(hex, amount) {
-  const n = parseInt(hex.slice(1), 16);
+/* A channel's colour comes from what it sounds like, not from where it sits
+   in the list. Percussion is neutral; anything pitched is placed on a cool
+   ramp by the average note in its pool, so a bass lane is deep and a lead
+   lane is bright on every one of the six records without anyone choosing.
+   The ramp is cool on purpose: amber means "you write this", red means "this
+   is the fault", mint means finished, and none of those may be borrowed. */
+const PITCH_RAMP = [
+  [30, [0x9b, 0x6b, 0xff]], /* deep — a sub or a 303 bassline */
+  [45, [0x6f, 0x8f, 0xf0]],
+  [60, [0x45, 0xc4, 0xe8]],
+  [75, [0xc9, 0xe8, 0xf5]], /* bright — a hoover lead, a bell */
+];
+
+function pitchInk(mean) {
+  const r = PITCH_RAMP;
+  if (mean <= r[0][0]) return r[0][1];
+  if (mean >= r[r.length - 1][0]) return r[r.length - 1][1];
+  for (let i = 1; i < r.length; i++) {
+    if (mean > r[i][0]) continue;
+    const [a, ca] = r[i - 1];
+    const [b, cb] = r[i];
+    const f = (mean - a) / (b - a);
+    return ca.map((v, k) => Math.round(v + (cb[k] - v) * f));
+  }
+  return r[r.length - 1][1];
+}
+
+export function channelInk(loop, idx) {
+  const notes = loop.lines.filter((L) => L.t === "play" && typeof L.v === "number").map((L) => L.v);
+  if (!notes.length) {
+    /* percussion: neutral, and the later drum lane sits a shade back so two
+       of them are never the same colour */
+    const v = idx === 0 ? 0xe8 : 0xa9;
+    return `rgb(${v},${v - 6},${v - 16})`;
+  }
+  const mean = notes.reduce((a, b) => a + b, 0) / notes.length;
+  const c = pitchInk(mean);
+  return `rgb(${c[0]},${c[1]},${c[2]})`;
+}
+
+function rgbOf(col) {
+  if (col[0] === "#") {
+    const n = parseInt(col.slice(1), 16);
+    return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+  }
+  return col.match(/\d+/g).slice(0, 3).map(Number);
+}
+
+function mute(col, amount) {
   const g = [0x8f, 0x8a, 0x9c];
-  const c = [(n >> 16) & 255, (n >> 8) & 255, n & 255].map((v, i) => Math.round(v + (g[i] - v) * amount));
+  const c = rgbOf(col).map((v, i) => Math.round(v + (g[i] - v) * amount));
   return `rgb(${c[0]},${c[1]},${c[2]})`;
 }
 
@@ -90,13 +137,17 @@ export function ClubHighway({ track, loopLines, playInfo, elapsed, focus, hole, 
       const laneW = s.solo ? W * 0.66 : W / lanes.length;
       const pad = s.solo ? (W - laneW) / 2 : 0;
       const CONV = s.solo ? 0.34 : 0.6;
-      const K = s.solo ? 1.8 : 2.4; /* a short pit needs a flatter road, or the far half stacks */
+      /* A flatter road. The steep curve made a token crawl at the far end
+         and whip past the line, which is the moment you most need to read
+         it. */
+      const K = s.solo ? 1.3 : 1.5;
 
-      /* How far ahead the pit shows. This is also how long a token takes to
-         reach the now-line, so it is the speed control — and on one narrow
-         lane a shorter view keeps a 16th-note riff from stacking up. It can
-         never exceed the engine's own lookahead. */
-      const VIEW = Math.min(LEAD, s.solo ? 0.7 : 1.5);
+      /* The pit is measured in beats, not seconds, so it holds the same
+         musical distance at 125 and at 140 — the road is a bar and a half of
+         the track you are actually listening to. It is also how long a token
+         takes to reach the line, so this is the speed control. */
+      const beat = 60 / s.track.bpm;
+      const VIEW = beat * (s.solo ? 4 : 6);
 
       const gOf = (u) => (1 - 1 / (1 + u * K)) / (1 - 1 / (1 + K));
       const xOf = (cx, g) => cx + (vx - cx) * CONV * g;
@@ -107,7 +158,7 @@ export function ClubHighway({ track, loopLines, playInfo, elapsed, focus, hole, 
       lanes.forEach((li, k) => {
         const lx = pad + k * laneW;
         const rx = lx + laneW;
-        const ink = CHANNEL[li % CHANNEL.length];
+        const ink = channelInk(s.track.loops[li], li);
         const on = k === fi;
         ctx.beginPath();
         ctx.moveTo(lx, hitY);
@@ -142,7 +193,6 @@ export function ClubHighway({ track, loopLines, playInfo, elapsed, focus, hole, 
          downbeat brighter. They also do the teaching that the numbers cannot:
          the gap between two tokens is `sleep 0.5`, and now you can see that it
          is half a beat wide. */
-      const beat = 60 / s.track.bpm;
       const lastX = pad + lanes.length * laneW;
       for (let b = Math.ceil(t0 / beat) * beat; b - t0 <= VIEW; b += beat) {
         const bg = gOf(Math.min(1, (b - t0) / VIEW));
@@ -156,13 +206,19 @@ export function ClubHighway({ track, loopLines, playInfo, elapsed, focus, hole, 
         ctx.stroke();
       }
 
-      /* the now-line — this is when the statement sounds */
+      /* The now-line keeps the beat. It was a static rule that only told you
+         WHERE the moment was; it now tells you WHEN as well, thickening on
+         every beat and hardest on the one. That is the count a DJ works to,
+         and it is the thing the pit was missing. */
+      const sinceBeat = live ? t0 - Math.floor(t0 / beat) * beat : beat;
+      const onDown = live && Math.floor(t0 / beat) % 4 === 0;
+      const pulse = Math.max(0, 1 - sinceBeat / 0.14) * (onDown ? 1 : 0.55);
       ctx.beginPath();
       ctx.moveTo(2, hitY);
       ctx.lineTo(W - 2, hitY);
       ctx.strokeStyle = CLUB.ink;
-      ctx.lineWidth = 2.5;
-      ctx.globalAlpha = live ? 1 : 0.5;
+      ctx.lineWidth = 2.5 + pulse * 3.5;
+      ctx.globalAlpha = live ? 0.75 + pulse * 0.25 : 0.5;
       ctx.stroke();
       ctx.globalAlpha = 1;
 
@@ -180,6 +236,13 @@ export function ClubHighway({ track, loopLines, playInfo, elapsed, focus, hole, 
            may be any of the three — keying the token off the first note alone
            left Piano Sunrise's hole unmarked on the highway */
         const keys = group.map((g) => `${g.loopIdx}:${g.line}`);
+        /* Where this note falls in the bar. A note on the beat is the one the
+           room is moving to, so it arrives bigger and brighter; the 16ths in
+           between are all still there, just quieter. That is what stops a
+           dense acid line reading as noise without hiding a single note. */
+        const offBeat = Math.abs(ev.time / beat - Math.round(ev.time / beat));
+        const onBeat = offBeat < 0.06;
+        const onBar = onBeat && Math.round(ev.time / beat) % 4 === 0;
         toks.push({
           dt,
           lane,
@@ -187,6 +250,7 @@ export function ClubHighway({ track, loopLines, playInfo, elapsed, focus, hole, 
           lines: labelFor(group),
           hole: keys.some((k) => s.hole === k),
           sour: keys.some((k) => s.sour.has(k)),
+          weight: onBar ? 1 : onBeat ? 0.82 : 0.42,
         });
       }
       toks.sort((a, b) => b.dt - a.dt); /* far first */
@@ -198,12 +262,13 @@ export function ClubHighway({ track, loopLines, playInfo, elapsed, focus, hole, 
         const x = xOf(pad + (tok.lane + 0.5) * laneW, g);
         const y = yOf(g);
         const full = Math.min(21, H * 0.1);
-        const r = full * (tok.hole ? 1.28 : 1) * shrink;
+        const r = full * tok.weight * (tok.hole ? 1.4 : 1) * shrink;
         if (r < 4) continue;
 
         const onFocus = tok.li === s.focus;
-        const ink = onFocus ? CHANNEL[tok.li % CHANNEL.length] : mute(CHANNEL[tok.li % CHANNEL.length], 0.5);
-        ctx.globalAlpha = (1 - 0.45 * g) * (onFocus ? 1 : 0.66) * (live ? 1 : 0.85);
+        const base = channelInk(s.track.loops[tok.li], tok.li);
+        const ink = onFocus ? base : mute(base, 0.5);
+        ctx.globalAlpha = (1 - 0.45 * g) * (onFocus ? 1 : 0.66) * (live ? 1 : 0.85) * (0.42 + 0.58 * tok.weight);
         ctx.beginPath();
         ctx.arc(x, y, r, 0, Math.PI * 2);
 
