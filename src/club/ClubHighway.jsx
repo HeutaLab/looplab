@@ -22,44 +22,73 @@ function tint(col, a) {
    with position and size for the eye. The lane you are writing keeps its
    colour at full strength, so the loudest thing in the pit is always the
    thing you are working on. */
-/* A channel's colour comes from what it sounds like, not from where it sits
-   in the list. Percussion is neutral; anything pitched is placed on a cool
-   ramp by the average note in its pool, so a bass lane is deep and a lead
-   lane is bright on every one of the six records without anyone choosing.
-   The ramp is cool on purpose: amber means "you write this", red means "this
-   is the fault", mint means finished, and none of those may be borrowed. */
-const PITCH_RAMP = [
-  [30, [0x9b, 0x6b, 0xff]], /* deep — a sub or a 303 bassline */
-  [45, [0x6f, 0x8f, 0xf0]],
-  [60, [0x45, 0xc4, 0xe8]],
-  [75, [0xc9, 0xe8, 0xf5]], /* bright — a hoover lead, a bell */
-];
+/* What tells you which channel a token belongs to.
 
-function pitchInk(mean) {
-  const r = PITCH_RAMP;
-  if (mean <= r[0][0]) return r[0][1];
-  if (mean >= r[r.length - 1][0]) return r[r.length - 1][1];
-  for (let i = 1; i < r.length; i++) {
-    if (mean > r[i][0]) continue;
-    const [a, ca] = r[i - 1];
-    const [b, cb] = r[i];
-    const f = (mean - a) / (b - a);
-    return ca.map((v, k) => Math.round(v + (cb[k] - v) * f));
-  }
-  return r[r.length - 1][1];
+   Colour alone cannot do this job here, and that is a measured result rather
+   than an opinion. Amber already means "you write this", red means "this is
+   the fault" and mint means finished, which claims the warm half of the
+   wheel; everything left that is legible on a near-black floor sits in the
+   blue-violet wedge — and that wedge is exactly what blue-blindness
+   collapses. Two lane colours picked from it came out 1.8 apart in Lab under
+   tritanopia. There is no palette that fixes that.
+
+   So identity is carried three ways and colour is only the fastest of them:
+   a SHAPE that no colour deficiency and no washed-out projector can take
+   away, a LIGHTNESS step, and the channel's own name printed under its lane.
+   Colour makes it quick; shape makes it certain. */
+
+const PERC_INK = ["#EDE6D8", "#8E96A8"]; /* drums, then any further percussion */
+const PITCH_INK = ["#A78BFF", "#5AA8F0", "#4FE3F5"]; /* deep, middle, bright */
+
+/* one shape per lane, in track order — five is more than any record uses */
+const SHAPES = ["circle", "square", "diamond", "hexagon", "triangle"];
+export const channelShape = (idx) => SHAPES[idx % SHAPES.length];
+
+function meanNote(loop) {
+  const n = loop.lines.filter((L) => L.t === "play" && typeof L.v === "number").map((L) => L.v);
+  return n.length ? n.reduce((a, b) => a + b, 0) / n.length : null;
 }
 
-export function channelInk(loop, idx) {
-  const notes = loop.lines.filter((L) => L.t === "play" && typeof L.v === "number").map((L) => L.v);
-  if (!notes.length) {
-    /* percussion: neutral, and the later drum lane sits a shade back so two
-       of them are never the same colour */
-    const v = idx === 0 ? 0xe8 : 0xa9;
-    return `rgb(${v},${v - 6},${v - 16})`;
+/* Pitch decides WHICH colour, but by rank inside this track rather than by
+   interpolation: the lowest melodic loop always takes the deep end and the
+   highest always takes the bright one. Interpolating put six of the six bass
+   lanes within a few units of the same violet, which looked principled and
+   measured worse than the arbitrary palette it replaced. */
+export function channelInk(track, idx) {
+  const means = track.loops.map(meanNote);
+  if (means[idx] === null) {
+    const rank = means.slice(0, idx).filter((m) => m === null).length;
+    return PERC_INK[rank % PERC_INK.length];
   }
-  const mean = notes.reduce((a, b) => a + b, 0) / notes.length;
-  const c = pitchInk(mean);
-  return `rgb(${c[0]},${c[1]},${c[2]})`;
+  const melodic = means.map((m, i) => ({ m, i })).filter((x) => x.m !== null).sort((a, b) => a.m - b.m);
+  const rank = melodic.findIndex((x) => x.i === idx);
+  const slot = melodic.length === 1 ? 0 : Math.round((rank * (PITCH_INK.length - 1)) / (melodic.length - 1));
+  return PITCH_INK[slot];
+}
+
+/* the lane's shape, traced at radius r — the certainty channel */
+function tracePath(ctx, shape, x, y, r) {
+  ctx.beginPath();
+  if (shape === "circle") { ctx.arc(x, y, r, 0, Math.PI * 2); return; }
+  if (shape === "square") {
+    const a = r * 0.86, k = Math.min(3, r * 0.22);
+    ctx.moveTo(x - a + k, y - a);
+    ctx.arcTo(x + a, y - a, x + a, y + a, k);
+    ctx.arcTo(x + a, y + a, x - a, y + a, k);
+    ctx.arcTo(x - a, y + a, x - a, y - a, k);
+    ctx.arcTo(x - a, y - a, x + a, y - a, k);
+    ctx.closePath();
+    return;
+  }
+  const sides = shape === "diamond" ? 4 : shape === "triangle" ? 3 : 6;
+  const turn = shape === "hexagon" ? Math.PI / 6 : -Math.PI / 2;
+  const R = shape === "diamond" ? r * 1.16 : r * 1.06;
+  for (let i = 0; i < sides; i++) {
+    const a = turn + (i * 2 * Math.PI) / sides;
+    const px = x + Math.cos(a) * R, py = y + Math.sin(a) * R;
+    i ? ctx.lineTo(px, py) : ctx.moveTo(px, py);
+  }
+  ctx.closePath();
 }
 
 function rgbOf(col) {
@@ -158,7 +187,7 @@ export function ClubHighway({ track, loopLines, playInfo, elapsed, focus, hole, 
       lanes.forEach((li, k) => {
         const lx = pad + k * laneW;
         const rx = lx + laneW;
-        const ink = channelInk(s.track.loops[li], li);
+        const ink = channelInk(s.track, li);
         const on = k === fi;
         ctx.beginPath();
         ctx.moveTo(lx, hitY);
@@ -178,7 +207,13 @@ export function ClubHighway({ track, loopLines, playInfo, elapsed, focus, hole, 
         ctx.textAlign = "center";
         ctx.textBaseline = "top";
         ctx.fillStyle = on ? tint(ink, 0.95) : mute(ink, 0.55);
-        ctx.fillText(":" + s.track.loops[li].name, lx + laneW / 2, hitY + 23);
+        const label = ":" + s.track.loops[li].name;
+        const lw = ctx.measureText(label).width;
+        ctx.fillText(label, lx + laneW / 2 + 7, hitY + 23);
+        /* the name wears the lane's own shape, so the key to the pit is
+           always on screen next to the thing it explains */
+        tracePath(ctx, channelShape(li), lx + laneW / 2 - lw / 2 - 2, hitY + 23 + ls * 0.55, ls * 0.42);
+        ctx.fill();
       });
 
       const live = !!s.playInfo && s.elapsed !== null;
@@ -266,11 +301,11 @@ export function ClubHighway({ track, loopLines, playInfo, elapsed, focus, hole, 
         if (r < 4) continue;
 
         const onFocus = tok.li === s.focus;
-        const base = channelInk(s.track.loops[tok.li], tok.li);
+        const base = channelInk(s.track, tok.li);
         const ink = onFocus ? base : mute(base, 0.5);
         ctx.globalAlpha = (1 - 0.45 * g) * (onFocus ? 1 : 0.66) * (live ? 1 : 0.85) * (0.42 + 0.58 * tok.weight);
-        ctx.beginPath();
-        ctx.arc(x, y, r, 0, Math.PI * 2);
+        const shape = channelShape(tok.li);
+        tracePath(ctx, shape, x, y, r);
 
         if (tok.hole) {
           ctx.setLineDash([4.5 * shrink + 1.5, 3.5 * shrink + 1.5]);
@@ -282,8 +317,7 @@ export function ClubHighway({ track, loopLines, playInfo, elapsed, focus, hole, 
           ctx.fillStyle = CLUB.sour;
           ctx.fill();
           /* a halo, so the fault is never just a hue among hues */
-          ctx.beginPath();
-          ctx.arc(x, y, r + Math.max(2, 3 * shrink), 0, Math.PI * 2);
+          tracePath(ctx, shape, x, y, r + Math.max(2, 3 * shrink));
           ctx.strokeStyle = tint(CLUB.sour, 0.55);
           ctx.lineWidth = Math.max(1, 1.5 * shrink);
           ctx.stroke();
