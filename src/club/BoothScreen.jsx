@@ -190,6 +190,9 @@ export function BoothScreen({
      version handed one out for simply landing on We do, which is where the
      booth opens. */
   const starsEarned = Math.min(3, solved.filter(Boolean).length);
+  /* one box per character of the answer — short values get boxes, a long
+     sample name gets a field, because eighteen boxes is not a scaffold */
+  const answerLen = site ? String(site.clean).length : 0;
 
   const chips = useMemo(() => {
     const site = chipSite;
@@ -394,29 +397,56 @@ export function BoothScreen({
               Dropping back to the chips is always one tap and is never
               called failure. */}
           <div className="booth-chips">
-            {mode !== "chips" && (
+            {mode !== "chips" && site && (
               <form
                 className="booth-type"
                 onSubmit={(e) => {
                   e.preventDefault();
-                  if (typed.trim()) write(site ? site.type : "play", typed.trim());
+                  if (typed.trim()) write(site.type, typed.trim());
                 }}
               >
-                <label className="booth-legend" htmlFor="booth-input">
-                  Type it
-                </label>
-                <input
-                  id="booth-input"
-                  value={typed}
-                  onChange={(e) => setTyped(e.target.value)}
-                  disabled={phase === "i" || !site}
-                  placeholder={site ? (site.type === "sample" ? ":bd_haus" : site.type === "sleep" ? "0.5" : "45") : ""}
-                  inputMode={site && site.type === "sample" ? "text" : "decimal"}
-                  autoCapitalize="off"
-                  autoCorrect="off"
-                  spellCheck="false"
-                />
-                <button type="submit" className="booth-chip" disabled={phase === "i" || !site || !typed.trim()}>
+                <div>
+                  <label className="booth-type-label" htmlFor="booth-input">
+                    TYPE IT &mdash; {site.type} ?
+                  </label>
+                  {answerLen <= 8 ? (
+                    <div className="booth-boxes">
+                      <input
+                        id="booth-input"
+                        value={typed}
+                        onChange={(e) => setTyped(e.target.value.slice(0, answerLen))}
+                        disabled={phase === "i"}
+                        inputMode={site.type === "sample" ? "text" : "decimal"}
+                        autoCapitalize="off"
+                        autoCorrect="off"
+                        spellCheck="false"
+                        aria-label={`Type the ${site.type} value, ${answerLen} characters`}
+                      />
+                      {Array.from({ length: answerLen }, (_, i) => {
+                        const on = i < typed.length ? "filled" : i === typed.length ? "current" : "empty";
+                        return (
+                          <span key={i} className="booth-box" data-on={on} aria-hidden="true">
+                            {typed[i] || (on === "current" ? <span className="booth-caret" /> : "")}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <input
+                      id="booth-input"
+                      className="booth-type-wide"
+                      value={typed}
+                      onChange={(e) => setTyped(e.target.value)}
+                      disabled={phase === "i"}
+                      placeholder={site.type === "sample" ? ":bd_haus" : "0.5"}
+                      autoCapitalize="off"
+                      autoCorrect="off"
+                      spellCheck="false"
+                      aria-label={`Type the ${site.type} value`}
+                    />
+                  )}
+                </div>
+                <button type="submit" className="booth-chip" disabled={phase === "i" || !typed.trim()}>
                   Write
                 </button>
               </form>
@@ -445,7 +475,7 @@ export function BoothScreen({
                 ))}
               </>
             )}
-            {mode === "typed" && (
+            {mode === "typed" && site && (
               <button type="button" className="booth-chip booth-ghost" onClick={() => setShowChips((v) => !v)}>
                 {showChips ? "Hide the chips" : "Stuck? Show the chips"}
               </button>
