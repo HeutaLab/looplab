@@ -6,10 +6,10 @@
   --void: #07060c;
   --ink: #f3eee4;
   --dim: #c9c3d4;
-  /* the two colours that carry meaning, kept clear of the four lane hues:
-     red is the drums now, and amber sat on top of the claps */
-  --write: #ffffff;
-  --sour: #ff2d9e;
+  /* amber is the thing you write; no lane is amber or red, so both are free */
+  --write: #ffb703;
+  --write-ink: #120c00;
+  --sour: #ff2d1a;
   --ok: #7dffb3;
   --code: 18px;
   --pad: 22px;
@@ -26,7 +26,7 @@
   min-height: 520px;
   background: var(--void);
   color: var(--ink);
-  font-family: "Atkinson Hyperlegible Next", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-family: "Fredoka", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   border-radius: 4px;
   overflow: hidden;
 }
@@ -148,7 +148,7 @@
   display: flex;
   flex-direction: column;
   margin: 0;
-  font-family: "Atkinson Hyperlegible Mono", ui-monospace, "SF Mono", Menlo, Consolas, "Courier New", monospace;
+  font-family: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, "Courier New", monospace;
   font-size: var(--code);
   font-weight: 700;
   line-height: 1.55;
@@ -213,22 +213,34 @@
   text-transform: uppercase;
   color: var(--dim);
 }
+/* The chips are tools, not the work. Seven filled white pills made the
+   loudest thing on the floor the box of parts rather than the loop being
+   written or the track being heard. Outlined: still obviously the things
+   you press, no longer shouting over the pit. */
 .booth-chip {
   appearance: none;
-  border: 0;
+  border: 1.5px solid var(--write);
   border-radius: 999px;
-  background: var(--write);
-  color: #120c00;
-  font-family: "Atkinson Hyperlegible Mono", ui-monospace, Menlo, "Courier New", monospace;
+  background: transparent;
+  color: var(--write);
+  font-family: "JetBrains Mono", ui-monospace, Menlo, "Courier New", monospace;
   font-weight: 700;
   font-size: 15px;
   padding: 0 16px;
   min-height: 44px;
   cursor: pointer;
 }
-.booth-chip:hover { background: #d8d4dd; }
-.booth-chip:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
-.booth-chip:disabled { opacity: 0.28; cursor: default; }
+.booth-chip:hover { background: rgba(255,183,3,0.14); }
+.booth-chip:focus-visible { outline: 2px solid var(--write); outline-offset: 2px; }
+.booth-chip:disabled { opacity: 0.3; cursor: default; }
+
+/* a sleep is silence: no colour, and it sits behind the notes */
+.booth-chip[data-kind="sleep"] {
+  border-color: var(--dim);
+  color: var(--dim);
+  font-weight: 400;
+}
+.booth-chip[data-kind="sleep"]:hover { border-color: var(--ink); color: var(--ink); }
 
 .booth-actions { flex: 0 0 auto; display: flex; gap: 12px; }
 .booth-btn {
@@ -241,9 +253,10 @@
   font-weight: 600;
   cursor: pointer;
 }
-.booth-btn.ghost { background: transparent; border: 1.5px solid var(--ink); color: var(--ink); }
-.booth-btn.solid { background: var(--ink); border: 1.5px solid var(--ink); color: var(--void); }
-.booth-btn[data-on="true"] { background: var(--write); border-color: var(--write); color: #0c0910; }
+/* nothing on this floor is filled white except the thing being written */
+.booth-btn.ghost { background: transparent; border: 1.5px solid var(--dim); color: var(--dim); }
+.booth-btn.solid { background: transparent; border: 2.5px solid var(--ink); color: var(--ink); }
+.booth-btn[data-on="true"] { background: transparent; border-color: var(--write); color: var(--write); }
 .booth-btn:focus-visible { outline: 2px solid var(--write); outline-offset: 3px; }
 
 /* one thumb, one lane. The loop keeps a readable minimum here and the page
@@ -294,7 +307,7 @@
   color: var(--write);
   border: 1.5px solid var(--write);
   border-radius: 3px;
-  font-family: "Atkinson Hyperlegible Mono", ui-monospace, Menlo, "Courier New", monospace;
+  font-family: "JetBrains Mono", ui-monospace, Menlo, "Courier New", monospace;
   font-weight: 700;
   font-size: 15px;
   padding: 0 12px;

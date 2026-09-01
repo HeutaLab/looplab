@@ -184,7 +184,7 @@ export function ClubHighway({ track, loopLines, playInfo, elapsed, focus, hole, 
 
         /* the channel says its own name, in its own colour */
         const ls = Math.min(12, Math.max(9, laneW * 0.11));
-        ctx.font = `700 ${ls.toFixed(1)}px "Atkinson Hyperlegible Mono", ui-monospace, Menlo, "Courier New", monospace`;
+        ctx.font = `700 ${ls.toFixed(1)}px "JetBrains Mono", ui-monospace, Menlo, "Courier New", monospace`;
         ctx.textAlign = "center";
         ctx.textBaseline = "top";
         ctx.fillStyle = tint(ink, on ? 1 : 0.8);
@@ -313,7 +313,7 @@ export function ClubHighway({ track, loopLines, playInfo, elapsed, focus, hole, 
           ctx.fillStyle = tok.hole ? CLUB.write : "#0c0910";
           const rows = tok.lines;
           let size = r * (rows.length > 1 ? 0.4 : 0.46);
-          const font = (px) => `700 ${px.toFixed(2)}px "Atkinson Hyperlegible Mono", ui-monospace, Menlo, "Courier New", monospace`;
+          const font = (px) => `700 ${px.toFixed(2)}px "JetBrains Mono", ui-monospace, Menlo, "Courier New", monospace`;
           ctx.font = font(size);
           let widest = 0;
           for (const l of rows) widest = Math.max(widest, ctx.measureText(l).width);

@@ -6,8 +6,8 @@ export const LEAD = 1.6;
    same screen. The stacks below are only what renders in the moment before
    the file loads, or if it fails to. */
 export const TYPE = {
-  ui: '"Atkinson Hyperlegible Next", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
-  code: '"Atkinson Hyperlegible Mono", ui-monospace, "SF Mono", Menlo, Consolas, "Courier New", monospace',
+  ui: '"Fredoka", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
+  code: '"JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, "Courier New", monospace',
 };
 
 export const C = {
@@ -28,27 +28,30 @@ export const C = {
 
 export const LANES = [C.pink, C.orange, C.yellow, C.aqua, C.violet];
 
-/* The Club floor.
+/* The Club floor, per the "In the Club" handoff.
 
-   The lanes took the saturated four — red, yellow, cyan, violet — so the two
-   colours that carry meaning had to move out of their way. The fault can no
-   longer be red, because red is the drums lane. The thing you write can no
-   longer be amber, because amber sat on top of the claps. Write is white,
-   which nothing else on this floor is; the fault is magenta, which nothing
-   else comes near. */
+   Amber is the thing you write; the lanes stay clear of it. Red is free for
+   the fault again because no lane is red. Note ink is the dark the tokens
+   print their token in. */
 export const CLUB = {
   void: "#07060c",
+  glow: "#161027",   /* the panel glow behind the highway side */
   ink: "#f3eee4",
   dim: "#c9c3d4",
-  write: "#ffffff", /* the hole, the chips, the playhead bar */
-  sour: "#ff2d9e",  /* the fault */
+  noteInk: "#0c0910",
+  write: "#ffb703",  /* amber — the hole, the chips, the TYPE IT boxes */
+  writeInk: "#120c00",
+  sour: "#ff2d1a",
   ok: "#7dffb3",
+  okBorder: "#d2ffe6",
 };
 
-
-/* One colour per lane, in track order, at full strength. Nothing here is
-   tinted or softened: the floor is black and the tokens carry all of it. */
-export const CHANNEL = ["#ff3b30", "#ffd426", "#00d6ff", "#b14bff", "#3ddc84"];
+/* One colour per lane, in track order. Each lane is a fill, a lighter border
+   and a darker shadow, because the notes are tiles with a hard drop shadow
+   rather than flat discs. */
+export const CHANNEL = ["#ece7f2", "#4ab8f0", "#b085ff", "#ff7fb0", "#7dffb3"];
+export const CHANNEL_EDGE = ["#ffffff", "#a8dcf8", "#d8c4ff", "#ffc2da", "#d2ffe6"];
+export const CHANNEL_SHADOW = ["#8d87a0", "#22688e", "#6a4bad", "#a8446e", "#3f8c63"];
 
 export const DRUMS = ["bd_haus", "sn_dolf", "drum_cymbal_closed"];
 

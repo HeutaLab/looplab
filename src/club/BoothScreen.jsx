@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { applyBugs, optionsFor } from "../data/tracks.js";
 import { lineText, lineTokens } from "../engine/sonicpi.js";
-import { ClubHighway } from "./ClubHighway.jsx";
+import { ClubHighway, channelInk } from "./ClubHighway.jsx";
 import "./booth.css";
 
 /* The booth: one screen where a track is both played and learned.
@@ -171,6 +171,8 @@ export function BoothScreen({
   const lastSite = useRef(sites[0]);
   if (site) lastSite.current = site;
   const chipSite = site || (phase === "i" ? sites[0] : lastSite.current);
+
+  const laneInk = channelInk(track, chipSite ? chipSite.loop : 0);
 
   const chips = useMemo(() => {
     const site = chipSite;
@@ -370,10 +372,18 @@ export function BoothScreen({
                     key={i}
                     type="button"
                     className="booth-chip"
+                    /* A chip is coloured by what it writes. A note or a sample
+                       takes the colour of the lane it is going into, so the
+                       pill and the lane in the pit are visibly the same thing.
+                       A sleep is silence — it takes no colour, because it makes
+                       no sound, and that is the difference the row was hiding
+                       when every pill looked identical. */
+                    data-kind={c.t}
+                    style={c.t === "sleep" ? undefined : { color: laneInk, borderColor: laneInk }}
                     disabled={phase === "i" || !site}
                     onClick={() => tapChip(c)}
                   >
-                    {lineText({ t: c.t, v: c.t === "sample" ? c.v : c.v })}
+                    {lineText({ t: c.t, v: c.v })}
                   </button>
                 ))}
               </>
