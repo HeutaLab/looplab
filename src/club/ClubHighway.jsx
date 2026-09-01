@@ -1,94 +1,47 @@
 import React, { useEffect, useMemo, useRef } from "react";
 import { compileLoops } from "../engine/interpreter.js";
-import { CLUB } from "../theme.js";
+import { CHANNEL, CHANNEL_EDGE, CHANNEL_SHADOW, CLUB } from "../theme.js";
 
-/* The highway is the ear. It shows what the track is about to sound, one lane
-   per live_loop, tokens written as the Sonic Pi that makes them. It is not a
-   scoring game: nothing is tapped here, and the now-line is only ever "this is
-   the moment you hear it".
+/* The highway is the ear.
 
-   What crosses the line is what sounds, so sleeps get no token — a sleep is
-   silence. The one exception is the hole, which has to be visible because it
-   is the thing being written. */
+   One lane per live_loop, notes written as the Sonic Pi that makes them,
+   falling to a hit line. It is not a scoring game: nothing is tapped here and
+   the hit line only ever means "this is the moment you hear it". Only the
+   amber hole asks for anything.
 
-function tint(col, a) {
-  const c = rgbOf(col);
-  return `rgba(${c[0]},${c[1]},${c[2]},${a})`;
-}
+   Flat vertical columns, per the In-the-Club handoff (3a). The previous
+   version drew a perspective road with a vanishing point; that made a note
+   crawl at the far end and whip past the line at the exact moment you needed
+   to read it, and it is gone. */
 
-/* Colour has to say which channel this is without shouting over the rhythm.
-   A lane you are only listening to gets its hue pulled most of the way
-   towards a neutral: still identifiably blue or violet, no longer competing
-   with position and size for the eye. The lane you are writing keeps its
-   colour at full strength, so the loudest thing in the pit is always the
-   thing you are working on. */
-/* What tells you which channel a token belongs to.
-
-   Colour alone cannot do this job here, and that is a measured result rather
-   than an opinion. Amber already means "you write this", red means "this is
-   the fault" and mint means finished, which claims the warm half of the
-   wheel; everything left that is legible on a near-black floor sits in the
-   blue-violet wedge — and that wedge is exactly what blue-blindness
-   collapses. Two lane colours picked from it came out 1.8 apart in Lab under
-   tritanopia. There is no palette that fixes that.
-
-   So identity is carried three ways and colour is only the fastest of them:
-   a SHAPE that no colour deficiency and no washed-out projector can take
-   away, a LIGHTNESS step, and the channel's own name printed under its lane.
-   Colour makes it quick; shape makes it certain. */
-
-/* Nothing here is tinted, softened or muted. The floor is black and the
-   tokens carry all of the colour — full strength, whether the lane is the
-   one you are writing or not. Shape still carries identity for anyone who
-   cannot separate the hues; colour is what makes it quick. */
-import { CHANNEL } from "../theme.js";
-
-const SHAPES = ["circle", "square", "diamond", "hexagon", "triangle"];
-export const channelShape = (idx) => SHAPES[idx % SHAPES.length];
 export const channelInk = (track, idx) => CHANNEL[idx % CHANNEL.length];
-
-/* the lane's shape, traced at radius r — the certainty channel */
-function tracePath(ctx, shape, x, y, r) {
-  ctx.beginPath();
-  if (shape === "circle") { ctx.arc(x, y, r, 0, Math.PI * 2); return; }
-  if (shape === "square") {
-    const a = r * 0.86, k = Math.min(3, r * 0.22);
-    ctx.moveTo(x - a + k, y - a);
-    ctx.arcTo(x + a, y - a, x + a, y + a, k);
-    ctx.arcTo(x + a, y + a, x - a, y + a, k);
-    ctx.arcTo(x - a, y + a, x - a, y - a, k);
-    ctx.arcTo(x - a, y - a, x + a, y - a, k);
-    ctx.closePath();
-    return;
-  }
-  const sides = shape === "diamond" ? 4 : shape === "triangle" ? 3 : 6;
-  const turn = shape === "hexagon" ? Math.PI / 6 : -Math.PI / 2;
-  const R = shape === "diamond" ? r * 1.16 : r * 1.06;
-  for (let i = 0; i < sides; i++) {
-    const a = turn + (i * 2 * Math.PI) / sides;
-    const px = x + Math.cos(a) * R, py = y + Math.sin(a) * R;
-    i ? ctx.lineTo(px, py) : ctx.moveTo(px, py);
-  }
-  ctx.closePath();
-}
+const edgeOf = (idx) => CHANNEL_EDGE[idx % CHANNEL_EDGE.length];
+const shadowOf = (idx) => CHANNEL_SHADOW[idx % CHANNEL_SHADOW.length];
 
 function rgbOf(col) {
-  if (col[0] === "#") {
-    const n = parseInt(col.slice(1), 16);
-    return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
-  }
-  return col.match(/\d+/g).slice(0, 3).map(Number);
+  const n = parseInt(col.slice(1), 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
 }
+const tint = (col, a) => {
+  const c = rgbOf(col);
+  return `rgba(${c[0]},${c[1]},${c[2]},${a})`;
+};
 
-function mute(col, amount) {
-  const g = [0x8f, 0x8a, 0x9c];
-  const c = rgbOf(col).map((v, i) => Math.round(v + (g[i] - v) * amount));
-  return `rgb(${c[0]},${c[1]},${c[2]})`;
+/* roundRect is not on every school iPad yet, so trace it by hand. */
+function roundRect(ctx, x, y, w, h, r) {
+  const k = Math.min(r, w / 2, h / 2);
+  ctx.beginPath();
+  ctx.moveTo(x + k, y);
+  ctx.arcTo(x + w, y, x + w, y + h, k);
+  ctx.arcTo(x + w, y + h, x, y + h, k);
+  ctx.arcTo(x, y + h, x, y, k);
+  ctx.arcTo(x, y, x + w, y, k);
+  ctx.closePath();
 }
 
 /* Simultaneous notes in one loop are a chord — the track data writes those as
    consecutive `play` lines with no sleep between, which is real Sonic Pi and
-   would otherwise stack three tokens on the same spot. */
+   would otherwise stack three tiles on the same spot. */
 function groupEvents(events) {
   const by = new Map();
   for (const ev of events) {
@@ -99,6 +52,7 @@ function groupEvents(events) {
   return [...by.values()];
 }
 
+/* A sample tile prints two lines; a play or a sleep prints one. */
 function labelFor(group) {
   const first = group[0];
   if (first.kind !== "note") return ["sample", ":" + first.kind];
@@ -114,8 +68,28 @@ export function ClubHighway({ track, loopLines, playInfo, elapsed, focus, hole, 
      black box — a booth with the lights on but nothing playing yet. */
   const idle = useMemo(() => compileLoops(loopLines, track.bpm, 1), [loopLines, track.bpm]);
 
+  /* The tightest gap between two notes in any lane, in beats. It sets how far
+     ahead the pit can show: a 16th-note acid line needs a short road or the
+     tiles stack, an offbeat bassline can take a long one. Derived per record
+     rather than a fixed number that only ever suits one of them. */
+  const tightest = useMemo(() => {
+    let min = 4;
+    for (const ls of loopLines) {
+      let t = 0;
+      let last = null;
+      for (const L of ls) {
+        if (L.t === "sleep") t += L.v;
+        else if (L.t === "play" || L.t === "sample") {
+          if (last !== null && t - last > 0.001) min = Math.min(min, t - last);
+          last = t;
+        }
+      }
+    }
+    return Math.max(0.2, min);
+  }, [loopLines]);
+
   const state = useRef({});
-  state.current = { track, loopLines, playInfo, elapsed, focus, hole, sour, solo, idle };
+  state.current = { track, loopLines, playInfo, elapsed, focus, hole, sour, solo, idle, tightest };
   const drawRef = useRef(null);
 
   useEffect(() => {
@@ -140,198 +114,235 @@ export function ClubHighway({ track, loopLines, playInfo, elapsed, focus, hole, 
       ctx.fillStyle = CLUB.void;
       ctx.fillRect(0, 0, W, H);
 
-      const lanes = s.solo ? [s.focus] : s.loopLines.map((_, i) => i);
-      const hitY = H - 36; /* a clear band below the line for the channel names */
-      const topY = 4;
-      const vx = W / 2;
-      const laneW = s.solo ? W * 0.66 : W / lanes.length;
-      const pad = s.solo ? (W - laneW) / 2 : 0;
-      const CONV = s.solo ? 0.34 : 0.6;
-      /* A flatter road. The steep curve made a token crawl at the far end
-         and whip past the line, which is the moment you most need to read
-         it. */
-      const K = s.solo ? 1.3 : 1.5;
-
-      /* The pit is measured in beats, not seconds, so it holds the same
-         musical distance at 125 and at 140 — the road is a bar and a half of
-         the track you are actually listening to. It is also how long a token
-         takes to reach the line, so this is the speed control. */
-      const beat = 60 / s.track.bpm;
-      const VIEW = beat * (s.solo ? 4 : 6);
-
-      const gOf = (u) => (1 - 1 / (1 + u * K)) / (1 - 1 / (1 + K));
-      const xOf = (cx, g) => cx + (vx - cx) * CONV * g;
-      const yOf = (g) => hitY - (hitY - topY) * g;
-
-      /* each lane in its channel's colour, the one being written filled faintly */
-      const fi = lanes.indexOf(s.focus);
-      lanes.forEach((li, k) => {
-        const lx = pad + k * laneW;
-        const rx = lx + laneW;
-        const ink = channelInk(s.track, li);
-        const on = k === fi;
-        ctx.beginPath();
-        ctx.moveTo(lx, hitY);
-        ctx.lineTo(xOf(lx, 1), topY);
-        ctx.lineTo(xOf(rx, 1), topY);
-        ctx.lineTo(rx, hitY);
-        ctx.closePath();
-        ctx.fillStyle = tint(ink, on ? 0.11 : 0.05);
-        ctx.fill();
-        ctx.strokeStyle = tint(ink, on ? 0.95 : 0.55);
-        ctx.lineWidth = on ? 2.5 : 1.5;
-        ctx.stroke();
-
-        /* the channel says its own name, in its own colour */
-        const ls = Math.min(12, Math.max(9, laneW * 0.11));
-        ctx.font = `700 ${ls.toFixed(1)}px "JetBrains Mono", ui-monospace, Menlo, "Courier New", monospace`;
-        ctx.textAlign = "center";
-        ctx.textBaseline = "top";
-        ctx.fillStyle = tint(ink, on ? 1 : 0.8);
-        const label = ":" + s.track.loops[li].name;
-        const lw = ctx.measureText(label).width;
-        ctx.fillText(label, lx + laneW / 2 + 7, hitY + 23);
-        /* the name wears the lane's own shape, so the key to the pit is
-           always on screen next to the thing it explains */
-        tracePath(ctx, channelShape(li), lx + laneW / 2 - lw / 2 - 2, hitY + 23 + ls * 0.55, ls * 0.42);
-        ctx.fill();
-      });
-
       const live = !!s.playInfo && s.elapsed !== null;
       const t0 = live ? s.elapsed : 0;
+      const beat = 60 / s.track.bpm;
 
-      /* The pulse.
+      const lanes = s.solo ? [s.focus] : s.loopLines.map((_, i) => i);
+      const GAP = 7;
+      const LABEL = 26; /* the band under the columns that names each lane */
+      const colTop = 12; /* room for the YOUR LANE badge to sit on the edge */
+      const colBottom = H - LABEL;
+      const hitY = colTop + (colBottom - colTop) * 0.82;
+      const laneW = (W - GAP * (lanes.length - 1)) / lanes.length;
+      const laneX = (k) => k * (laneW + GAP);
 
-         Nothing in the pit carried the beat before: tokens floated up a plain
-         black lane, so the one thing a dance track is actually made of was
-         the one thing you could not see. These are the bar lines a DJ counts,
-         flowing towards the now-line at the same speed as the music, with the
-         downbeat brighter. They also do the teaching that the numbers cannot:
-         the gap between two tokens is `sleep 0.5`, and now you can see that it
-         is half a beat wide. */
-      const lastX = pad + lanes.length * laneW;
-      for (let b = Math.ceil(t0 / beat) * beat; b - t0 <= VIEW; b += beat) {
-        const bg = gOf(Math.min(1, (b - t0) / VIEW));
-        const by = yOf(bg);
-        const down = Math.round(b / beat) % 4 === 0;
-        ctx.beginPath();
-        ctx.moveTo(xOf(pad, bg), by);
-        ctx.lineTo(xOf(lastX, bg), by);
-        ctx.strokeStyle = `rgba(243,238,228,${((down ? 0.38 : 0.14) * (1 - 0.45 * bg)).toFixed(3)})`;
-        ctx.lineWidth = down ? 2 : 1;
-        ctx.stroke();
+      const span = hitY - colTop;
+      const tileH = Math.max(22, Math.min(34, laneW * 0.42));
+      const tileW = Math.min(laneW - 12, 68);
+
+      /* How far ahead the pit shows, derived rather than chosen. Tiles are
+         large, so the road has to be short enough that the busiest lane on
+         this record never stacks: the tightest gap in the track must still
+         leave a tile's worth of air. A 16th-note acid line gets a short road,
+         an offbeat bassline a long one, and both stay readable. Measured in
+         beats, so it holds the same musical distance at 125 and at 140. */
+      const VIEWB = Math.max(1.5, Math.min(6, (s.tightest * span) / (tileH * 1.25)));
+      const VIEW = beat * VIEWB;
+      const yOf = (dt) => hitY - (dt / VIEW) * span;
+
+      /* ---- equalizer floor: decorative, rising from the foot of the
+             columns and drawn behind them, so it never fights the lane
+             names in the band below ---- */
+      const bars = 13;
+      const bw = (W - GAP * (bars - 1)) / bars;
+      ctx.globalAlpha = 0.16;
+      for (let i = 0; i < bars; i++) {
+        const wob = live ? 0.5 + 0.5 * Math.sin(t0 * 5 + i * 0.9) : 0.35;
+        const bh = 10 + wob * 34;
+        ctx.fillStyle = CHANNEL[i % CHANNEL.length];
+        roundRect(ctx, i * (bw + GAP), colBottom - bh, bw, bh, 3);
+        ctx.fill();
       }
-
-      /* The now-line keeps the beat. It was a static rule that only told you
-         WHERE the moment was; it now tells you WHEN as well, thickening on
-         every beat and hardest on the one. That is the count a DJ works to,
-         and it is the thing the pit was missing. */
-      const sinceBeat = live ? t0 - Math.floor(t0 / beat) * beat : beat;
-      const onDown = live && Math.floor(t0 / beat) % 4 === 0;
-      const pulse = Math.max(0, 1 - sinceBeat / 0.14) * (onDown ? 1 : 0.55);
-      ctx.beginPath();
-      ctx.moveTo(2, hitY);
-      ctx.lineTo(W - 2, hitY);
-      ctx.strokeStyle = CLUB.ink;
-      ctx.lineWidth = 2.5 + pulse * 3.5;
-      ctx.globalAlpha = live ? 0.75 + pulse * 0.25 : 0.5;
-      ctx.stroke();
       ctx.globalAlpha = 1;
 
-      const events = live ? s.playInfo.events : s.idle.events;
-      const t = t0;
+      /* ---- the lane columns ---- */
+      lanes.forEach((li, k) => {
+        const x = laneX(k);
+        const ink = channelInk(s.track, li);
+        const on = li === s.focus;
+        const g = ctx.createLinearGradient(0, colTop, 0, colBottom);
+        g.addColorStop(0, tint(ink, on ? 0.06 : 0.03));
+        g.addColorStop(1, tint(ink, on ? 0.24 : 0.16));
+        if (on) {
+          ctx.shadowColor = tint(ink, 0.3);
+          ctx.shadowBlur = 20;
+        }
+        roundRect(ctx, x, colTop, laneW, colBottom - colTop, 13);
+        ctx.fillStyle = g;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        ctx.strokeStyle = tint(ink, on ? 0.8 : 0.4);
+        ctx.lineWidth = on ? 2.5 : 2;
+        ctx.stroke();
 
+        /* the lane says its own name, under its column */
+        ctx.font = `700 10px ${MONO}`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillStyle = tint(ink, on ? 1 : 0.75);
+        ctx.fillText(":" + s.track.loops[li].name, x + laneW / 2, colBottom + LABEL / 2);
+      });
+
+      /* ---- the hit line ---- */
+      const sinceBeat = live ? t0 - Math.floor(t0 / beat) * beat : beat;
+      const pulse = live ? Math.max(0, 1 - sinceBeat / 0.16) : 0;
+      ctx.shadowColor = tint(CLUB.ink, 0.7);
+      ctx.shadowBlur = 14 + pulse * 12;
+      ctx.beginPath();
+      ctx.moveTo(0, hitY);
+      ctx.lineTo(W, hitY);
+      ctx.strokeStyle = CLUB.ink;
+      ctx.lineWidth = 3 + pulse * 2;
+      ctx.globalAlpha = live ? 1 : 0.55;
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+      ctx.globalAlpha = 1;
+
+      /* ---- the notes ---- */
+      const events = live ? s.playInfo.events : s.idle.events;
       const toks = [];
       for (const group of groupEvents(events)) {
         const ev = group[0];
-        const lane = lanes.indexOf(ev.loopIdx);
-        if (lane < 0) continue;
-        const dt = ev.time - t;
-        if (dt < -0.06 || dt > VIEW) continue;
-        /* a chord arrives as three play lines at one instant, and the hole
-           may be any of the three — keying the token off the first note alone
-           left Piano Sunrise's hole unmarked on the highway */
-        const keys = group.map((g) => `${g.loopIdx}:${g.line}`);
-        /* Where this note falls in the bar. A note on the beat is the one the
-           room is moving to, so it arrives bigger and brighter; the 16ths in
-           between are all still there, just quieter. That is what stops a
-           dense acid line reading as noise without hiding a single note. */
-        const offBeat = Math.abs(ev.time / beat - Math.round(ev.time / beat));
-        const onBeat = offBeat < 0.06;
-        const onBar = onBeat && Math.round(ev.time / beat) % 4 === 0;
+        const k = lanes.indexOf(ev.loopIdx);
+        if (k < 0) continue;
+        const dt = ev.time - t0;
+        if (dt < -0.08 || dt > VIEW) continue;
+        const keys = group.map((g2) => `${g2.loopIdx}:${g2.line}`);
         toks.push({
           dt,
-          lane,
+          k,
           li: ev.loopIdx,
+          line: ev.line,
           lines: labelFor(group),
-          hole: keys.some((k) => s.hole === k),
-          sour: keys.some((k) => s.sour.has(k)),
-          weight: onBar ? 1 : onBeat ? 0.82 : 0.42,
+          sample: ev.kind !== "note",
+          hole: keys.some((key) => s.hole === key),
+          sour: keys.some((key) => s.sour.has(key)),
         });
       }
-      toks.sort((a, b) => b.dt - a.dt); /* far first */
+      /* A sleep makes no sound, so it produces no event and never reached the
+         pit — which meant that on the records whose We-do hole is a sleep, the
+         one thing the player is being asked to write was the one thing not on
+         the highway. Place it by walking the loop to find when that sleep
+         falls, and repeat it on the loop's own cycle. */
+      if (s.hole) {
+        const [hl, hi] = s.hole.split(":").map(Number);
+        const ls = s.loopLines[hl];
+        const k = lanes.indexOf(hl);
+        if (ls && ls[hi] && ls[hi].t === "sleep" && k >= 0) {
+          let at = 0;
+          let total = 0;
+          for (let i = 0; i < ls.length; i++) {
+            if (i === hi) at = total;
+            if (ls[i].t === "sleep") total += ls[i].v;
+          }
+          const cycle = total * beat;
+          if (cycle > 0.01) {
+            const first = at * beat;
+            const n0 = Math.floor((t0 - first) / cycle);
+            for (let n = n0; n <= n0 + 2; n++) {
+              const dt = first + n * cycle - t0;
+              if (dt < -0.08 || dt > VIEW) continue;
+              toks.push({ dt, k, li: hl, line: hi, lines: ["sleep ?"], hole: true, sour: false });
+            }
+          }
+        }
+      }
 
-      for (const tok of toks) {
-        const u = Math.min(1, Math.max(0, tok.dt) / VIEW);
-        const g = gOf(u);
-        const shrink = 1 - CONV * g;
-        const x = xOf(pad + (tok.lane + 0.5) * laneW, g);
-        const y = yOf(g);
-        const full = Math.min(24, H * 0.07) * 1.45;
-        const r = full * tok.weight * (tok.hole ? 1.4 : 1) * shrink;
-        if (r < 4) continue;
+      toks.sort((a, b) => b.dt - a.dt); /* far first, so near tiles sit on top */
 
-        const onFocus = tok.li === s.focus;
-        const ink = channelInk(s.track, tok.li);
-        ctx.globalAlpha = (1 - 0.3 * g) * (onFocus ? 1 : 0.82) * (live ? 1 : 0.85) * (0.55 + 0.45 * tok.weight);
-        const shape = channelShape(tok.li);
-        tracePath(ctx, shape, x, y, r);
+      for (const tk of toks) {
+        const ink = channelInk(s.track, tk.li);
+        const x = laneX(tk.k) + (laneW - tileW) / 2;
+        const y = yOf(tk.dt) - tileH / 2;
+        const near = Math.max(0, 1 - tk.dt / (beat * 1.2));
 
-        if (tok.hole) {
-          ctx.setLineDash([4.5 * shrink + 1.5, 3.5 * shrink + 1.5]);
+        /* the hard drop shadow that makes a tile a tile */
+        roundRect(ctx, x, y + 3, tileW, tileH, 11);
+        ctx.fillStyle = tk.hole ? tint(CLUB.write, 0.35) : shadowOf(tk.li);
+        ctx.fill();
+
+        if (near > 0.02 && !tk.hole) {
+          ctx.shadowColor = tint(ink, 0.6 * near);
+          ctx.shadowBlur = 16 * near;
+        }
+        roundRect(ctx, x, y, tileW, tileH, 11);
+
+        if (tk.hole) {
+          /* the thing you write: absent, so it is dashed and hollow */
+          ctx.fillStyle = tint(CLUB.write, 0.08);
+          ctx.fill();
+          ctx.shadowColor = tint(CLUB.write, 0.4);
+          ctx.shadowBlur = 18;
+          ctx.setLineDash([6, 5]);
           ctx.strokeStyle = CLUB.write;
-          ctx.lineWidth = Math.max(1, 2 * shrink);
+          ctx.lineWidth = 3;
           ctx.stroke();
           ctx.setLineDash([]);
-        } else if (tok.sour) {
-          ctx.fillStyle = CLUB.sour;
-          ctx.fill();
-          /* a halo, so the fault is never just a hue among hues */
-          tracePath(ctx, shape, x, y, r + Math.max(2, 3 * shrink));
-          ctx.strokeStyle = tint(CLUB.sour, 0.55);
-          ctx.lineWidth = Math.max(1, 1.5 * shrink);
-          ctx.stroke();
         } else {
-          ctx.fillStyle = ink;
+          ctx.fillStyle = tk.sour ? CLUB.sour : ink;
           ctx.fill();
+          ctx.shadowBlur = 0;
+          ctx.strokeStyle = tk.sour ? "#ff8a7a" : edgeOf(tk.li);
+          ctx.lineWidth = 3;
+          ctx.stroke();
         }
+        ctx.shadowBlur = 0;
 
-        /* the statement, written on the token — shrunk to fit, never clipped */
-        if (r >= 8.5) {
-          ctx.textAlign = "center";
-          ctx.textBaseline = "middle";
-          ctx.fillStyle = tok.hole ? CLUB.write : "#0c0910";
-          const rows = tok.lines;
-          let size = r * (rows.length > 1 ? 0.4 : 0.46);
-          const font = (px) => `700 ${px.toFixed(2)}px "JetBrains Mono", ui-monospace, Menlo, "Courier New", monospace`;
-          ctx.font = font(size);
-          let widest = 0;
-          for (const l of rows) widest = Math.max(widest, ctx.measureText(l).width);
-          const room = r * (rows.length > 1 ? 1.6 : 1.7);
-          if (widest > room) {
-            size *= room / widest;
-            ctx.font = font(size);
-          }
-          if (rows.length > 1) {
-            ctx.fillText(rows[0], x, y - size * 0.62);
-            ctx.fillText(rows[1], x, y + size * 0.62);
-          } else {
-            ctx.fillText(rows[0], x, y);
-          }
+        /* the token, printed on the tile */
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        const cx = x + tileW / 2;
+        const cy = y + tileH / 2;
+        if (tk.hole) {
+          /* The hole is blank in the writing even though the record still
+             plays its sour value — so the tile asks the question the script
+             is asking, rather than showing the answer it has not been given. */
+          const L = s.loopLines[tk.li] && s.loopLines[tk.li][tk.line];
+          ctx.fillStyle = CLUB.write;
+          ctx.font = `700 11px ${MONO}`;
+          ctx.fillText((L ? L.t : "play") + " ?", cx, cy);
+        } else if (tk.lines.length > 1 && tileH >= 26) {
+          ctx.fillStyle = tint(CLUB.noteInk, 0.65);
+          ctx.font = `700 8px ${MONO}`;
+          ctx.fillText(tk.lines[0], cx, cy - tileH * 0.17);
+          ctx.fillStyle = CLUB.noteInk;
+          ctx.font = `700 10px ${MONO}`;
+          ctx.fillText(fit(ctx, tk.lines[1], tileW - 10, 10), cx, cy + tileH * 0.17);
+        } else if (tileH >= 18) {
+          ctx.fillStyle = CLUB.noteInk;
+          ctx.font = `700 11px ${MONO}`;
+          ctx.fillText(fit(ctx, tk.lines[tk.lines.length - 1], tileW - 10, 11), cx, cy);
         }
-        ctx.globalAlpha = 1;
+      }
+
+      /* ---- YOUR LANE, pinned to the top edge of the lane you write ---- */
+      const fk = lanes.indexOf(s.focus);
+      if (fk >= 0) {
+        const label = "YOUR LANE";
+        ctx.font = `700 9px ${UI}`;
+        const tw = ctx.measureText(label).width + 18;
+        const bx = laneX(fk) + (laneW - tw) / 2;
+        roundRect(ctx, bx, colTop - 8, tw, 17, 99);
+        ctx.fillStyle = CLUB.write;
+        ctx.fill();
+        ctx.fillStyle = CLUB.writeInk;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(label, bx + tw / 2, colTop + 0.5);
       }
     }
+
+    /* shrink a token to fit its tile rather than let it run over the edge */
+    function fit(c, text, room, size) {
+      if (c.measureText(text).width <= room) return text;
+      let out = text;
+      while (out.length > 2 && c.measureText(out + "…").width > room) out = out.slice(0, -1);
+      return out + "…";
+    }
+
+    const MONO = '"JetBrains Mono", ui-monospace, Menlo, "Courier New", monospace';
+    const UI = '"Fredoka", system-ui, sans-serif';
 
     /* Reduced motion: the pit holds still as a diagram, the track still runs. */
     const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
