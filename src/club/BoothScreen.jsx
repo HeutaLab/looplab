@@ -67,6 +67,11 @@ export function BoothScreen({
   const [phase, setPhase] = useState("we");
   const [hint, setHint] = useState("");
   const [typed, setTyped] = useState("");
+  /* The room's opinion. A clean fix raises it, a wrong one costs a little,
+     and it never empties — nothing in the booth is allowed to read as
+     failure. Combo counts clean fixes in a row. */
+  const [combo, setCombo] = useState(0);
+  const [crowd, setCrowd] = useState(0.35);
   const solo = useSolo();
   const mode = track.codeMode || "chips";
   const [showChips, setShowChips] = useState(false);
@@ -160,9 +165,12 @@ export function BoothScreen({
       setHint(site.hint);
       return;
     }
+    const right = kind === site.type && String(v) === String(site.clean);
     setFills({ ...fills, [holeKey]: v });
-    setHint(kind === site.type && String(v) === String(site.clean) ? "" : site.hint);
+    setHint(right ? "" : site.hint);
     setTyped("");
+    setCombo((c) => (right ? c + 1 : 0));
+    setCrowd((c) => Math.max(0.15, Math.min(1, c + (right ? 0.25 : -0.1))));
   }
   const tapChip = (c) => write(c.t, c.v);
 
@@ -173,6 +181,15 @@ export function BoothScreen({
   const chipSite = site || (phase === "i" ? sites[0] : lastSite.current);
 
   const laneInk = channelInk(track, chipSite ? chipSite.loop : 0);
+
+  /* The ring fills towards the next star rather than towards a high score:
+     three holes to a star on most records, so a full ring is a clean phase. */
+  const comboPct = Math.min(100, (combo % 3 === 0 && combo > 0 ? 3 : combo % 3) * 33.4);
+  const crowdWord = crowd >= 0.85 ? "Hyped!" : crowd >= 0.6 ? "Going off" : crowd >= 0.35 ? "Moving" : "Warming up";
+  /* A star per hole fixed. Being on a tab is not an achievement — the first
+     version handed one out for simply landing on We do, which is where the
+     booth opens. */
+  const starsEarned = Math.min(3, solved.filter(Boolean).length);
 
   const chips = useMemo(() => {
     const site = chipSite;
@@ -250,6 +267,16 @@ export function BoothScreen({
         <h1 className="booth-who">
           {playerName} &middot; <b>{track.title}</b> &middot; {track.bpm} BPM
         </h1>
+        <span className="booth-stars" aria-label={`${starsEarned} of 3 stars`}>
+          {[0, 1, 2].map((i) => (
+            <svg key={i} width="15" height="15" viewBox="0 0 20 20" aria-hidden="true">
+              <path
+                d="M10 1.6l2.5 5.4 5.9.7-4.4 4 1.2 5.8L10 14.6 4.8 17.5 6 11.7 1.6 7.7l5.9-.7z"
+                fill={i < starsEarned ? "#ffb703" : "rgba(243,238,228,.25)"}
+              />
+            </svg>
+          ))}
+        </span>
         <button
           type="button"
           className="booth-silence"
@@ -290,6 +317,36 @@ export function BoothScreen({
           sour={playTag === "goal" ? new Set() : sour}
           solo={solo}
         />
+
+        <aside className="booth-rail">
+          <div
+            className="booth-combo"
+            data-hot={combo >= 2 ? "true" : undefined}
+            style={{
+              background: `conic-gradient(var(--ok) 0 ${comboPct}%, rgba(243,238,228,.12) ${comboPct}% 100%)`,
+            }}
+          >
+            <div className="booth-combo-in">
+              <span className="booth-combo-n">&times;{combo}</span>
+              <span className="booth-combo-l">COMBO</span>
+            </div>
+          </div>
+
+          <div className="booth-crowd">
+            <span className="booth-crowd-l">CROWD</span>
+            <div
+              className="booth-crowd-track"
+              role="meter"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={Math.round(crowd * 100)}
+              aria-label={`Crowd: ${crowdWord}`}
+            >
+              <div className="booth-crowd-fill" style={{ height: `${crowd * 100}%`, "--w": `${crowd * 100}%` }} />
+            </div>
+            <span className="booth-crowd-cap">{crowdWord}</span>
+          </div>
+        </aside>
 
         <section className="booth-write">
           <pre className="booth-code">

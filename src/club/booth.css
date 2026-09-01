@@ -125,7 +125,7 @@
   flex: 1 1 auto;
   min-height: 0;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  grid-template-columns: minmax(0, 1fr) 96px minmax(0, 1.05fr);
   gap: var(--pad);
   padding: var(--pad);
 }
@@ -326,3 +326,88 @@
   font-size: 13px;
 }
 .booth-chip.booth-ghost:hover { color: var(--ink); border-color: var(--ink); background: transparent; }
+
+
+/* ---- the HUD rail, between the pit and the script ----
+
+   The handoff draws a combo ring and a crowd meter but does not say what
+   either counts, because in a booth with no timing to hit there is nothing
+   obvious for them to count. They read the only real events here: a clean
+   fix raises the room, a wrong one costs a little. The crowd never empties
+   and nothing ever fails — a wrong answer just plays sour, same rule as the
+   rest of the floor. */
+.booth-rail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  min-width: 0;
+}
+
+.booth-combo {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  transition: box-shadow 0.3s ease;
+}
+.booth-combo[data-hot="true"] { box-shadow: 0 0 26px rgba(125, 255, 179, 0.4); }
+.booth-combo-in {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: var(--void);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+}
+.booth-combo-n {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--ok);
+  line-height: 1;
+}
+.booth-combo-l {
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  color: var(--dim);
+}
+
+.booth-crowd { display: flex; flex-direction: column; align-items: center; gap: 7px; }
+.booth-crowd-l {
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  color: var(--dim);
+}
+.booth-crowd-track {
+  width: 20px;
+  height: 150px;
+  border-radius: 99px;
+  background: rgba(243, 238, 228, 0.1);
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+}
+.booth-crowd-fill {
+  width: 100%;
+  border-radius: 99px;
+  background: linear-gradient(to top, #4ab8f0, #7dffb3, #ffb703);
+  transition: height 0.45s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+.booth-crowd-cap { font-size: 11px; font-weight: 600; color: var(--ink); }
+
+/* stars in the top bar, per the handoff: earned amber, unearned a whisper */
+.booth-stars { display: inline-flex; gap: 3px; align-items: center; }
+
+@media (max-width: 699px) {
+  /* one thumb: the rail lies down under the pit rather than stealing width */
+  .booth-stage { grid-template-columns: minmax(0, 1fr); grid-template-rows: 170px auto auto; }
+  .booth-rail { flex-direction: row; gap: 18px; justify-content: flex-start; }
+  .booth-crowd { flex-direction: row; align-items: center; gap: 8px; }
+  .booth-crowd-track { width: 120px; height: 14px; align-items: stretch; }
+  .booth-crowd-fill { height: 100% !important; width: var(--w); }
+}
