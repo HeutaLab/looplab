@@ -186,8 +186,16 @@ export function BoothScreen({
   }
   const tapChip = (c) => write(c.t, c.v);
 
-  /* The chips stay on screen when there is no hole open — locked, not gone, so
-     the row never collapses and the writing tools never vanish mid-lesson. */
+  /* On a record that asks for typing — hybrid or typed — the chips start
+     folded away behind "Stuck?", and the keyboard is the first offer. They
+     are one tap back and taking them is never called failure; what it buys is
+     a row of script, which on Piano Sunrise is the difference between seeing
+     half the loop and seeing it.
+
+     Something always holds that row: the chips themselves on a chip record —
+     locked when there is no hole open, not gone — and the "Stuck?" button on
+     a typing one. The writing tools never vanish mid-lesson and the script
+     above them never jumps. */
   const lastSite = useRef(sites[0]);
   if (site) lastSite.current = site;
   const chipSite = site || (phase === "i" ? sites[0] : lastSite.current);
@@ -508,7 +516,7 @@ export function BoothScreen({
                 </button>
               </form>
             )}
-            {(mode !== "typed" || showChips) && (
+            {(mode === "chips" || showChips) && (
               <>
                 <span className="booth-legend">Write with these</span>
                 {chips.map((c, i) => (
@@ -532,7 +540,7 @@ export function BoothScreen({
                 ))}
               </>
             )}
-            {mode === "typed" && site && (
+            {mode !== "chips" && (
               <button type="button" className="booth-chip booth-ghost" onClick={() => setShowChips((v) => !v)}>
                 {showChips ? "Hide the chips" : "Stuck? Show the chips"}
               </button>
