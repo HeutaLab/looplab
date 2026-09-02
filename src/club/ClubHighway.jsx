@@ -60,7 +60,7 @@ function labelFor(group) {
   return ["play " + first.note];
 }
 
-export function ClubHighway({ track, loopLines, playInfo, elapsed, focus, hole, sour, solo }) {
+export function ClubHighway({ track, loopLines, playInfo, elapsed, focus, hole, hit, sour, solo }) {
   const cv = useRef(null);
   const wrap = useRef(null);
 
@@ -89,7 +89,7 @@ export function ClubHighway({ track, loopLines, playInfo, elapsed, focus, hole, 
   }, [loopLines]);
 
   const state = useRef({});
-  state.current = { track, loopLines, playInfo, elapsed, focus, hole, sour, solo, idle, tightest };
+  state.current = { track, loopLines, playInfo, elapsed, focus, hole, hit, sour, solo, idle, tightest };
   const drawRef = useRef(null);
 
   useEffect(() => {
@@ -117,6 +117,12 @@ export function ClubHighway({ track, loopLines, playInfo, elapsed, focus, hole, 
       const live = !!s.playInfo && s.elapsed !== null;
       const t0 = live ? s.elapsed : 0;
       const beat = 60 / s.track.bpm;
+
+      /* The moment a line lands: 120ms to arrive, then 400ms to settle. Held
+         as a 0..1 curve the tile, the lane and the hit line all read from, so
+         the whole pit reacts to one event rather than three timers. */
+      const age = s.hit ? performance.now() - s.hit.at : Infinity;
+      const flash = age < 120 ? age / 120 : age < 520 ? 1 - (age - 120) / 400 : 0;
 
       const lanes = s.solo ? [s.focus] : s.loopLines.map((_, i) => i);
       const GAP = 7;
@@ -165,14 +171,14 @@ export function ClubHighway({ track, loopLines, playInfo, elapsed, focus, hole, 
         g.addColorStop(0, tint(ink, on ? 0.06 : 0.03));
         g.addColorStop(1, tint(ink, on ? 0.24 : 0.16));
         if (on) {
-          ctx.shadowColor = tint(ink, 0.3);
-          ctx.shadowBlur = 20;
+          ctx.shadowColor = tint(ink, 0.3 + 0.2 * flash);
+          ctx.shadowBlur = 20 + 10 * flash;
         }
         roundRect(ctx, x, colTop, laneW, colBottom - colTop, 13);
         ctx.fillStyle = g;
         ctx.fill();
         ctx.shadowBlur = 0;
-        ctx.strokeStyle = tint(ink, on ? 0.8 : 0.4);
+        ctx.strokeStyle = tint(ink, on ? Math.min(1, 0.8 + 0.2 * flash) : 0.4);
         ctx.lineWidth = on ? 2.5 : 2;
         ctx.stroke();
 
@@ -188,7 +194,7 @@ export function ClubHighway({ track, loopLines, playInfo, elapsed, focus, hole, 
       const sinceBeat = live ? t0 - Math.floor(t0 / beat) * beat : beat;
       const pulse = live ? Math.max(0, 1 - sinceBeat / 0.16) : 0;
       ctx.shadowColor = tint(CLUB.ink, 0.7);
-      ctx.shadowBlur = 14 + pulse * 12;
+      ctx.shadowBlur = 14 + pulse * 12 + 14 * flash;
       ctx.beginPath();
       ctx.moveTo(0, hitY);
       ctx.lineTo(W, hitY);
@@ -218,6 +224,7 @@ export function ClubHighway({ track, loopLines, playInfo, elapsed, focus, hole, 
           sample: ev.kind !== "note",
           hole: keys.some((key) => s.hole === key),
           sour: keys.some((key) => s.sour.has(key)),
+          landed: !!s.hit && keys.some((key) => s.hit.key === key),
         });
       }
       /* A sleep makes no sound, so it produces no event and never reached the
@@ -250,15 +257,19 @@ export function ClubHighway({ track, loopLines, playInfo, elapsed, focus, hole, 
       }
 
       toks.sort((a, b) => b.dt - a.dt); /* far first, so near tiles sit on top */
+      let landedAt = null;
 
       for (const tk of toks) {
         const ink = channelInk(s.track, tk.li);
-        const x = laneX(tk.k) + (laneW - tileW) / 2;
-        const y = yOf(tk.dt) - tileH / 2;
+        const grow = tk.landed ? 1 + 0.12 * flash : 1;
+        const tw = tileW * grow;
+        const th = tileH * grow;
+        const x = laneX(tk.k) + (laneW - tw) / 2;
+        const y = yOf(tk.dt) - th / 2;
         const near = Math.max(0, 1 - tk.dt / (beat * 1.2));
 
         /* the hard drop shadow that makes a tile a tile */
-        roundRect(ctx, x, y + 3, tileW, tileH, 11);
+        roundRect(ctx, x, y + 3, tw, th, 11);
         ctx.fillStyle = tk.hole ? tint(CLUB.write, 0.35) : shadowOf(tk.li);
         ctx.fill();
 
@@ -266,7 +277,7 @@ export function ClubHighway({ track, loopLines, playInfo, elapsed, focus, hole, 
           ctx.shadowColor = tint(ink, 0.6 * near);
           ctx.shadowBlur = 16 * near;
         }
-        roundRect(ctx, x, y, tileW, tileH, 11);
+        roundRect(ctx, x, y, tw, th, 11);
 
         if (tk.hole) {
           /* the thing you write: absent, so it is dashed and hollow */
@@ -279,6 +290,17 @@ export function ClubHighway({ track, loopLines, playInfo, elapsed, focus, hole, 
           ctx.lineWidth = 3;
           ctx.stroke();
           ctx.setLineDash([]);
+        } else if (tk.landed && flash > 0) {
+          /* the line just landed: it goes green and lights up, and it now
+             reads the finished token instead of the question */
+          landedAt = { cx: x + tw / 2, top: y };
+          ctx.fillStyle = CLUB.ok;
+          ctx.fill();
+          ctx.shadowColor = tint(CLUB.ok, 0.9);
+          ctx.shadowBlur = 26 * flash;
+          ctx.strokeStyle = CLUB.okBorder;
+          ctx.lineWidth = 3;
+          ctx.stroke();
         } else {
           ctx.fillStyle = tk.sour ? CLUB.sour : ink;
           ctx.fill();
@@ -292,8 +314,8 @@ export function ClubHighway({ track, loopLines, playInfo, elapsed, focus, hole, 
         /* the token, printed on the tile */
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        const cx = x + tileW / 2;
-        const cy = y + tileH / 2;
+        const cx = x + tw / 2;
+        const cy = y + th / 2;
         if (tk.hole) {
           /* The hole is blank in the writing even though the record still
              plays its sour value — so the tile asks the question the script
@@ -302,18 +324,61 @@ export function ClubHighway({ track, loopLines, playInfo, elapsed, focus, hole, 
           ctx.fillStyle = CLUB.write;
           ctx.font = `700 11px ${MONO}`;
           ctx.fillText((L ? L.t : "play") + " ?", cx, cy);
-        } else if (tk.lines.length > 1 && tileH >= 26) {
+        } else if (tk.lines.length > 1 && th >= 26) {
           ctx.fillStyle = tint(CLUB.noteInk, 0.65);
           ctx.font = `700 8px ${MONO}`;
-          ctx.fillText(tk.lines[0], cx, cy - tileH * 0.17);
+          ctx.fillText(tk.lines[0], cx, cy - th * 0.17);
           ctx.fillStyle = CLUB.noteInk;
           ctx.font = `700 10px ${MONO}`;
-          ctx.fillText(fit(ctx, tk.lines[1], tileW - 10, 10), cx, cy + tileH * 0.17);
-        } else if (tileH >= 18) {
+          ctx.fillText(fit(ctx, tk.lines[1], tw - 10, 10), cx, cy + th * 0.17);
+        } else if (th >= 18) {
           ctx.fillStyle = CLUB.noteInk;
           ctx.font = `700 11px ${MONO}`;
-          ctx.fillText(fit(ctx, tk.lines[tk.lines.length - 1], tileW - 10, 11), cx, cy);
+          ctx.fillText(fit(ctx, tk.lines[tk.lines.length - 1], tw - 10, 11), cx, cy);
         }
+      }
+
+      /* ---- the moment it lands ----
+
+         A burst of amber light and one word, above the tile that just went
+         green. It fires on a correct write and never on a wrong one: there
+         is no failure state on this floor, a wrong answer simply plays sour
+         and the room quietens a little. */
+      if (flash > 0) {
+        /* Anchored to the tile that landed when it happens to be on screen.
+           The handoff assumes the line is committed as its note reaches the
+           hit line; here it is committed whenever the player presses Write,
+           so the note can be anywhere in the loop — and a celebration you
+           cannot see is not a celebration. Falling back to the hit line in
+           the lane being written means the moment always lands somewhere the
+           eye already is. */
+        const fb = lanes.indexOf(s.focus);
+        const raw = landedAt ? landedAt.cx : laneX(Math.max(0, fb)) + laneW / 2;
+        /* the word is wider than a lane, so keep it inside the canvas rather
+           than letting it run off the first or last column */
+        const bx = Math.max(58, Math.min(W - 58, raw));
+        const by = (landedAt ? landedAt.top : hitY - tileH / 2) - 22;
+        const burst = ctx.createRadialGradient(bx, by, 0, bx, by, 100 * (0.6 + 0.4 * flash));
+        burst.addColorStop(0, tint(CLUB.write, 0.5 * flash));
+        burst.addColorStop(0.7, tint(CLUB.write, 0));
+        ctx.fillStyle = burst;
+        ctx.fillRect(bx - 110, by - 110, 220, 220);
+
+        ctx.save();
+        ctx.translate(bx, by);
+        ctx.rotate((-4 * Math.PI) / 180);
+        ctx.scale(0.86 + 0.14 * Math.min(1, flash * 1.6), 0.86 + 0.14 * Math.min(1, flash * 1.6));
+        ctx.font = `700 20px ${UI}`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.shadowColor = tint(CLUB.ok, 0.9);
+        ctx.shadowBlur = 16;
+        ctx.globalAlpha = flash;
+        ctx.fillStyle = CLUB.ok;
+        ctx.fillText("PERFECT!", 0, 0);
+        ctx.restore();
+        ctx.shadowBlur = 0;
+        ctx.globalAlpha = 1;
       }
 
       /* ---- YOUR LANE, pinned to the top edge of the lane you write ---- */

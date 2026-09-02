@@ -465,3 +465,24 @@
   .booth-crowd-track { width: 120px; height: 14px; align-items: stretch; }
   .booth-crowd-fill { height: 100% !important; width: var(--w); }
 }
+
+
+/* ---- the script side of the moment it lands ---- */
+
+/* a fixed line stays green: amber means "still to write", green means written
+   and right, so the script reads as a record of what has been put back */
+.booth-ln[data-locked="true"] .bar { background: var(--ok); }
+.booth-fill { color: var(--write); }
+.booth-ln[data-locked="true"] .booth-fill { color: var(--ok); }
+.booth-ln[data-hit="true"] { background: rgba(125, 255, 179, 0.08); }
+.booth-ln[data-hit="true"] .bar { background: var(--ok); width: 4px; }
+.booth-locked {
+  font-family: "Fredoka", system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ok);
+  letter-spacing: 0.02em;
+}
+
+/* the room saying it out loud */
+.booth-crowd-cap[data-up="true"] { color: var(--write); }

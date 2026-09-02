@@ -72,6 +72,13 @@ export function BoothScreen({
      failure. Combo counts clean fixes in a row. */
   const [combo, setCombo] = useState(0);
   const [crowd, setCrowd] = useState(0.35);
+  /* The moment a line lands. Held for just over a second so the tile can go
+     green, the room can react and the script can say it is locked in — then
+     it clears and the loop carries on. Only ever fires on a correct write:
+     a wrong one is not a failure state, it is just a sour note. */
+  const [hit, setHit] = useState(null);
+  const hitTimer = useRef(null);
+  useEffect(() => () => clearTimeout(hitTimer.current), []);
   const solo = useSolo();
   const mode = track.codeMode || "chips";
   const [showChips, setShowChips] = useState(false);
@@ -171,6 +178,11 @@ export function BoothScreen({
     setTyped("");
     setCombo((c) => (right ? c + 1 : 0));
     setCrowd((c) => Math.max(0.15, Math.min(1, c + (right ? 0.25 : -0.1))));
+    if (right) {
+      setHit({ key: holeKey, at: performance.now() });
+      clearTimeout(hitTimer.current);
+      hitTimer.current = setTimeout(() => setHit(null), 1150);
+    }
   }
   const tapChip = (c) => write(c.t, c.v);
 
@@ -251,7 +263,14 @@ export function BoothScreen({
         </>
       );
     if (sour.has(key)) return <>{word}<span className="booth-sour">{value}</span></>;
-    if (fills[key] !== undefined) return <>{word}<span className="booth-fill">{value}</span></>;
+    if (fills[key] !== undefined)
+      return (
+        <>
+          {word}
+          <span className="booth-fill">{value}</span>
+          {hit && hit.key === key && <span className="booth-locked"> &#10003; locked in</span>}
+        </>
+      );
     return lineText(L);
   }
 
@@ -317,6 +336,7 @@ export function BoothScreen({
           elapsed={elapsed}
           focus={focus}
           hole={blank ? holeKey : null}
+          hit={hit}
           sour={playTag === "goal" ? new Set() : sour}
           solo={solo}
         />
@@ -324,7 +344,7 @@ export function BoothScreen({
         <aside className="booth-rail">
           <div
             className="booth-combo"
-            data-hot={combo >= 2 ? "true" : undefined}
+            data-hot={hit || combo >= 2 ? "true" : undefined}
             style={{
               background: `conic-gradient(var(--ok) 0 ${comboPct}%, rgba(243,238,228,.12) ${comboPct}% 100%)`,
             }}
@@ -347,7 +367,9 @@ export function BoothScreen({
             >
               <div className="booth-crowd-fill" style={{ height: `${crowd * 100}%`, "--w": `${crowd * 100}%` }} />
             </div>
-            <span className="booth-crowd-cap">{crowdWord}</span>
+            <span className="booth-crowd-cap" data-up={hit ? "true" : undefined}>
+              {hit ? "Crowd goes up!" : crowdWord}
+            </span>
           </div>
         </aside>
 
@@ -374,6 +396,8 @@ export function BoothScreen({
                     data-now={nowLine === i ? "true" : undefined}
                     data-hole={isHole ? "true" : undefined}
                     data-bug={sour.has(key) || fills[key] !== undefined ? "" : undefined}
+                    data-locked={fills[key] !== undefined && !sour.has(key) ? "true" : undefined}
+                    data-hit={hit && hit.key === key ? "true" : undefined}
                   >
                     <span className="bar" />
                     {"  "}
