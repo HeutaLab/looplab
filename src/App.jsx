@@ -96,14 +96,14 @@ export default function LoopLab() {
         <button
           onClick={() => setShowAudio((v) => !v)}
           aria-label={muted ? "Sound is muted — open sound settings" : "Open sound settings"}
-          className="rounded-xl px-3 py-2 font-extrabold"
+          className="rounded-xl px-3 py-2 font-bold"
           style={{ background: C.panel2, border: `1px solid ${muted ? C.orange : C.line}`, color: muted ? C.orange : C.ink }}
         >
           {muted ? "🔇" : volume > 0.5 ? "🔊" : volume > 0 ? "🔉" : "🔈"}
         </button>
         {showAudio && (
           <div className="rounded-2xl p-3" style={{ background: C.panel, border: `1px solid ${C.line}`, width: 220 }}>
-            <div className="text-[11px] font-extrabold uppercase" style={{ color: C.dim }}>
+            <div className="text-[11px] font-bold uppercase" style={{ color: C.dim }}>
               Volume
             </div>
             <input
@@ -138,7 +138,7 @@ export default function LoopLab() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-5" style={{ background: "rgba(10,8,25,0.9)" }}>
           <div className="w-full max-w-sm rounded-3xl p-5 text-center" style={{ background: C.panel, border: `2px solid ${C.aqua}` }}>
             <div className="text-4xl">🎧</div>
-            <div className="mt-1 text-xl font-extrabold">Headphones on?</div>
+            <div className="mt-1 text-xl font-bold">Headphones on?</div>
             <div className="mt-1 text-sm font-semibold" style={{ color: C.dim }}>
               This one makes noise. Plug your headphones in so you can hear your track — and so everyone else can hear theirs.
             </div>

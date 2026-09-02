@@ -17,7 +17,7 @@ export function ClubScreen({ records, stars, onPick, back }) {
           <div className="text-[11px] font-bold uppercase" style={{ color: C.dim, letterSpacing: "0.16em" }}>
             The Club
           </div>
-          <h1 className="text-lg font-bold">Pick a record</h1>
+          <h1 className="text-lg font-semibold">Pick a record</h1>
         </div>
       </div>
       <Mentor text="Here's the crate: six dance-floor tracks written in real live loops. Each one came back from the studio with bugs. Find them by ear, fix them, then play the track live." />
@@ -47,7 +47,7 @@ export function ClubScreen({ records, stars, onPick, back }) {
                 {tr.bpm}
               </span>
               <span className="flex-1">
-                <span className="block font-bold" style={{ color: unlocked ? CLUB.ink : CLUB.dim }}>
+                <span className="block font-semibold" style={{ color: unlocked ? CLUB.ink : CLUB.dim, letterSpacing: "0.006em" }}>
                   {tr.title}
                 </span>
                 <span className="block text-xs" style={{ color: CLUB.dim }}>

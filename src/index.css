@@ -47,6 +47,19 @@ body,
   height: 100%;
 }
 
+/* Titles stop at 600.
+
+   Fredoka's 700 sets too tight for its own weight: on a dark ground the
+   letters bloom into each other and a track title stops being readable, even
+   though the same 700 is fine at body size. Headings cap at 600 and carry a
+   little extra tracking to give the heavier strokes somewhere to go. */
+h1,
+h2,
+h3 {
+  font-weight: 600;
+  letter-spacing: 0.006em;
+}
+
 /* Where the keyboard is, always visible.
 
    The app had no focus state at all, so a child driving it with a keyboard, a

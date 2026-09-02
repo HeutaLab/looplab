@@ -52,7 +52,7 @@ export function CelebrateOverlay({ level, hasNext, onMap, onNext, onStay }) {
         <div className="text-[11px] font-bold uppercase" style={{ color: C.dim, letterSpacing: "0.18em" }}>
           Level {level.title}
         </div>
-        <h2 className="mt-1 text-2xl font-bold">Level complete</h2>
+        <h2 className="mt-1 text-2xl font-semibold">Level complete</h2>
         <div className="my-3 flex justify-center">
           <Stars n={3} size={30} />
         </div>

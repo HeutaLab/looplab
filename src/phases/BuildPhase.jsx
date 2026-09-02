@@ -143,7 +143,7 @@ export function BuildPhase({ level, playInfo, playTag, elapsed, playMulti, stopA
           className="rounded-[4px] p-3"
           style={{ background: justDone ? "rgba(92,224,126,0.15)" : C.panel2, border: `2px solid ${justDone ? C.green : C.violet}` }}
         >
-          <div className="text-xs font-extrabold uppercase tracking-wide" style={{ color: justDone ? C.green : C.violet }}>
+          <div className="text-xs font-bold uppercase tracking-wide" style={{ color: justDone ? C.green : C.violet }}>
             {justDone ? "Stage complete" : `Stage ${stageIdx + 1} · write it in :${b.loops[activeLoop].name}`}
           </div>
           <div className="mt-1 text-sm font-semibold">{stage.brief}</div>
@@ -207,7 +207,7 @@ export function BuildPhase({ level, playInfo, playTag, elapsed, playMulti, stopA
                   <button
                     aria-label="Remove this line"
                     onClick={() => removeAt(i)}
-                    className="ml-1 rounded-[4px] px-2 text-xs font-extrabold"
+                    className="ml-1 rounded-[4px] px-2 text-xs font-bold"
                     style={{ color: C.pink, background: "rgba(255,92,168,0.12)", height: 24 }}
                   >
                     ✕
@@ -238,7 +238,7 @@ export function BuildPhase({ level, playInfo, playTag, elapsed, playMulti, stopA
           .filter(([k]) => allowed.includes(k) && unlocked.groups.has(k))
           .map(([k, g]) => (
             <div key={k} className="flex flex-wrap items-center gap-1.5">
-              <span className="text-[11px] font-extrabold uppercase" style={{ color: C.dim, minWidth: 62 }}>
+              <span className="text-[11px] font-bold uppercase" style={{ color: C.dim, minWidth: 62 }}>
                 {g.label}
               </span>
               {g.items.map((it) => (

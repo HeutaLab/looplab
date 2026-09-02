@@ -35,7 +35,7 @@ export function DJScreen(props) {
             <div className="text-[11px] font-bold uppercase" style={{ color: C.dim, letterSpacing: "0.16em" }}>
               {track.style} &middot; {track.bpm} BPM
             </div>
-            <h1 className="text-lg font-bold">{track.title}</h1>
+            <h1 className="text-lg font-semibold">{track.title}</h1>
           </div>
         </div>
       )}

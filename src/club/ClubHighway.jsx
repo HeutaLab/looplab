@@ -386,14 +386,25 @@ export function ClubHighway({ track, loopLines, playInfo, elapsed, focus, hole, 
         ctx.translate(bx, by);
         ctx.rotate((-4 * Math.PI) / 180);
         ctx.scale(0.86 + 0.14 * Math.min(1, flash * 1.6), 0.86 + 0.14 * Math.min(1, flash * 1.6));
-        ctx.font = `700 20px ${UI}`;
+        ctx.font = `600 20px ${UI}`;
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
         ctx.shadowColor = tint(CLUB.ok, 0.9);
         ctx.shadowBlur = 16;
         ctx.globalAlpha = flash;
         ctx.fillStyle = CLUB.ok;
-        ctx.fillText("PERFECT!", 0, 0);
+        /* canvas has no letter-spacing, so the word is drawn letter by letter
+           to open the tracking Fredoka's heavy weight needs on a dark ground */
+        const word = "PERFECT!";
+        const track = 1.1;
+        const widths = [...word].map((ch) => ctx.measureText(ch).width);
+        const total = widths.reduce((a, b) => a + b, 0) + track * (word.length - 1);
+        let wx = -total / 2;
+        ctx.textAlign = "left";
+        [...word].forEach((ch, i) => {
+          ctx.fillText(ch, wx, 0);
+          wx += widths[i] + track;
+        });
         ctx.restore();
         ctx.shadowBlur = 0;
         ctx.globalAlpha = 1;

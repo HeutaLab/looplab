@@ -65,7 +65,8 @@
 }
 .booth-who b {
   color: var(--ink);
-  font-weight: 700;
+  font-weight: 600;
+  letter-spacing: 0.006em;
 }
 .booth-silence {
   appearance: none;
@@ -113,7 +114,7 @@
   color: var(--dim);
   opacity: 0.55;
 }
-.booth-phase .n { font-size: 16px; font-weight: 700; }
+.booth-phase .n { font-size: 16px; font-weight: 600; letter-spacing: 0.006em; }
 .booth-phase .s { font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; }
 .booth-phase[data-state="done"] { color: var(--ok); opacity: 1; }
 .booth-phase[data-state="on"] { color: var(--ink); opacity: 1; border-bottom-color: var(--ink); }
@@ -438,7 +439,7 @@
 }
 .booth-combo-n {
   font-size: 17px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--ok);
   line-height: 1;
 }

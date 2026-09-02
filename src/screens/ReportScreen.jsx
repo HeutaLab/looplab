@@ -17,16 +17,16 @@ export function ReportScreen({ stars, records, name, onName, onRestore, onBack }
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center gap-2">
-        <button onClick={onBack} className="rounded-[4px] px-3 py-2 font-extrabold" style={{ background: C.panel2, border: `1px solid ${C.line}` }} aria-label="Back to the level map">
+        <button onClick={onBack} className="rounded-[4px] px-3 py-2 font-bold" style={{ background: C.panel2, border: `1px solid ${C.line}` }} aria-label="Back to the level map">
           ←
         </button>
-        <h1 className="text-lg font-bold">My progress</h1>
+        <h1 className="text-lg font-semibold">My progress</h1>
       </div>
 
       <Mentor text="This is everything you've done so far. Put your name on it, then copy it into Google Classroom or save it for your folder." />
 
       <div className="rounded-[4px] p-3" style={{ background: C.panel, border: `1px solid ${C.line}` }}>
-        <label className="text-xs font-extrabold uppercase" style={{ color: C.dim }} htmlFor="looplab-name">
+        <label className="text-xs font-bold uppercase" style={{ color: C.dim }} htmlFor="looplab-name">
           Your name
         </label>
         <input
@@ -46,10 +46,10 @@ export function ReportScreen({ stars, records, name, onName, onRestore, onBack }
 
       {/* school -> home, by hand */}
       <div className="rounded-[4px] p-3" style={{ background: C.panel, border: `1px solid ${C.aqua}` }}>
-        <div className="text-xs font-extrabold uppercase" style={{ color: C.aqua }}>
+        <div className="text-xs font-bold uppercase" style={{ color: C.aqua }}>
           My progress code
         </div>
-        <div className="mt-1 select-all text-center font-mono font-extrabold" style={{ color: C.yellow, fontSize: 24, letterSpacing: 2 }}>
+        <div className="mt-1 select-all text-center font-mono font-bold" style={{ color: C.yellow, fontSize: 24, letterSpacing: 2 }}>
           {myCode}
         </div>
         <div className="mt-1 text-center text-[11px] font-semibold" style={{ color: C.dim }}>
@@ -70,7 +70,7 @@ export function ReportScreen({ stars, records, name, onName, onRestore, onBack }
         </div>
 
         <div className="mt-3 border-t pt-2" style={{ borderColor: C.line }}>
-          <label className="text-xs font-extrabold uppercase" style={{ color: C.dim }} htmlFor="restore-code">
+          <label className="text-xs font-bold uppercase" style={{ color: C.dim }} htmlFor="restore-code">
             Got a code? Type it here
           </label>
           <div className="mt-1 flex gap-2">

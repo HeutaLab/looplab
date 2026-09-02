@@ -10,7 +10,7 @@ export function SetResults({ track, result, finalLines, onReplay, onBack }) {
   const m = result.record ? medal[result.record] : ["The crowd wants more practice", C.dim];
   return (
     <div className="flex flex-col items-center gap-3 rounded-3xl p-5 text-center" style={{ background: C.panel, border: `2px solid ${m[1]}` }}>
-      <div className="text-2xl font-extrabold" style={{ color: m[1] }}>
+      <div className="text-2xl font-bold" style={{ color: m[1] }}>
         {m[0]}
       </div>
       <div className="text-sm font-semibold" style={{ color: C.dim }}>

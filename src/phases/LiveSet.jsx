@@ -180,7 +180,7 @@ export function LiveSet({ track, startLines, ensureAudio, trigger, unlockMedia, 
       <div className={PHASE["gap-2"].watch}>
       {/* crowd */}
       <div className="rounded-[4px] p-3" style={{ background: C.panel, border: `1px solid ${C.line}` }}>
-        <div className="flex items-center justify-between text-xs font-extrabold" style={{ color: C.dim }}>
+        <div className="flex items-center justify-between text-xs font-bold" style={{ color: C.dim }}>
           <span>
             Bar {Math.min(e.bar, SET_BARS)}/{SET_BARS}
           </span>
@@ -210,13 +210,13 @@ export function LiveSet({ track, startLines, ensureAudio, trigger, unlockMedia, 
 
       {/* BPM + end */}
       <div className="flex items-center gap-2">
-        <span className="text-xs font-extrabold" style={{ color: C.dim }}>
+        <span className="text-xs font-bold" style={{ color: C.dim }}>
           BPM
         </span>
         <Chip small onClick={() => (e.bpm = Math.max(118, e.bpm - 2))}>
           −
         </Chip>
-        <span className="font-mono text-sm font-extrabold" style={{ color: C.yellow }}>
+        <span className="font-mono text-sm font-bold" style={{ color: C.yellow }}>
           {e.bpm}
         </span>
         <Chip small onClick={() => (e.bpm = Math.min(148, e.bpm + 2))}>
@@ -237,7 +237,7 @@ export function LiveSet({ track, startLines, ensureAudio, trigger, unlockMedia, 
               setSel(i);
               setSelLine(null);
             }}
-            className="rounded-[4px] px-2 py-1.5 text-xs font-extrabold"
+            className="rounded-[4px] px-2 py-1.5 text-xs font-bold"
             style={{
               background: sel === i ? C.yellow : C.panel2,
               color: sel === i ? "#1A1030" : e.muted[i] ? C.dim : C.ink,
@@ -277,7 +277,7 @@ export function LiveSet({ track, startLines, ensureAudio, trigger, unlockMedia, 
       </div>
       {selLine !== null && (
         <div className="flex flex-wrap gap-1.5 rounded-[4px] p-2" style={{ background: C.panel, border: `1px solid ${C.yellow}` }}>
-          <span className="w-full text-xs font-extrabold" style={{ color: C.yellow }}>
+          <span className="w-full text-xs font-bold" style={{ color: C.yellow }}>
             Remix live — the change drops next loop
           </span>
           {optionsFor(lines[selLine], track.loops[sel].pool).map((o) => (
