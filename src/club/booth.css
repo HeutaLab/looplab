@@ -144,7 +144,12 @@
    `end` never leave the screen — the script is never cut in half. */
 .booth-code {
   flex: 1 1 auto;
-  min-height: 0;
+  /* The script is the thing being written and it kept losing. The chip row
+     grows with the size of the loop's house — Deep Down shows nine — and it
+     was taking four rows and squeezing the code down to a couple of lines
+     with the hole itself crushed to a sliver. The code now keeps a floor and
+     the chips take what is left. */
+  min-height: 230px;
   display: flex;
   flex-direction: column;
   margin: 0;
@@ -206,7 +211,19 @@
 }
 .booth-hint[data-show="true"] { opacity: 0.9; }
 
-.booth-chips { flex: 0 0 auto; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.booth-chips {
+  flex: 0 1 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  /* three rows at most, then it scrolls — the tools never push the work off
+     the screen */
+  max-height: 148px;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.booth-chips::-webkit-scrollbar { width: 0; }
 .booth-legend {
   font-size: 10.5px;
   letter-spacing: 0.14em;
@@ -225,8 +242,8 @@
   color: var(--write);
   font-family: "JetBrains Mono", ui-monospace, Menlo, "Courier New", monospace;
   font-weight: 700;
-  font-size: 15px;
-  padding: 0 16px;
+  font-size: 14px;
+  padding: 0 13px;
   min-height: 44px;
   cursor: pointer;
 }

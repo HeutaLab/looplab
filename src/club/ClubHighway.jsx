@@ -68,28 +68,34 @@ export function ClubHighway({ track, loopLines, playInfo, elapsed, focus, hole, 
      black box — a booth with the lights on but nothing playing yet. */
   const idle = useMemo(() => compileLoops(loopLines, track.bpm, 1), [loopLines, track.bpm]);
 
-  /* The tightest gap between two notes in any lane, in beats. It sets how far
-     ahead the pit can show: a 16th-note acid line needs a short road or the
-     tiles stack, an offbeat bassline can take a long one. Derived per record
-     rather than a fixed number that only ever suits one of them. */
-  const tightest = useMemo(() => {
-    let min = 4;
-    for (const ls of loopLines) {
-      let t = 0;
-      let last = null;
-      for (const L of ls) {
-        if (L.t === "sleep") t += L.v;
-        else if (L.t === "play" || L.t === "sample") {
-          if (last !== null && t - last > 0.001) min = Math.min(min, t - last);
-          last = t;
+  /* The tightest gap between two notes, per lane, in beats.
+
+     This used to be one number for the whole record, which was wrong in a way
+     that hurt: a single 16th-note gap anywhere — Deep Down has one in :chords
+     — collapsed the road for every lane, so the sparse :sub line the player
+     was actually reading fell past in under two seconds. Density is a
+     property of a lane, not of a track, so it is measured per lane and only
+     ever shrinks that lane's own tiles. */
+  const tightPerLane = useMemo(
+    () =>
+      loopLines.map((ls) => {
+        let min = 4;
+        let t = 0;
+        let last = null;
+        for (const L of ls) {
+          if (L.t === "sleep") t += L.v;
+          else if (L.t === "play" || L.t === "sample") {
+            if (last !== null && t - last > 0.001) min = Math.min(min, t - last);
+            last = t;
+          }
         }
-      }
-    }
-    return Math.max(0.2, min);
-  }, [loopLines]);
+        return Math.max(0.2, min);
+      }),
+    [loopLines]
+  );
 
   const state = useRef({});
-  state.current = { track, loopLines, playInfo, elapsed, focus, hole, hit, sour, solo, idle, tightest };
+  state.current = { track, loopLines, playInfo, elapsed, focus, hole, hit, sour, solo, idle, tightPerLane };
   const drawRef = useRef(null);
 
   useEffect(() => {
@@ -134,17 +140,20 @@ export function ClubHighway({ track, loopLines, playInfo, elapsed, focus, hole, 
       const laneX = (k) => k * (laneW + GAP);
 
       const span = hitY - colTop;
-      const tileH = Math.max(22, Math.min(34, laneW * 0.42));
       const tileW = Math.min(laneW - 12, 68);
 
-      /* How far ahead the pit shows, derived rather than chosen. Tiles are
-         large, so the road has to be short enough that the busiest lane on
-         this record never stacks: the tightest gap in the track must still
-         leave a tile's worth of air. A 16th-note acid line gets a short road,
-         an offbeat bassline a long one, and both stay readable. Measured in
-         beats, so it holds the same musical distance at 125 and at 140. */
-      const VIEWB = Math.max(1.5, Math.min(6, (s.tightest * span) / (tileH * 1.25)));
+      /* Six beats of road — a bar and a half, the same musical distance at 125
+         as at 140, and long enough that a tile can be read on the way down.
+         It is fixed rather than derived: deriving it from density meant the
+         busiest lane set the speed for all of them, which is how a sparse
+         bassline ended up falling past in a second and a half. */
+      const VIEWB = 6;
       const VIEW = beat * VIEWB;
+
+      /* A busy lane gives way in tile size rather than making everything
+         faster. Its own tightest gap has to leave a tile's worth of air. */
+      const tileHOf = (li) =>
+        Math.max(13, Math.min(34, laneW * 0.42, ((s.tightPerLane[li] || 1) / VIEWB) * span * 0.85));
       const yOf = (dt) => hitY - (dt / VIEW) * span;
 
       /* ---- equalizer floor: decorative, rising from the foot of the
@@ -256,14 +265,21 @@ export function ClubHighway({ track, loopLines, playInfo, elapsed, focus, hole, 
         }
       }
 
-      toks.sort((a, b) => b.dt - a.dt); /* far first, so near tiles sit on top */
+      /* Far first so near tiles sit on top, and the hole last of all: it is
+         the one tile that must never be behind anything. */
+      toks.sort((a, b) => (a.hole ? 1 : 0) - (b.hole ? 1 : 0) || b.dt - a.dt);
       let landedAt = null;
 
       for (const tk of toks) {
         const ink = channelInk(s.track, tk.li);
         const grow = tk.landed ? 1 + 0.12 * flash : 1;
         const tw = tileW * grow;
-        const th = tileH * grow;
+        /* A 16th-note lane shrinks to markers, which is right for percussion
+           texture — but not for the hole. Warehouse writes into :bass, and
+           :bass is 16ths, so the one tile the player has to read was the one
+           being shrunk. It keeps full size and sits on top; a little overlap
+           on the tile that matters beats a legible one nobody can read. */
+        const th = (tk.hole ? Math.max(26, tileHOf(tk.li)) : tileHOf(tk.li)) * grow;
         const x = laneX(tk.k) + (laneW - tw) / 2;
         const y = yOf(tk.dt) - th / 2;
         const near = Math.max(0, 1 - tk.dt / (beat * 1.2));
@@ -324,17 +340,19 @@ export function ClubHighway({ track, loopLines, playInfo, elapsed, focus, hole, 
           ctx.fillStyle = CLUB.write;
           ctx.font = `700 11px ${MONO}`;
           ctx.fillText((L ? L.t : "play") + " ?", cx, cy);
-        } else if (tk.lines.length > 1 && th >= 26) {
+        } else if (tk.lines.length > 1 && th >= 24) {
           ctx.fillStyle = tint(CLUB.noteInk, 0.65);
-          ctx.font = `700 8px ${MONO}`;
+          ctx.font = `700 ${Math.max(7, Math.min(8, th * 0.24)).toFixed(1)}px ${MONO}`;
           ctx.fillText(tk.lines[0], cx, cy - th * 0.17);
           ctx.fillStyle = CLUB.noteInk;
-          ctx.font = `700 10px ${MONO}`;
-          ctx.fillText(fit(ctx, tk.lines[1], tw - 10, 10), cx, cy + th * 0.17);
-        } else if (th >= 18) {
+          const s2 = Math.max(8, Math.min(10, th * 0.3));
+          ctx.font = `700 ${s2.toFixed(1)}px ${MONO}`;
+          ctx.fillText(fit(ctx, tk.lines[1], tw - 10, s2), cx, cy + th * 0.17);
+                } else if (th >= 16) {
           ctx.fillStyle = CLUB.noteInk;
-          ctx.font = `700 11px ${MONO}`;
-          ctx.fillText(fit(ctx, tk.lines[tk.lines.length - 1], tw - 10, 11), cx, cy);
+          const s1 = Math.max(8, Math.min(11, th * 0.34));
+          ctx.font = `700 ${s1.toFixed(1)}px ${MONO}`;
+          ctx.fillText(fit(ctx, tk.lines[tk.lines.length - 1], tw - 10, s1), cx, cy);
         }
       }
 
@@ -357,7 +375,7 @@ export function ClubHighway({ track, loopLines, playInfo, elapsed, focus, hole, 
         /* the word is wider than a lane, so keep it inside the canvas rather
            than letting it run off the first or last column */
         const bx = Math.max(58, Math.min(W - 58, raw));
-        const by = (landedAt ? landedAt.top : hitY - tileH / 2) - 22;
+        const by = (landedAt ? landedAt.top : hitY - tileHOf(s.focus) / 2) - 22;
         const burst = ctx.createRadialGradient(bx, by, 0, bx, by, 100 * (0.6 + 0.4 * flash));
         burst.addColorStop(0, tint(CLUB.write, 0.5 * flash));
         burst.addColorStop(0.7, tint(CLUB.write, 0));
