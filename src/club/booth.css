@@ -18,11 +18,11 @@
   flex-direction: column;
   /* fills the device, less the shell's own padding — a 24-statement loop needs
      every line it can get before it starts scrolling */
-  height: min(calc(100vh - 84px), 860px);
+  height: min(calc(100vh - 84px), 1040px);
   /* dvh, because on a phone 100vh counts the address bar that is covering the
      bottom of the screen — the buttons would sit under it on Android Chrome
      and iOS Safari both. Older browsers keep the vh line above. */
-  height: min(calc(100dvh - 84px), 860px);
+  height: min(calc(100dvh - 84px), 1040px);
   min-height: 520px;
   background: var(--void);
   color: var(--ink);
@@ -126,7 +126,7 @@
   flex: 1 1 auto;
   min-height: 0;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 96px minmax(0, 1.05fr);
+  grid-template-columns: minmax(0, 1fr) 96px minmax(0, 1.15fr);
   gap: var(--pad);
   padding: var(--pad);
 }
@@ -138,7 +138,7 @@
   flex-direction: column;
   min-height: 0;
   min-width: 0;
-  gap: 14px;
+  gap: 10px;
 }
 
 /* One block. A long loop scrolls in the middle, so `live_loop :bass do` and
@@ -150,24 +150,27 @@
      was taking four rows and squeezing the code down to a couple of lines
      with the hole itself crushed to a sliver. The code now keeps a floor and
      the chips take what is left. */
-  min-height: 230px;
+  min-height: 200px;
   display: flex;
   flex-direction: column;
   margin: 0;
   font-family: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, "Courier New", monospace;
   font-size: var(--code);
   font-weight: 700;
-  line-height: 1.55;
+  line-height: 1.45;
   color: var(--dim);
 }
 .booth-body {
   position: relative;
-  flex: 1 1 auto;
+  /* height is snapped to a whole number of lines by BoothScreen, so a line is
+     never cut through the middle at the scroll boundary */
+  flex: 0 0 auto;
   min-height: 0;
   overflow: auto;
   scrollbar-width: none;
-  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%);
-  mask-image: linear-gradient(180deg, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%);
+  /* No fade. It existed to soften a line cut through the middle; the height is
+     snapped to whole lines now, so the fade was washing out real lines and
+     making them look cut when they were not. */
 }
 .booth-body::-webkit-scrollbar { width: 0; height: 0; }
 
@@ -203,7 +206,7 @@
 .booth-hint {
   flex: 0 0 auto;
   margin: 0;
-  min-height: 1.2em; /* held open, so nothing jumps when it speaks */
+  min-height: 1.15em; /* held open, so nothing jumps when it speaks */
   font-size: 13px;
   line-height: 1.4;
   color: var(--dim);
@@ -212,19 +215,28 @@
 }
 .booth-hint[data-show="true"] { opacity: 0.9; }
 
+/* One scroll region in this column, and it is the script. The chips used to
+   scroll too — a second scrollbar inside the first — and because the TYPE IT
+   row lived inside this box it was being clipped by it, which is why Write
+   kept appearing cut in half. The chips wrap and never shrink; the script is
+   the only thing that scrolls. */
+/* Typing and tapping are the same job, so they share one row. They were two,
+   which cost a line of script for nothing. Nothing in here scrolls or clips:
+   the row wraps and never shrinks, which is what was cutting Write in half
+   when the chips box owned a max-height. */
+.booth-input {
+  flex: 0 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 10px;
+}
 .booth-chips {
-  flex: 0 1 auto;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;
-  /* three rows at most, then it scrolls — the tools never push the work off
-     the screen */
-  max-height: 148px;
-  overflow-y: auto;
-  scrollbar-width: none;
 }
-.booth-chips::-webkit-scrollbar { width: 0; }
 .booth-legend {
   font-size: 10.5px;
   letter-spacing: 0.14em;
@@ -243,8 +255,8 @@
   color: var(--write);
   font-family: "JetBrains Mono", ui-monospace, Menlo, "Courier New", monospace;
   font-weight: 700;
-  font-size: 14px;
-  padding: 0 13px;
+  font-size: 13px;
+  padding: 0 11px;
   min-height: 44px;
   cursor: pointer;
 }
@@ -301,6 +313,14 @@
   .booth-body { -webkit-mask-image: none; mask-image: none; overflow: visible; }
 }
 
+/* Desktop first. A lane only needs to be as wide as a tile, so past this size
+   the extra width goes to the script rather than to four columns of air —
+   which is what stopped Piano Sunrise's eleven chips wrapping onto four rows
+   and squeezing the loop down to five lines. */
+@media (min-width: 1180px) {
+  .booth-stage { grid-template-columns: minmax(0, 0.82fr) 96px minmax(0, 1.4fr); }
+}
+
 /* projector */
 @media (min-width: 1200px) {
   .booth { --code: 22px; --pad: 30px; }
@@ -308,7 +328,7 @@
   .booth-silence { font-size: 14px; }
   .booth-phase .n { font-size: 19px; }
   .booth-phase .s { font-size: 12px; }
-  .booth-chip { font-size: 17px; min-height: 48px; }
+  .booth-chip { font-size: 15px; min-height: 46px; }
   .booth-btn { font-size: 18px; min-height: 54px; }
   .booth-hint { font-size: 15px; }
 }
@@ -324,7 +344,7 @@
    the same help the chips give, and it is one tap back to them either way. A
    real input sits transparent on top so the iPad keyboard opens and every
    assistive technology sees a normal text field. */
-.booth-type { display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap; }
+.booth-type { display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap; flex: 0 0 auto; }
 .booth-type-label {
   display: block;
   font-size: 10px;

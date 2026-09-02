@@ -229,11 +229,44 @@ export function BoothScreen({
   const head = lines.filter((L) => L.t === "synth");
   const body = lines.map((L, i) => ({ L, i })).filter(({ L }) => L.t !== "synth");
 
+  /* Give the script a whole number of lines.
+
+     Left to flex it took whatever was going, which was 9.8 lines on a desktop
+     and 7.6 on an iPad — so the last line was always sliced through the
+     middle at the scroll boundary and looked broken rather than continued.
+     It is measured against the real rendered line height, so it holds at
+     every breakpoint and type size. */
+  useEffect(() => {
+    const el = bodyRef.current;
+    if (!el) return;
+    const code = el.parentElement;
+    const snap = () => {
+      const row = el.querySelector(".booth-ln");
+      if (!row || !code) return;
+      const lh = row.getBoundingClientRect().height;
+      if (!lh) return;
+      let taken = 0;
+      for (const child of code.children) if (child !== el) taken += child.getBoundingClientRect().height;
+      const room = code.clientHeight - taken;
+      el.style.height = Math.max(3, Math.floor(room / lh)) * lh + "px";
+    };
+    snap();
+    const ro = new ResizeObserver(snap);
+    if (code) ro.observe(code);
+    return () => ro.disconnect();
+  }, [focus, phase, solo]);
+
   useEffect(() => {
     const el = bodyRef.current;
     if (!el) return;
     const row = el.querySelector('[data-hole="true"]') || el.querySelector("[data-bug]");
-    if (row) el.scrollTop = Math.max(0, row.offsetTop - el.clientHeight / 2 + row.offsetHeight / 2);
+    if (!row) return;
+    /* Snap the scroll to whole lines too. Centring the hole exactly would put
+       the boundary through the middle of the first and last visible line,
+       which is the same broken look the height snapping just removed. */
+    const lh = row.getBoundingClientRect().height || 1;
+    const want = row.offsetTop - el.clientHeight / 2 + row.offsetHeight / 2;
+    el.scrollTop = Math.max(0, Math.round(want / lh) * lh);
   }, [focus, holeKey, phase]);
 
   /* the amber bar walks the loop as it plays */
@@ -420,7 +453,7 @@ export function BoothScreen({
               runs: tap a chip on the first tracks, type it by Rave Siren.
               Dropping back to the chips is always one tap and is never
               called failure. */}
-          <div className="booth-chips">
+          <div className="booth-input">
             {mode !== "chips" && site && (
               <form
                 className="booth-type"
