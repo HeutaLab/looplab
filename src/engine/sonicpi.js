@@ -1,10 +1,16 @@
+/* A blank renders its own line with an empty value to get the leading word —
+   `lineTokens({ t, v: "" })` — and the two choose forms assumed v was always
+   an array, so Level 6's choose blank crashed the whole phase. A list that is
+   not a list yet is an empty list. */
+const asList = (v) => (Array.isArray(v) ? v : v === "" || v == null ? [] : String(v).split(","));
+
 export function lineTokens(L) {
   if (L.t === "play") return [["play ", "kw"], [String(L.v), "num"]];
-  if (L.t === "playChoose") return [["play choose(", "kw"], ["[" + L.v.join(", ") + "]", "num"], [")", "kw"]];
+  if (L.t === "playChoose") return [["play choose(", "kw"], ["[" + asList(L.v).join(", ") + "]", "num"], [")", "kw"]];
   if (L.t === "sleep") return [["sleep ", "kw"], [String(L.v), "num"]];
   if (L.t === "sleepRand") return [["sleep rrand(", "kw"], [L.v[0] + ", " + L.v[1], "num"], [")", "kw"]];
   if (L.t === "sample") return [["sample ", "kw"], [":" + L.v, "sym"]];
-  if (L.t === "sampleChoose") return [["sample choose(", "kw"], ["[" + L.v.map((x) => ":" + x).join(", ") + "]", "sym"], [")", "kw"]];
+  if (L.t === "sampleChoose") return [["sample choose(", "kw"], ["[" + asList(L.v).map((x) => ":" + x).join(", ") + "]", "sym"], [")", "kw"]];
   if (L.t === "synth") return [["use_synth ", "kw"], [":" + L.v, "sym"]];
   if (L.t === "bpm") return [["use_bpm ", "kw"], [String(L.v), "num"]];
   if (L.t === "loop") return [[String(L.v), "num"], [".times do", "kw"]];

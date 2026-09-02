@@ -36,7 +36,7 @@ export function NoteHighway({ playInfo, elapsed, height = 200, idleText = "Press
         </div>
       )}
       {playInfo && elapsed !== null && elapsed < 0 && (
-        <div className="absolute inset-0 flex items-center justify-center text-lg font-extrabold" style={{ color: C.yellow }}>
+        <div className="absolute inset-0 flex items-center justify-center text-lg font-bold" style={{ color: C.yellow }}>
           Ready
         </div>
       )}

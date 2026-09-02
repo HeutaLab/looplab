@@ -17,7 +17,7 @@ export function TeacherPanel({ pin, onPin, onUnlockAll, onResetPlayer, onPlayers
       <div className="w-full max-w-sm rounded-3xl p-4" style={{ background: C.panel, border: `2px solid ${C.violet}` }}>
         {!inside ? (
           <>
-            <h1 className="text-lg font-bold">Teacher panel</h1>
+            <h1 className="text-lg font-semibold">Teacher panel</h1>
             <div className="mt-1 text-xs font-semibold" style={{ color: C.dim }}>
               Enter the 4-digit code.
             </div>
@@ -30,7 +30,7 @@ export function TeacherPanel({ pin, onPin, onUnlockAll, onResetPlayer, onPlayers
               }}
               inputMode="numeric"
               aria-label="Teacher PIN"
-              className="mt-2 w-full rounded-[4px] px-3 py-2 text-center font-mono font-extrabold outline-none"
+              className="mt-2 w-full rounded-[4px] px-3 py-2 text-center font-mono font-bold outline-none"
               style={{ background: "#151233", color: C.ink, border: `1px solid ${wrong ? C.red : C.line}`, fontSize: 22, letterSpacing: 6 }}
             />
             {wrong && (
@@ -52,7 +52,7 @@ export function TeacherPanel({ pin, onPin, onUnlockAll, onResetPlayer, onPlayers
           </>
         ) : (
           <>
-            <h1 className="text-lg font-bold">Teacher panel</h1>
+            <h1 className="text-lg font-semibold">Teacher panel</h1>
             <div className="mt-1 text-xs font-semibold" style={{ color: C.dim }}>
               Current player: <span style={{ color: C.yellow }}>{playerName || "nobody"}</span>
             </div>
@@ -76,7 +76,7 @@ export function TeacherPanel({ pin, onPin, onUnlockAll, onResetPlayer, onPlayers
               </BigButton>
             </div>
             <div className="mt-3 rounded-[4px] p-2" style={{ background: C.panel2, border: `1px solid ${C.line}` }}>
-              <div className="text-xs font-extrabold uppercase" style={{ color: C.dim }}>
+              <div className="text-xs font-bold uppercase" style={{ color: C.dim }}>
                 Change the code
               </div>
               <div className="mt-1 flex gap-2">

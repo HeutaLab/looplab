@@ -141,7 +141,7 @@ export function Soundcheck({ track, playInfo, playTag, elapsed, playLines, stopA
       )}
       {codeMode === "chips" && selLine !== null && (
         <div className="flex flex-wrap gap-1.5 rounded-[4px] p-2" style={{ background: C.panel, border: `1px solid ${C.yellow}` }}>
-          <span className="w-full text-xs font-extrabold" style={{ color: C.yellow }}>
+          <span className="w-full text-xs font-bold" style={{ color: C.yellow }}>
             Change line to:
           </span>
           {optionsFor(lines[selLine], track.loops[sel].pool).map((o) => (

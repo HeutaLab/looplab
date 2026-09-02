@@ -6,7 +6,7 @@ import { Mentor } from "../ui/controls.jsx";
 
 export function ClubScreen({ records, stars, onPick, back }) {
   const done = levelsDone(stars);
-  const medal = { bronze: "#c98a5b", silver: "#c9c3d4", gold: CLUB.amber };
+  const medal = { bronze: "#c98a5b", silver: "#c9c3d4", gold: CLUB.ink };
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center gap-3">
@@ -17,7 +17,7 @@ export function ClubScreen({ records, stars, onPick, back }) {
           <div className="text-[11px] font-bold uppercase" style={{ color: C.dim, letterSpacing: "0.16em" }}>
             The Club
           </div>
-          <h1 className="text-lg font-bold">Pick a record</h1>
+          <h1 className="text-lg font-semibold">Pick a record</h1>
         </div>
       </div>
       <Mentor text="Here's the crate: six dance-floor tracks written in real live loops. Each one came back from the studio with bugs. Find them by ear, fix them, then play the track live." />
@@ -42,12 +42,12 @@ export function ClubScreen({ records, stars, onPick, back }) {
             >
               <span
                 className="text-xs font-bold tabular-nums"
-                style={{ fontFamily: TYPE.code, color: unlocked ? CLUB.amber : CLUB.dim, minWidth: 44 }}
+                style={{ fontFamily: TYPE.code, color: unlocked ? CLUB.ink : CLUB.dim, minWidth: 44 }}
               >
                 {tr.bpm}
               </span>
               <span className="flex-1">
-                <span className="block font-bold" style={{ color: unlocked ? CLUB.ink : CLUB.dim }}>
+                <span className="block font-semibold" style={{ color: unlocked ? CLUB.ink : CLUB.dim, letterSpacing: "0.006em" }}>
                   {tr.title}
                 </span>
                 <span className="block text-xs" style={{ color: CLUB.dim }}>

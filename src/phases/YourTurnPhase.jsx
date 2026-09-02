@@ -81,7 +81,7 @@ export function YourTurnPhase({ level, playInfo, playTag, elapsed, playLines, st
                 <button
                   aria-label="Remove this line"
                   onClick={() => setInner(inner.filter((x) => x !== L))}
-                  className="ml-1 rounded-[4px] px-2 text-xs font-extrabold"
+                  className="ml-1 rounded-[4px] px-2 text-xs font-bold"
                   style={{ color: C.pink, background: "rgba(255,92,168,0.12)", height: 26 }}
                 >
                   ✕
@@ -94,7 +94,7 @@ export function YourTurnPhase({ level, playInfo, playTag, elapsed, playLines, st
 
       {pal.loop && (
         <div className="flex items-center gap-2">
-          <span className="text-sm font-extrabold" style={{ color: C.dim }}>
+          <span className="text-sm font-bold" style={{ color: C.dim }}>
             Repeat
           </span>
           {[1, 2, 3, 4].map((n) => (
@@ -106,7 +106,7 @@ export function YourTurnPhase({ level, playInfo, playTag, elapsed, playLines, st
       )}
       {pal.synth && (
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-sm font-extrabold" style={{ color: C.dim }}>
+          <span className="text-sm font-bold" style={{ color: C.dim }}>
             Sound
           </span>
           {["beep", "saw", "square", "pretty_bell"].map((s) => (

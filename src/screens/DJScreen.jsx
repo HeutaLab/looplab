@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { BoothScreen } from "../club/BoothScreen.jsx";
+import { TRACKS } from "../data/tracks.js";
 import { LiveSet } from "../phases/LiveSet.jsx";
 import { Soundcheck } from "../phases/Soundcheck.jsx";
 import { SetResults } from "./SetResults.jsx";
 import { C } from "../theme.js";
 
-/* Warehouse 909 is the first track on the new floor. The rest still run the
-   old soundcheck until their surfaces are built, so nothing that already
-   works stops working. */
-const BOOTH_TRACKS = ["warehouse"];
+/* Every record plays on the same floor. Half a redesign — one track in the
+   booth and five in the old soundcheck — is worse than either one alone. */
+const BOOTH_TRACKS = TRACKS.map((t) => t.id);
 
 export function DJScreen(props) {
   const { track, back } = props;
@@ -35,7 +35,7 @@ export function DJScreen(props) {
             <div className="text-[11px] font-bold uppercase" style={{ color: C.dim, letterSpacing: "0.16em" }}>
               {track.style} &middot; {track.bpm} BPM
             </div>
-            <h1 className="text-lg font-bold">{track.title}</h1>
+            <h1 className="text-lg font-semibold">{track.title}</h1>
           </div>
         </div>
       )}

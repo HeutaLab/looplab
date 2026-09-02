@@ -1,24 +1,47 @@
 import React, { useEffect, useMemo, useRef } from "react";
 import { compileLoops } from "../engine/interpreter.js";
-import { CHANNEL, CLUB, LEAD } from "../theme.js";
+import { CHANNEL, CHANNEL_EDGE, CHANNEL_SHADOW, CLUB } from "../theme.js";
 
-/* The highway is the ear. It shows what the track is about to sound, one lane
-   per live_loop, tokens written as the Sonic Pi that makes them. It is not a
-   scoring game: nothing is tapped here, and the now-line is only ever "this is
-   the moment you hear it".
+/* The highway is the ear.
 
-   What crosses the line is what sounds, so sleeps get no token — a sleep is
-   silence. The one exception is the hole, which has to be visible because it
-   is the thing being written. */
+   One lane per live_loop, notes written as the Sonic Pi that makes them,
+   falling to a hit line. It is not a scoring game: nothing is tapped here and
+   the hit line only ever means "this is the moment you hear it". Only the
+   amber hole asks for anything.
 
-function tint(hex, a) {
-  const n = parseInt(hex.slice(1), 16);
-  return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`;
+   Flat vertical columns, per the In-the-Club handoff (3a). The previous
+   version drew a perspective road with a vanishing point; that made a note
+   crawl at the far end and whip past the line at the exact moment you needed
+   to read it, and it is gone. */
+
+export const channelInk = (track, idx) => CHANNEL[idx % CHANNEL.length];
+const edgeOf = (idx) => CHANNEL_EDGE[idx % CHANNEL_EDGE.length];
+const shadowOf = (idx) => CHANNEL_SHADOW[idx % CHANNEL_SHADOW.length];
+
+function rgbOf(col) {
+  const n = parseInt(col.slice(1), 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
+const tint = (col, a) => {
+  const c = rgbOf(col);
+  return `rgba(${c[0]},${c[1]},${c[2]},${a})`;
+};
+
+/* roundRect is not on every school iPad yet, so trace it by hand. */
+function roundRect(ctx, x, y, w, h, r) {
+  const k = Math.min(r, w / 2, h / 2);
+  ctx.beginPath();
+  ctx.moveTo(x + k, y);
+  ctx.arcTo(x + w, y, x + w, y + h, k);
+  ctx.arcTo(x + w, y + h, x, y + h, k);
+  ctx.arcTo(x, y + h, x, y, k);
+  ctx.arcTo(x, y, x + w, y, k);
+  ctx.closePath();
 }
 
 /* Simultaneous notes in one loop are a chord — the track data writes those as
    consecutive `play` lines with no sleep between, which is real Sonic Pi and
-   would otherwise stack three tokens on the same spot. */
+   would otherwise stack three tiles on the same spot. */
 function groupEvents(events) {
   const by = new Map();
   for (const ev of events) {
@@ -29,6 +52,7 @@ function groupEvents(events) {
   return [...by.values()];
 }
 
+/* A sample tile prints two lines; a play or a sleep prints one. */
 function labelFor(group) {
   const first = group[0];
   if (first.kind !== "note") return ["sample", ":" + first.kind];
@@ -36,7 +60,7 @@ function labelFor(group) {
   return ["play " + first.note];
 }
 
-export function ClubHighway({ track, loopLines, playInfo, elapsed, focus, hole, sour, solo }) {
+export function ClubHighway({ track, loopLines, playInfo, elapsed, focus, hole, hit, sour, solo }) {
   const cv = useRef(null);
   const wrap = useRef(null);
 
@@ -44,8 +68,34 @@ export function ClubHighway({ track, loopLines, playInfo, elapsed, focus, hole, 
      black box — a booth with the lights on but nothing playing yet. */
   const idle = useMemo(() => compileLoops(loopLines, track.bpm, 1), [loopLines, track.bpm]);
 
+  /* The tightest gap between two notes, per lane, in beats.
+
+     This used to be one number for the whole record, which was wrong in a way
+     that hurt: a single 16th-note gap anywhere — Deep Down has one in :chords
+     — collapsed the road for every lane, so the sparse :sub line the player
+     was actually reading fell past in under two seconds. Density is a
+     property of a lane, not of a track, so it is measured per lane and only
+     ever shrinks that lane's own tiles. */
+  const tightPerLane = useMemo(
+    () =>
+      loopLines.map((ls) => {
+        let min = 4;
+        let t = 0;
+        let last = null;
+        for (const L of ls) {
+          if (L.t === "sleep") t += L.v;
+          else if (L.t === "play" || L.t === "sample") {
+            if (last !== null && t - last > 0.001) min = Math.min(min, t - last);
+            last = t;
+          }
+        }
+        return Math.max(0.2, min);
+      }),
+    [loopLines]
+  );
+
   const state = useRef({});
-  state.current = { track, loopLines, playInfo, elapsed, focus, hole, sour, solo, idle };
+  state.current = { track, loopLines, playInfo, elapsed, focus, hole, hit, sour, solo, idle, tightPerLane };
   const drawRef = useRef(null);
 
   useEffect(() => {
@@ -70,147 +120,323 @@ export function ClubHighway({ track, loopLines, playInfo, elapsed, focus, hole, 
       ctx.fillStyle = CLUB.void;
       ctx.fillRect(0, 0, W, H);
 
-      const lanes = s.solo ? [s.focus] : s.loopLines.map((_, i) => i);
-      const hitY = H - 36; /* a clear band below the line for the channel names */
-      const topY = 4;
-      const vx = W / 2;
-      const laneW = s.solo ? W * 0.66 : W / lanes.length;
-      const pad = s.solo ? (W - laneW) / 2 : 0;
-      const CONV = s.solo ? 0.34 : 0.6;
-      const K = s.solo ? 1.8 : 2.4; /* a short pit needs a flatter road, or the far half stacks */
-
-      /* How far ahead the pit shows. This is also how long a token takes to
-         reach the now-line, so it is the speed control — and on one narrow
-         lane a shorter view keeps a 16th-note riff from stacking up. It can
-         never exceed the engine's own lookahead. */
-      const VIEW = Math.min(LEAD, s.solo ? 0.7 : 1.5);
-
-      const gOf = (u) => (1 - 1 / (1 + u * K)) / (1 - 1 / (1 + K));
-      const xOf = (cx, g) => cx + (vx - cx) * CONV * g;
-      const yOf = (g) => hitY - (hitY - topY) * g;
-
-      /* each lane in its channel's colour, the one being written filled faintly */
-      const fi = lanes.indexOf(s.focus);
-      lanes.forEach((li, k) => {
-        const lx = pad + k * laneW;
-        const rx = lx + laneW;
-        const ink = CHANNEL[li % CHANNEL.length];
-        const on = k === fi;
-        ctx.beginPath();
-        ctx.moveTo(lx, hitY);
-        ctx.lineTo(xOf(lx, 1), topY);
-        ctx.lineTo(xOf(rx, 1), topY);
-        ctx.lineTo(rx, hitY);
-        ctx.closePath();
-        ctx.fillStyle = tint(ink, on ? 0.07 : 0.022);
-        ctx.fill();
-        ctx.strokeStyle = tint(ink, on ? 0.5 : 0.18);
-        ctx.lineWidth = on ? 1.5 : 1;
-        ctx.stroke();
-
-        /* the channel says its own name, in its own colour */
-        const ls = Math.min(12, Math.max(9, laneW * 0.11));
-        ctx.font = `700 ${ls.toFixed(1)}px "Atkinson Hyperlegible Mono", ui-monospace, Menlo, "Courier New", monospace`;
-        ctx.textAlign = "center";
-        ctx.textBaseline = "top";
-        ctx.fillStyle = tint(ink, on ? 0.95 : 0.6);
-        ctx.fillText(":" + s.track.loops[li].name, lx + laneW / 2, hitY + 23);
-      });
-
-      /* the now-line — this is when the statement sounds */
       const live = !!s.playInfo && s.elapsed !== null;
-      ctx.beginPath();
-      ctx.moveTo(2, hitY);
-      ctx.lineTo(W - 2, hitY);
-      ctx.strokeStyle = CLUB.ink;
-      ctx.lineWidth = 2.5;
-      ctx.globalAlpha = live ? 1 : 0.5;
-      ctx.stroke();
+      const t0 = live ? s.elapsed : 0;
+      const beat = 60 / s.track.bpm;
+
+      /* The moment a line lands: 120ms to arrive, then 400ms to settle. Held
+         as a 0..1 curve the tile, the lane and the hit line all read from, so
+         the whole pit reacts to one event rather than three timers. */
+      const age = s.hit ? performance.now() - s.hit.at : Infinity;
+      const flash = age < 120 ? age / 120 : age < 520 ? 1 - (age - 120) / 400 : 0;
+
+      const lanes = s.solo ? [s.focus] : s.loopLines.map((_, i) => i);
+      const GAP = 7;
+      const LABEL = 26; /* the band under the columns that names each lane */
+      const colTop = 12; /* room for the YOUR LANE badge to sit on the edge */
+      const colBottom = H - LABEL;
+      const hitY = colTop + (colBottom - colTop) * 0.82;
+      const laneW = (W - GAP * (lanes.length - 1)) / lanes.length;
+      const laneX = (k) => k * (laneW + GAP);
+
+      const span = hitY - colTop;
+      const tileW = Math.min(laneW - 12, 68);
+
+      /* Six beats of road — a bar and a half, the same musical distance at 125
+         as at 140, and long enough that a tile can be read on the way down.
+         It is fixed rather than derived: deriving it from density meant the
+         busiest lane set the speed for all of them, which is how a sparse
+         bassline ended up falling past in a second and a half. */
+      const VIEWB = 6;
+      const VIEW = beat * VIEWB;
+
+      /* A busy lane gives way in tile size rather than making everything
+         faster. Its own tightest gap has to leave a tile's worth of air. */
+      const tileHOf = (li) =>
+        Math.max(13, Math.min(34, laneW * 0.42, ((s.tightPerLane[li] || 1) / VIEWB) * span * 0.85));
+      const yOf = (dt) => hitY - (dt / VIEW) * span;
+
+      /* ---- equalizer floor: decorative, rising from the foot of the
+             columns and drawn behind them, so it never fights the lane
+             names in the band below ---- */
+      const bars = 13;
+      const bw = (W - GAP * (bars - 1)) / bars;
+      ctx.globalAlpha = 0.16;
+      for (let i = 0; i < bars; i++) {
+        const wob = live ? 0.5 + 0.5 * Math.sin(t0 * 5 + i * 0.9) : 0.35;
+        const bh = 10 + wob * 34;
+        ctx.fillStyle = CHANNEL[i % CHANNEL.length];
+        roundRect(ctx, i * (bw + GAP), colBottom - bh, bw, bh, 3);
+        ctx.fill();
+      }
       ctx.globalAlpha = 1;
 
-      const events = live ? s.playInfo.events : s.idle.events;
-      const t = live ? s.elapsed : 0;
+      /* ---- the lane columns ---- */
+      lanes.forEach((li, k) => {
+        const x = laneX(k);
+        const ink = channelInk(s.track, li);
+        const on = li === s.focus;
+        const g = ctx.createLinearGradient(0, colTop, 0, colBottom);
+        g.addColorStop(0, tint(ink, on ? 0.06 : 0.03));
+        g.addColorStop(1, tint(ink, on ? 0.24 : 0.16));
+        if (on) {
+          ctx.shadowColor = tint(ink, 0.3 + 0.2 * flash);
+          ctx.shadowBlur = 20 + 10 * flash;
+        }
+        roundRect(ctx, x, colTop, laneW, colBottom - colTop, 13);
+        ctx.fillStyle = g;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        ctx.strokeStyle = tint(ink, on ? Math.min(1, 0.8 + 0.2 * flash) : 0.4);
+        ctx.lineWidth = on ? 2.5 : 2;
+        ctx.stroke();
 
+        /* the lane says its own name, under its column */
+        ctx.font = `700 10px ${MONO}`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillStyle = tint(ink, on ? 1 : 0.75);
+        ctx.fillText(":" + s.track.loops[li].name, x + laneW / 2, colBottom + LABEL / 2);
+      });
+
+      /* ---- the hit line ---- */
+      const sinceBeat = live ? t0 - Math.floor(t0 / beat) * beat : beat;
+      const pulse = live ? Math.max(0, 1 - sinceBeat / 0.16) : 0;
+      ctx.shadowColor = tint(CLUB.ink, 0.7);
+      ctx.shadowBlur = 14 + pulse * 12 + 14 * flash;
+      ctx.beginPath();
+      ctx.moveTo(0, hitY);
+      ctx.lineTo(W, hitY);
+      ctx.strokeStyle = CLUB.ink;
+      ctx.lineWidth = 3 + pulse * 2;
+      ctx.globalAlpha = live ? 1 : 0.55;
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+      ctx.globalAlpha = 1;
+
+      /* ---- the notes ---- */
+      const events = live ? s.playInfo.events : s.idle.events;
       const toks = [];
       for (const group of groupEvents(events)) {
         const ev = group[0];
-        const lane = lanes.indexOf(ev.loopIdx);
-        if (lane < 0) continue;
-        const dt = ev.time - t;
-        if (dt < -0.06 || dt > VIEW) continue;
-        const key = `${ev.loopIdx}:${ev.line}`;
+        const k = lanes.indexOf(ev.loopIdx);
+        if (k < 0) continue;
+        const dt = ev.time - t0;
+        if (dt < -0.08 || dt > VIEW) continue;
+        const keys = group.map((g2) => `${g2.loopIdx}:${g2.line}`);
         toks.push({
           dt,
-          lane,
+          k,
           li: ev.loopIdx,
+          line: ev.line,
           lines: labelFor(group),
-          hole: s.hole === key,
-          sour: s.sour.has(key),
+          sample: ev.kind !== "note",
+          hole: keys.some((key) => s.hole === key),
+          sour: keys.some((key) => s.sour.has(key)),
+          landed: !!s.hit && keys.some((key) => s.hit.key === key),
         });
       }
-      toks.sort((a, b) => b.dt - a.dt); /* far first */
+      /* A sleep makes no sound, so it produces no event and never reached the
+         pit — which meant that on the records whose We-do hole is a sleep, the
+         one thing the player is being asked to write was the one thing not on
+         the highway. Place it by walking the loop to find when that sleep
+         falls, and repeat it on the loop's own cycle. */
+      if (s.hole) {
+        const [hl, hi] = s.hole.split(":").map(Number);
+        const ls = s.loopLines[hl];
+        const k = lanes.indexOf(hl);
+        if (ls && ls[hi] && ls[hi].t === "sleep" && k >= 0) {
+          let at = 0;
+          let total = 0;
+          for (let i = 0; i < ls.length; i++) {
+            if (i === hi) at = total;
+            if (ls[i].t === "sleep") total += ls[i].v;
+          }
+          const cycle = total * beat;
+          if (cycle > 0.01) {
+            const first = at * beat;
+            const n0 = Math.floor((t0 - first) / cycle);
+            for (let n = n0; n <= n0 + 2; n++) {
+              const dt = first + n * cycle - t0;
+              if (dt < -0.08 || dt > VIEW) continue;
+              toks.push({ dt, k, li: hl, line: hi, lines: ["sleep ?"], hole: true, sour: false });
+            }
+          }
+        }
+      }
 
-      for (const tok of toks) {
-        const u = Math.min(1, Math.max(0, tok.dt) / VIEW);
-        const g = gOf(u);
-        const shrink = 1 - CONV * g;
-        const x = xOf(pad + (tok.lane + 0.5) * laneW, g);
-        const y = yOf(g);
-        const full = Math.min(21, H * 0.1);
-        const r = full * (tok.hole ? 1.28 : 1) * shrink;
-        if (r < 4) continue;
+      /* Far first so near tiles sit on top, and the hole last of all: it is
+         the one tile that must never be behind anything. */
+      toks.sort((a, b) => (a.hole ? 1 : 0) - (b.hole ? 1 : 0) || b.dt - a.dt);
+      let landedAt = null;
 
-        const ink = CHANNEL[tok.li % CHANNEL.length];
-        ctx.globalAlpha = (1 - 0.5 * g) * (tok.li === s.focus ? 1 : 0.72) * (live ? 1 : 0.85);
-        ctx.beginPath();
-        ctx.arc(x, y, r, 0, Math.PI * 2);
+      for (const tk of toks) {
+        const ink = channelInk(s.track, tk.li);
+        const grow = tk.landed ? 1 + 0.12 * flash : 1;
+        const tw = tileW * grow;
+        /* A 16th-note lane shrinks to markers, which is right for percussion
+           texture — but not for the hole. Warehouse writes into :bass, and
+           :bass is 16ths, so the one tile the player has to read was the one
+           being shrunk. It keeps full size and sits on top; a little overlap
+           on the tile that matters beats a legible one nobody can read. */
+        const th = (tk.hole ? Math.max(26, tileHOf(tk.li)) : tileHOf(tk.li)) * grow;
+        const x = laneX(tk.k) + (laneW - tw) / 2;
+        const y = yOf(tk.dt) - th / 2;
+        const near = Math.max(0, 1 - tk.dt / (beat * 1.2));
 
-        if (tok.hole) {
-          ctx.setLineDash([4.5 * shrink + 1.5, 3.5 * shrink + 1.5]);
-          ctx.strokeStyle = CLUB.amber;
-          ctx.lineWidth = Math.max(1, 2 * shrink);
+        /* the hard drop shadow that makes a tile a tile */
+        roundRect(ctx, x, y + 3, tw, th, 11);
+        ctx.fillStyle = tk.hole ? tint(CLUB.write, 0.35) : shadowOf(tk.li);
+        ctx.fill();
+
+        if (near > 0.02 && !tk.hole) {
+          ctx.shadowColor = tint(ink, 0.6 * near);
+          ctx.shadowBlur = 16 * near;
+        }
+        roundRect(ctx, x, y, tw, th, 11);
+
+        if (tk.hole) {
+          /* the thing you write: absent, so it is dashed and hollow */
+          ctx.fillStyle = tint(CLUB.write, 0.08);
+          ctx.fill();
+          ctx.shadowColor = tint(CLUB.write, 0.4);
+          ctx.shadowBlur = 18;
+          ctx.setLineDash([6, 5]);
+          ctx.strokeStyle = CLUB.write;
+          ctx.lineWidth = 3;
           ctx.stroke();
           ctx.setLineDash([]);
-        } else if (tok.sour) {
-          ctx.fillStyle = CLUB.sour;
+        } else if (tk.landed && flash > 0) {
+          /* the line just landed: it goes green and lights up, and it now
+             reads the finished token instead of the question */
+          landedAt = { cx: x + tw / 2, top: y };
+          ctx.fillStyle = CLUB.ok;
           ctx.fill();
-          /* a halo, so the fault is never just a hue among hues */
-          ctx.beginPath();
-          ctx.arc(x, y, r + Math.max(2, 3 * shrink), 0, Math.PI * 2);
-          ctx.strokeStyle = tint(CLUB.sour, 0.55);
-          ctx.lineWidth = Math.max(1, 1.5 * shrink);
+          ctx.shadowColor = tint(CLUB.ok, 0.9);
+          ctx.shadowBlur = 26 * flash;
+          ctx.strokeStyle = CLUB.okBorder;
+          ctx.lineWidth = 3;
           ctx.stroke();
         } else {
-          ctx.fillStyle = ink;
+          ctx.fillStyle = tk.sour ? CLUB.sour : ink;
           ctx.fill();
+          ctx.shadowBlur = 0;
+          ctx.strokeStyle = tk.sour ? "#ff8a7a" : edgeOf(tk.li);
+          ctx.lineWidth = 3;
+          ctx.stroke();
         }
+        ctx.shadowBlur = 0;
 
-        /* the statement, written on the token — shrunk to fit, never clipped */
-        if (r >= 8.5) {
-          ctx.textAlign = "center";
-          ctx.textBaseline = "middle";
-          ctx.fillStyle = tok.hole ? CLUB.amber : "#0c0910";
-          const rows = tok.lines;
-          let size = r * (rows.length > 1 ? 0.4 : 0.46);
-          const font = (px) => `700 ${px.toFixed(2)}px "Atkinson Hyperlegible Mono", ui-monospace, Menlo, "Courier New", monospace`;
-          ctx.font = font(size);
-          let widest = 0;
-          for (const l of rows) widest = Math.max(widest, ctx.measureText(l).width);
-          const room = r * (rows.length > 1 ? 1.6 : 1.7);
-          if (widest > room) {
-            size *= room / widest;
-            ctx.font = font(size);
-          }
-          if (rows.length > 1) {
-            ctx.fillText(rows[0], x, y - size * 0.62);
-            ctx.fillText(rows[1], x, y + size * 0.62);
-          } else {
-            ctx.fillText(rows[0], x, y);
-          }
+        /* the token, printed on the tile */
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        const cx = x + tw / 2;
+        const cy = y + th / 2;
+        if (tk.hole) {
+          /* The hole is blank in the writing even though the record still
+             plays its sour value — so the tile asks the question the script
+             is asking, rather than showing the answer it has not been given. */
+          const L = s.loopLines[tk.li] && s.loopLines[tk.li][tk.line];
+          ctx.fillStyle = CLUB.write;
+          ctx.font = `700 11px ${MONO}`;
+          ctx.fillText((L ? L.t : "play") + " ?", cx, cy);
+        } else if (tk.lines.length > 1 && th >= 24) {
+          ctx.fillStyle = tint(CLUB.noteInk, 0.65);
+          ctx.font = `700 ${Math.max(7, Math.min(8, th * 0.24)).toFixed(1)}px ${MONO}`;
+          ctx.fillText(tk.lines[0], cx, cy - th * 0.17);
+          ctx.fillStyle = CLUB.noteInk;
+          const s2 = Math.max(8, Math.min(10, th * 0.3));
+          ctx.font = `700 ${s2.toFixed(1)}px ${MONO}`;
+          ctx.fillText(fit(ctx, tk.lines[1], tw - 10, s2), cx, cy + th * 0.17);
+                } else if (th >= 16) {
+          ctx.fillStyle = CLUB.noteInk;
+          const s1 = Math.max(8, Math.min(11, th * 0.34));
+          ctx.font = `700 ${s1.toFixed(1)}px ${MONO}`;
+          ctx.fillText(fit(ctx, tk.lines[tk.lines.length - 1], tw - 10, s1), cx, cy);
         }
+      }
+
+      /* ---- the moment it lands ----
+
+         A burst of amber light and one word, above the tile that just went
+         green. It fires on a correct write and never on a wrong one: there
+         is no failure state on this floor, a wrong answer simply plays sour
+         and the room quietens a little. */
+      if (flash > 0) {
+        /* Anchored to the tile that landed when it happens to be on screen.
+           The handoff assumes the line is committed as its note reaches the
+           hit line; here it is committed whenever the player presses Write,
+           so the note can be anywhere in the loop — and a celebration you
+           cannot see is not a celebration. Falling back to the hit line in
+           the lane being written means the moment always lands somewhere the
+           eye already is. */
+        const fb = lanes.indexOf(s.focus);
+        const raw = landedAt ? landedAt.cx : laneX(Math.max(0, fb)) + laneW / 2;
+        /* the word is wider than a lane, so keep it inside the canvas rather
+           than letting it run off the first or last column */
+        const bx = Math.max(58, Math.min(W - 58, raw));
+        const by = (landedAt ? landedAt.top : hitY - tileHOf(s.focus) / 2) - 22;
+        const burst = ctx.createRadialGradient(bx, by, 0, bx, by, 100 * (0.6 + 0.4 * flash));
+        burst.addColorStop(0, tint(CLUB.write, 0.5 * flash));
+        burst.addColorStop(0.7, tint(CLUB.write, 0));
+        ctx.fillStyle = burst;
+        ctx.fillRect(bx - 110, by - 110, 220, 220);
+
+        ctx.save();
+        ctx.translate(bx, by);
+        ctx.rotate((-4 * Math.PI) / 180);
+        ctx.scale(0.86 + 0.14 * Math.min(1, flash * 1.6), 0.86 + 0.14 * Math.min(1, flash * 1.6));
+        ctx.font = `600 20px ${UI}`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.shadowColor = tint(CLUB.ok, 0.9);
+        ctx.shadowBlur = 16;
+        ctx.globalAlpha = flash;
+        ctx.fillStyle = CLUB.ok;
+        /* canvas has no letter-spacing, so the word is drawn letter by letter
+           to open the tracking Fredoka's heavy weight needs on a dark ground */
+        const word = "PERFECT!";
+        const track = 1.1;
+        const widths = [...word].map((ch) => ctx.measureText(ch).width);
+        const total = widths.reduce((a, b) => a + b, 0) + track * (word.length - 1);
+        let wx = -total / 2;
+        ctx.textAlign = "left";
+        [...word].forEach((ch, i) => {
+          ctx.fillText(ch, wx, 0);
+          wx += widths[i] + track;
+        });
+        ctx.restore();
+        ctx.shadowBlur = 0;
         ctx.globalAlpha = 1;
       }
+
+      /* ---- YOUR LANE, pinned to the top edge of the lane you write ---- */
+      const fk = lanes.indexOf(s.focus);
+      if (fk >= 0) {
+        const label = "YOUR LANE";
+        ctx.font = `700 9px ${UI}`;
+        const tw = ctx.measureText(label).width + 18;
+        const bx = laneX(fk) + (laneW - tw) / 2;
+        roundRect(ctx, bx, colTop - 8, tw, 17, 99);
+        ctx.fillStyle = CLUB.write;
+        ctx.fill();
+        ctx.fillStyle = CLUB.writeInk;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(label, bx + tw / 2, colTop + 0.5);
+      }
     }
+
+    /* shrink a token to fit its tile rather than let it run over the edge */
+    function fit(c, text, room, size) {
+      if (c.measureText(text).width <= room) return text;
+      let out = text;
+      while (out.length > 2 && c.measureText(out + "…").width > room) out = out.slice(0, -1);
+      return out + "…";
+    }
+
+    const MONO = '"JetBrains Mono", ui-monospace, Menlo, "Courier New", monospace';
+    const UI = '"Fredoka", system-ui, sans-serif';
 
     /* Reduced motion: the pit holds still as a diagram, the track still runs. */
     const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;

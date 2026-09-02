@@ -17,7 +17,7 @@ export function PlayersScreen({ players, currentId, onOpen, onAdd, onRemove, onB
             ←
           </button>
         )}
-        <h1 className="text-lg font-bold">Who's playing?</h1>
+        <h1 className="text-lg font-semibold">Who's playing?</h1>
       </div>
 
       <Mentor text={players.length ? "Tap your name to carry on where you left off." : "Add your name so the game keeps your stars for you — nobody else's." } />
@@ -31,7 +31,7 @@ export function PlayersScreen({ players, currentId, onOpen, onAdd, onRemove, onB
               className="flex items-center gap-2"
               style={{ borderBottom: `1px solid ${C.line}`, borderLeft: `2px solid ${here ? C.yellow : "transparent"}` }}
             >
-              <button onClick={() => onOpen(p.id)} className="flex-1 px-4 py-3 text-left font-bold" style={{ color: C.ink, fontSize: 17 }}>
+              <button onClick={() => onOpen(p.id)} className="flex-1 px-4 py-3 text-left font-semibold" style={{ color: C.ink, fontSize: 17, letterSpacing: "0.006em" }}>
                 {p.name}
                 {here && (
                   <span className="ml-2 text-[10px] font-bold uppercase" style={{ color: C.yellow, letterSpacing: "0.14em" }}>

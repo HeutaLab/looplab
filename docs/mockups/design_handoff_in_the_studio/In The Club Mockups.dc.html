@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics><meta name="design_doc_mode" content="canvas">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Atkinson+Hyperlegible+Next:wght@400;700&family=Atkinson+Hyperlegible+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#f0eee9;font-family:'Fredoka',system-ui,sans-serif}a{color:#2a78d6}a:hover{color:#1b5cab}.dv-turn{padding:40px 44px 32px;border-bottom:1px solid rgba(0,0,0,.08);scroll-margin-top:16px}.dv-thd{display:flex;align-items:baseline;gap:10px;margin:0 0 6px}.dv-tid{font:600 10px ui-monospace,Menlo,monospace;padding:3px 7px;background:#1a1a1a;color:#fff;border-radius:4px;text-decoration:none}.dv-tname{font:600 15px/1.2 'Fredoka',sans-serif;color:#1a1a1a}.dv-sub{font:400 12px/1.5 system-ui,sans-serif;color:rgba(0,0,0,.55);max-width:760px;margin:0 0 22px}.dv-opts{display:flex;flex-wrap:wrap;gap:28px;align-items:flex-start}.dv-opt{flex:none;display:flex;flex-direction:column;gap:9px;scroll-margin-top:16px}.dv-oid{font:600 10.5px ui-monospace,Menlo,monospace;padding:3px 7px;background:rgba(0,0,0,.08);color:#1a1a1a;border-radius:5px;text-decoration:none}.dv-olabel{display:flex;align-items:baseline;gap:8px;font:400 12px/1.3 system-ui,sans-serif;color:rgba(0,0,0,.6)}.dv-card{max-width:100%;background:#150b33;border:1px solid rgba(0,0,0,.12);border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.12);overflow:hidden}.dv-opt:target .dv-oid{background:#2a78d6;color:#fff}.dv-next{margin:24px 0 0;font:12px/1.5 system-ui,sans-serif;color:rgba(0,0,0,.5)}</style></helmet>
+<section class="dv-turn" id="t7">
+<div class="dv-thd"><a class="dv-tid" href="#t7">7</a><span class="dv-tname">The Crew — a mentor per skill, rivals on the road, a boss at the Club</span></div>
+<p class="dv-sub">Each character owns one thing the code actually teaches (one chip group / level concept), met in curriculum order: <b>Reverb</b> syntax → <b>Echo &amp; BPM</b> timing → <b>Octave</b> loops → <b>Synth-ia</b> melodies → <b>Sample Sam</b> samples → <b>Glitch</b> debugging → <b>Cadence</b> mixing. <b>Amp</b> IS the Club's crowd meter, <b>Pixel Beat</b> is your rival in track battles, and <b>DJ Shadow Master</b> headlines the final set you have to take.</p>
+<div class="dv-opts">
+
+<div class="dv-opt" id="7a"><div class="dv-olabel"><a class="dv-oid" href="#7a">7a</a>Crew Map — the level list becomes people you've met (and haven't)</div>
+<div class="dv-card" style="width:880px;background:#110F26">
+<div style="position:relative;width:880px;height:600px;background:#110F26;color:#F4F2FF;font-family:'Atkinson Hyperlegible Next',sans-serif;overflow:hidden;padding:18px 26px;box-sizing:border-box">
+  <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px"><span style="font:800 13px 'Atkinson Hyperlegible Next';letter-spacing:3px;color:#A29CCB">THE STUDIO · YOUR CREW</span><span style="font-size:12px;color:#A29CCB">4 of 7 met</span></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 14px">
+    <div style="display:flex;align-items:center;gap:12px;background:#1D1A3E;border-left:3px solid #5CE07E;border-bottom:1px solid #332E66;padding:8px 12px"><img src="assets/reverb-main2.png" style="width:46px;height:46px;object-fit:cover;border-radius:8px;border:1px solid #45E0BE"><span style="flex:1"><span style="display:block;font-weight:800;font-size:13px">Reverb <span style="font:700 10px 'Atkinson Hyperlegible Mono';color:#45E0BE">· play + sleep</span></span><span style="display:block;font-size:11px;color:#A29CCB">Your soundbot. First beats in the garage.</span></span><span style="color:#FFD34D;font-size:12px">★★★</span></div>
+    <div style="display:flex;align-items:center;gap:12px;background:#1D1A3E;border-left:3px solid #5CE07E;border-bottom:1px solid #332E66;padding:8px 12px"><img src="assets/echo-bpm.png" style="width:46px;height:46px;object-fit:cover;object-position:38% 30%;border-radius:8px;border:1px solid #45E0BE"><span style="flex:1"><span style="display:block;font-weight:800;font-size:13px">Echo &amp; BPM <span style="font:700 10px 'Atkinson Hyperlegible Mono';color:#45E0BE">· sleep math, use_bpm</span></span><span style="display:block;font-size:11px;color:#A29CCB">The cat only lands on the beat. Chase her.</span></span><span style="color:#FFD34D;font-size:12px">★★★</span></div>
+    <div style="display:flex;align-items:center;gap:12px;background:#1D1A3E;border-left:3px solid #5CE07E;border-bottom:1px solid #332E66;padding:8px 12px"><img src="assets/octave.png" style="width:46px;height:46px;object-fit:cover;object-position:50% 20%;border-radius:8px;border:1px solid #45E0BE"><span style="flex:1"><span style="display:block;font-weight:800;font-size:13px">Octave <span style="font:700 10px 'Atkinson Hyperlegible Mono';color:#45E0BE">· live_loop, x.times</span></span><span style="display:block;font-size:11px;color:#A29CCB">The owl archives every loop you press to tape.</span></span><span style="color:#FFD34D;font-size:12px">★★<span style="opacity:.25">★</span></span></div>
+    <div style="display:flex;align-items:center;gap:12px;background:#1D1A3E;border-left:3px solid #FF5CA8;border-bottom:1px solid #332E66;padding:8px 12px"><img src="assets/synthia.png" style="width:46px;height:46px;object-fit:cover;object-position:30% 20%;border-radius:8px;border:1px solid #FF5CA8;box-shadow:0 0 12px rgba(255,92,168,.4)"><span style="flex:1"><span style="display:block;font-weight:800;font-size:13px">Synth-ia <span style="font:700 10px 'Atkinson Hyperlegible Mono';color:#FF5CA8">· use_synth, melodies</span></span><span style="display:block;font-size:11px;color:#F4F2FF">◉ NOW — she trades keytar licks for clean takes.</span></span><span style="font:700 10px 'Atkinson Hyperlegible Mono';color:#FF5CA8">IN SESSION</span></div>
+    <div style="display:flex;align-items:center;gap:12px;background:rgba(29,26,62,.45);border-left:3px solid #332E66;border-bottom:1px solid #332E66;padding:8px 12px;opacity:.6"><img src="assets/sample-sam.png" style="width:46px;height:46px;object-fit:cover;object-position:40% 30%;border-radius:8px;border:1px solid #332E66;filter:grayscale(.8)"><span style="flex:1"><span style="display:block;font-weight:800;font-size:13px;color:#A29CCB">Sample Sam <span style="font:700 10px 'Atkinson Hyperlegible Mono'">· sample :bd_haus…</span></span><span style="display:block;font-size:11px;color:#A29CCB">Every quill is a patch cable. Gold Synth-ia to meet him.</span></span><span style="font-size:11px;color:#A29CCB">🔒</span></div>
+    <div style="display:flex;align-items:center;gap:12px;background:rgba(29,26,62,.45);border-left:3px solid #332E66;border-bottom:1px solid #332E66;padding:8px 12px;opacity:.6"><img src="assets/glitch.png" style="width:46px;height:46px;object-fit:cover;object-position:50% 20%;border-radius:8px;border:1px solid #332E66;filter:grayscale(.8)"><span style="flex:1"><span style="display:block;font-weight:800;font-size:13px;color:#A29CCB">Glitch <span style="font:700 10px 'Atkinson Hyperlegible Mono'">· debugging</span></span><span style="display:block;font-size:11px;color:#A29CCB">Something's been scrambling loops in the archive…</span></span><span style="font-size:11px;color:#A29CCB">?</span></div>
+    <div style="display:flex;align-items:center;gap:12px;background:rgba(29,26,62,.45);border-left:3px solid #332E66;border-bottom:1px solid #332E66;padding:8px 12px;opacity:.6"><img src="assets/cadence.png" style="width:46px;height:46px;object-fit:cover;object-position:50% 25%;border-radius:8px;border:1px solid #332E66;filter:grayscale(.8)"><span style="flex:1"><span style="display:block;font-weight:800;font-size:13px;color:#A29CCB">Cadence <span style="font:700 10px 'Atkinson Hyperlegible Mono'">· two loops at once</span></span><span style="display:block;font-size:11px;color:#A29CCB">The capybara never rushes. Mixing is patience.</span></span><span style="font-size:11px;color:#A29CCB">🔒</span></div>
+    <div style="display:flex;align-items:center;gap:12px;background:rgba(29,26,62,.45);border:1px dashed #332E66;padding:8px 12px;opacity:.7"><img src="assets/amp.png" style="width:46px;height:46px;object-fit:cover;object-position:50% 30%;border-radius:8px;border:1px solid #332E66"><span style="flex:1"><span style="display:block;font-weight:800;font-size:13px;color:#A29CCB">Amp <span style="font:700 10px 'Atkinson Hyperlegible Mono'">· lives at the Club</span></span><span style="display:block;font-size:11px;color:#A29CCB">The hype meter with legs. He follows the loudest set.</span></span></div>
+  </div>
+  <div style="margin-top:14px;display:flex;gap:14px">
+    <div style="flex:1.2;background:#07060c;border:1px solid #ffb703;border-radius:6px;padding:12px 14px;display:flex;align-items:center;gap:12px"><img src="assets/shadow-master.png" style="width:64px;height:56px;object-fit:cover;border-radius:6px;border:1px solid #332E66"><span style="flex:1"><span style="display:block;font:800 12px 'Atkinson Hyperlegible Next';color:#f3eee4">THE CLUB · DJ Shadow Master holds the decks</span><span style="display:block;font-size:11px;color:#c9c3d4;line-height:1.45">Every record you press weakens his set. Meet the whole crew, then silence the room.</span></span></div>
+    <div style="flex:.8;background:#1D1A3E;border:1px solid #FF5CA8;border-radius:6px;padding:12px 14px;display:flex;align-items:center;gap:12px"><img src="assets/pixel-beat-boy.png" style="width:44px;height:52px;object-fit:cover;object-position:50% 0;border-radius:6px;border:1px solid #FF5CA8"><span style="flex:1"><span style="display:block;font:800 12px 'Atkinson Hyperlegible Next'">Pixel Beat · rival</span><span style="display:block;font-size:11px;color:#A29CCB;line-height:1.45">Track battles after each chapter — same brief, best take wins.</span></span></div>
+  </div>
+</div></div></div>
+
+<div class="dv-opt" id="7b"><div class="dv-olabel"><a class="dv-oid" href="#7b">7b</a>Octave's session — loop logic, with the tape archive as your saved loops</div>
+<div class="dv-card" style="width:880px;background:#110F26">
+<div style="position:relative;width:880px;height:540px;background:#110F26;color:#F4F2FF;font-family:'Atkinson Hyperlegible Next',sans-serif;overflow:hidden">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 22px 10px">
+    <div style="display:flex;align-items:center;gap:12px"><span style="color:#A29CCB;font-size:18px">←</span><span style="font-size:13px;color:#A29CCB">LEVEL 2 · <b style="color:#F4F2FF">Loop Magic — with Octave</b></span></div>
+    <span style="font:700 11px 'Atkinson Hyperlegible Mono';color:#5CE07E">takes 1/2</span>
+  </div>
+  <div style="position:absolute;left:22px;top:52px;width:280px;background:#1D1A3E;border:1px solid #332E66;border-radius:6px;padding:14px;display:flex;flex-direction:column;gap:10px;align-items:center;box-sizing:border-box">
+    <img src="assets/octave.png" style="width:100%;height:170px;object-fit:cover;object-position:50% 15%;border-radius:8px;border:2px solid #9C8BFF">
+    <div style="font:800 12px 'Atkinson Hyperlegible Mono';color:#9C8BFF;letter-spacing:1px">OCTAVE · loop archivist</div>
+    <div style="background:#26225A;border:1px solid #332E66;border-radius:6px;padding:9px 11px;font-size:12px;line-height:1.5">"A loop is a promise, hatchling. Whatever is inside <b style="font-family:'Atkinson Hyperlegible Mono';color:#9C8BFF">live_loop</b> happens forever — so make the inside worth repeating."</div>
+    <div style="width:100%;display:flex;flex-direction:column;gap:5px">
+      <span style="font:800 9px 'Atkinson Hyperlegible Next';letter-spacing:1.5px;color:#A29CCB">HIS TAPE RACK = YOUR PRESSED LOOPS</span>
+      <div style="display:flex;gap:5px"><span style="flex:1;text-align:center;font:700 9px 'Atkinson Hyperlegible Mono';background:#26225A;border:1px solid #45E0BE;border-radius:3px;padding:5px 0;color:#45E0BE">:drums</span><span style="flex:1;text-align:center;font:700 9px 'Atkinson Hyperlegible Mono';background:#26225A;border:1px solid #FFD34D;border-radius:3px;padding:5px 0;color:#FFD34D">:bass</span><span style="flex:1;text-align:center;font:700 9px 'Atkinson Hyperlegible Mono';background:rgba(38,34,90,.4);border:1px dashed #332E66;border-radius:3px;padding:5px 0;color:#A29CCB">empty</span></div>
+      <span style="font-size:10px;color:#A29CCB;line-height:1.45">Tap a tape to replay any loop you ever cut — kids build a personal library, not just level progress.</span>
+    </div>
+  </div>
+  <div style="position:absolute;left:322px;top:52px;right:22px;display:flex;flex-direction:column;gap:10px">
+    <div style="background:#1D1A3E;border:1px solid #332E66;border-radius:4px;padding:9px 12px;display:flex;flex-direction:column;gap:3px;font-size:12.5px;font-weight:700">
+      <span style="color:#5CE07E">✓ Stage 1: Wrap your beat in a live_loop</span>
+      <span style="color:#F4F2FF">● Stage 2: Use 2.times to double the hats</span>
+      <span style="color:#A29CCB;opacity:.6">○ Stage 3: Press it to tape (2 clean takes)</span>
+    </div>
+    <div>
+      <div style="display:flex;justify-content:space-between;font:700 12px 'Atkinson Hyperlegible Mono';color:#9C8BFF;margin-bottom:4px"><span>live_loop :drums do</span><span style="color:#5CE07E">4 / 4 beats</span></div>
+      <div style="background:#151233;border:1px solid #332E66;border-radius:4px;padding:8px 12px;display:flex;flex-direction:column;gap:3px;font:700 13px 'Atkinson Hyperlegible Mono'">
+        <span>&nbsp;&nbsp;<span style="color:#B7A9FF">sample</span> <span style="color:#45E0BE">:bd_haus</span></span>
+        <span>&nbsp;&nbsp;<span style="color:#B7A9FF">sleep</span> <span style="color:#FFD34D">1</span></span>
+        <span style="background:rgba(156,139,255,.1);border-radius:3px">&nbsp;&nbsp;<span style="color:#B7A9FF">2.times</span> <span style="color:#F4F2FF">do</span> <span style="color:#A29CCB">← Octave's trick</span></span>
+        <span>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#B7A9FF">sample</span> <span style="color:#45E0BE">:drum_cymbal_closed</span></span>
+        <span>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#B7A9FF">sleep</span> <span style="color:#FFD34D">0.5</span></span>
+        <span>&nbsp;&nbsp;<span style="color:#F4F2FF">end</span></span>
+      </div>
+      <div style="font:700 12px 'Atkinson Hyperlegible Mono';color:#9C8BFF;margin-top:4px">end</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap"><span style="font:800 10px 'Atkinson Hyperlegible Next';color:#A29CCB;min-width:50px">LOOPS</span><span style="font:700 12px 'Atkinson Hyperlegible Mono';color:#110F26;background:#9C8BFF;border-radius:4px;padding:4px 10px">2.times</span><span style="font:700 12px 'Atkinson Hyperlegible Mono';color:#F4F2FF;background:#26225A;border:1px solid #332E66;border-radius:4px;padding:4px 10px">4.times</span><span style="font:700 12px 'Atkinson Hyperlegible Mono';color:#F4F2FF;background:#26225A;border:1px solid #332E66;border-radius:4px;padding:4px 10px">live_loop</span></div>
+    <div style="display:flex;gap:10px"><span style="font:700 13px 'Atkinson Hyperlegible Next';color:#110F26;background:#45E0BE;border-radius:4px;padding:9px 18px">▶ Play</span><span style="font:700 13px 'Atkinson Hyperlegible Next';color:#110F26;background:#FF5CA8;border-radius:4px;padding:9px 18px">● Press to tape</span><span style="font:700 13px 'Atkinson Hyperlegible Next';color:#FF9A57;border:1px solid #FF9A57;border-radius:4px;padding:8px 16px">Ask Octave</span></div>
+  </div>
+</div></div></div>
+
+<div class="dv-opt" id="7c"><div class="dv-olabel"><a class="dv-oid" href="#7c">7c</a>Glitch encounter — debugging as a catch-the-gremlin drill</div>
+<div class="dv-card" style="width:880px;background:#0b0916">
+<div style="position:relative;width:880px;height:520px;background:radial-gradient(ellipse 70% 50% at 70% 20%,#1a1638,#0b0916 70%);color:#F4F2FF;font-family:'Atkinson Hyperlegible Next',sans-serif;overflow:hidden">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 22px">
+    <div style="display:flex;align-items:center;gap:12px"><span style="color:#A29CCB;font-size:18px">←</span><span style="font-size:13px;color:#A29CCB">SPECIAL · <b style="color:#FF6B6B">Glitch got into Octave's archive!</b></span></div>
+    <span style="font:700 11px 'Atkinson Hyperlegible Mono';color:#FF6B6B">2 bugs left</span>
+  </div>
+  <div style="position:absolute;right:26px;top:56px;width:250px;display:flex;flex-direction:column;gap:10px;align-items:center">
+    <img src="assets/glitch.png" style="width:220px;height:170px;object-fit:cover;border-radius:8px;border:2px solid #FF6B6B;box-shadow:0 0 26px rgba(255,107,107,.35)">
+    <div style="width:100%;height:10px;border-radius:99px;background:#1D1A3E;border:1px solid #332E66;overflow:hidden"><div style="width:40%;height:100%;background:linear-gradient(90deg,#FF6B6B,#FF9A57)"></div></div>
+    <span style="font:700 10px 'Atkinson Hyperlegible Mono';color:#FF6B6B">GLITCH — each fixed line shrinks him</span>
+    <div style="background:#1D1A3E;border:1px solid #332E66;border-radius:6px;padding:9px 11px;font-size:11.5px;line-height:1.5;color:#A29CCB">He doesn't break the music — he makes it <b style="color:#F4F2FF">sour</b>. Kids hear the bug before they see it: play the loop, find the wrong line, fix it. Debugging = listening.</div>
+  </div>
+  <div style="position:absolute;left:26px;top:56px;width:560px;display:flex;flex-direction:column;gap:10px">
+    <div style="font:700 12px 'Atkinson Hyperlegible Mono';color:#9C8BFF">live_loop :bass do</div>
+    <div style="background:#151233;border:1px solid #332E66;border-radius:4px;padding:10px 12px;display:flex;flex-direction:column;gap:5px;font:700 14px 'Atkinson Hyperlegible Mono'">
+      <span style="color:#5CE07E">&nbsp;&nbsp;use_synth :tb303&nbsp;&nbsp;✓ fixed</span>
+      <span>&nbsp;&nbsp;<span style="color:#B7A9FF">play</span> <span style="color:#FFD34D">33</span></span>
+      <span style="background:rgba(255,107,107,.12);border-radius:3px;position:relative">&nbsp;&nbsp;<span style="color:#B7A9FF">sleep</span> <span style="color:#FF6B6B;border-bottom:2px dashed #FF6B6B">40</span> <span style="color:#FF6B6B;font-size:11px">← 40 beats of silence?! sounds like the track died</span></span>
+      <span>&nbsp;&nbsp;<span style="color:#B7A9FF">play</span> <span style="color:#FFD34D">33</span></span>
+      <span style="background:rgba(255,107,107,.12);border-radius:3px">&nbsp;&nbsp;<span style="color:#B7A9FF">paly</span> <span style="color:#FFD34D">36</span> <span style="color:#FF6B6B;font-size:11px">← Reverb can't read this word</span></span>
+    </div>
+    <div style="font:700 12px 'Atkinson Hyperlegible Mono';color:#9C8BFF">end</div>
+    <div style="display:flex;gap:10px;margin-top:4px"><span style="font:700 13px 'Atkinson Hyperlegible Next';color:#110F26;background:#45E0BE;border-radius:4px;padding:9px 18px">▶ Hear the bug</span><span style="font:700 13px 'Atkinson Hyperlegible Next';color:#110F26;background:#FF6B6B;border-radius:4px;padding:9px 18px">Fix this line</span></div>
+    <div style="background:#1D1A3E;border:1px solid #332E66;border-radius:6px;padding:10px 12px;display:flex;align-items:center;gap:10px"><img src="assets/reverb-error.png" style="width:48px;height:42px;object-fit:cover;border-radius:6px;border:1px solid #FF6B6B;flex:none"><span style="font-size:11.5px;color:#A29CCB;line-height:1.5">Reverb reacts to Glitch's bugs with his error face — the kid learns that <b style="color:#F4F2FF">error messages are a friend pointing</b>, not a punishment. Beat Glitch and he grudgingly joins the crew as your error console.</span></div>
+  </div>
+</div></div></div>
+
+<div class="dv-opt" id="7d"><div class="dv-olabel"><a class="dv-oid" href="#7d">7d</a>Road to the Club — rival battle, Amp on the floor, the Shadow Master set</div>
+<div class="dv-card" style="width:880px;background:#07060c">
+<div style="display:flex;gap:12px;padding:20px;box-sizing:border-box;font-family:'Atkinson Hyperlegible Next',sans-serif">
+  <div style="flex:1;background:#110F26;border:1px solid #FF5CA8;border-radius:6px;overflow:hidden;display:flex;flex-direction:column;color:#F4F2FF">
+    <div style="display:flex"><img src="assets/pixel-beat-girl.png" style="width:50%;height:120px;object-fit:cover;object-position:50% 10%"><img src="assets/pixel-beat-boy.png" style="width:50%;height:120px;object-fit:cover;object-position:50% 0"></div>
+    <div style="padding:12px;display:flex;flex-direction:column;gap:6px"><span style="font:800 11px 'Atkinson Hyperlegible Mono';color:#FF5CA8">1 · TRACK BATTLE</span><span style="font-size:11px;color:#A29CCB;line-height:1.5">End of each chapter: you and Pixel Beat get the <b style="color:#F4F2FF">same brief</b>, 3 minutes, best take wins. Losing costs nothing but pride — winning steals a chart position.</span></div>
+  </div>
+  <div style="flex:1;background:#110F26;border:1px solid #FFD34D;border-radius:6px;overflow:hidden;display:flex;flex-direction:column;color:#F4F2FF">
+    <img src="assets/amp.png" style="width:100%;height:120px;object-fit:cover;object-position:50% 20%">
+    <div style="padding:12px;display:flex;flex-direction:column;gap:6px"><span style="font:800 11px 'Atkinson Hyperlegible Mono';color:#FFD34D">2 · AMP JOINS THE FLOOR</span><span style="font-size:11px;color:#A29CCB;line-height:1.5">The Club's crowd meter gets a body: Amp walks toward whoever's set is hotter. In the booth mockup (<a class="dv-oid" href="#3a">3a</a>) his grin replaces the abstract CROWD bar.</span></div>
+  </div>
+  <div style="flex:1;background:#07060c;border:1px solid #b085ff;border-radius:6px;overflow:hidden;display:flex;flex-direction:column;color:#f3eee4">
+    <img src="assets/shadow-master.png" style="width:100%;height:120px;object-fit:cover;object-position:50% 15%">
+    <div style="padding:12px;display:flex;flex-direction:column;gap:6px"><span style="font:800 11px 'Atkinson Hyperlegible Mono';color:#b085ff">3 · THE FINAL SET</span><span style="font-size:11px;color:#c9c3d4;line-height:1.5">Shadow Master's set is the finale track played back at you — every hole you've ever practiced, live, no chips. Win, and the mask comes off: he's Reverb's original builder.</span></div>
+  </div>
+</div></div></div>
+
+</div>
+<p class="dv-next">All art cropped to <code>assets/</code>. The mapping worth keeping even if characters change: <b>one mentor = one chip group</b>, rival battles at chapter ends, Amp as the embodied crowd meter, boss set = the whole curriculum replayed. Say which screen to push further.</p>
+</section>
+<section class="dv-turn" id="t6">
+<div class="dv-thd"><a class="dv-tid" href="#t6">6</a><span class="dv-tname">The real cast — Reverb's face is the feedback system, Pixel Beat is you</span></div>
+<p class="dv-sub">Turn 5's ideas rebuilt with your character art. The unlock: Reverb ships with exactly the expressions a coding companion needs — <b>Hype</b> = clean take, <b>Confused</b> = stuck (offers a chip), <b>Error</b> = parse error (points at the line). His equalizer eyes literally dance to the kid's loop. Pixel Beat (girl or boy) is the player's avatar climbing the chart.</p>
+<div class="dv-opts">
+
+<div class="dv-opt" id="6a"><div class="dv-olabel"><a class="dv-oid" href="#6a">6a</a>Studio session — Reverb live in the booth, expressions wired to code states</div>
+<div class="dv-card" style="width:880px;background:#110F26">
+<div style="position:relative;width:880px;height:560px;background:#110F26;color:#F4F2FF;font-family:'Atkinson Hyperlegible Next',sans-serif;overflow:hidden">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 22px 10px">
+    <div style="display:flex;align-items:center;gap:12px"><span style="color:#A29CCB;font-size:18px">←</span><span style="font-size:13px;color:#A29CCB">THE STUDIO · <b style="color:#F4F2FF">Chapter 2 — Demo Days</b></span></div>
+    <div style="display:flex;align-items:center;gap:8px"><img src="assets/beat-duo.png" style="width:44px;height:28px;object-fit:cover;object-position:0 0;border-radius:4px;border:1px solid #332E66"><span style="font:700 11px 'Atkinson Hyperlegible Next';letter-spacing:1.5px;color:#FFD34D">DJ MAYA</span></div>
+  </div>
+  <div style="position:absolute;left:22px;top:52px;width:290px;background:#1D1A3E;border:1px solid #332E66;border-radius:6px;padding:14px;display:flex;flex-direction:column;gap:10px;align-items:center;box-sizing:border-box">
+    <img src="assets/reverb-main2.png" style="width:170px;height:190px;object-fit:cover;border-radius:10px;border:2px solid #45E0BE;box-shadow:0 0 20px rgba(69,224,190,.25)">
+    <div style="font:800 12px 'Atkinson Hyperlegible Mono';color:#45E0BE;letter-spacing:1px">REVERB v2 · vibing</div>
+    <div style="background:#26225A;border:1px solid #332E66;border-radius:6px;padding:9px 11px;font-size:12px;line-height:1.5;color:#F4F2FF">"Ooh that prophet sounds HUGE. Keep the beats at 4 and this take is going on vinyl."</div>
+    <div style="display:flex;gap:8px;width:100%">
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><img src="assets/reverb-hype2.png" style="width:100%;height:52px;object-fit:cover;border-radius:6px;border:1px solid #5CE07E"><span style="font-size:9px;font-weight:800;color:#5CE07E">CLEAN TAKE</span></div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><img src="assets/reverb-confused2.png" style="width:100%;height:52px;object-fit:cover;border-radius:6px;border:1px solid #FF9A57"><span style="font-size:9px;font-weight:800;color:#FF9A57">STUCK → CHIP</span></div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><img src="assets/reverb-error.png" style="width:100%;height:52px;object-fit:cover;border-radius:6px;border:1px solid #FF6B6B"><span style="font-size:9px;font-weight:800;color:#FF6B6B">PARSE ERROR</span></div>
+    </div>
+    <div style="font-size:10.5px;color:#A29CCB;line-height:1.45;text-align:center">His face replaces banner toasts — the kid reads the robot, not a popup. Eyes dance to the loop while it plays.</div>
+  </div>
+  <div style="position:absolute;left:330px;top:52px;right:22px;display:flex;flex-direction:column;gap:10px">
+    <div style="background:#1D1A3E;border:1px solid #332E66;border-radius:4px;padding:9px 12px;display:flex;flex-direction:column;gap:3px;font-size:12.5px;font-weight:700">
+      <span style="color:#5CE07E">✓ Stage 1: Pick a synth</span>
+      <span style="color:#F4F2FF">● Stage 2: A melody that lands on 4 beats</span>
+      <span style="color:#A29CCB;opacity:.6">○ Stage 3: Two clean takes</span>
+    </div>
+    <div>
+      <div style="display:flex;justify-content:space-between;font:700 12px 'Atkinson Hyperlegible Mono';color:#9C8BFF;margin-bottom:4px"><span>live_loop :melody do</span><span style="color:#FFD34D">3.5 / 4 beats</span></div>
+      <div style="background:#151233;border:1px solid #332E66;border-radius:4px;padding:8px 12px;display:flex;flex-direction:column;gap:3px;font:700 13px 'Atkinson Hyperlegible Mono'">
+        <span>&nbsp;&nbsp;<span style="color:#B7A9FF">use_synth</span> <span style="color:#45E0BE">:prophet</span></span>
+        <span>&nbsp;&nbsp;<span style="color:#B7A9FF">play</span> <span style="color:#FFD34D">60</span></span>
+        <span>&nbsp;&nbsp;<span style="color:#B7A9FF">sleep</span> <span style="color:#FFD34D">1</span></span>
+        <span>&nbsp;&nbsp;<span style="color:#B7A9FF">play</span> <span style="color:#FFD34D">64</span></span>
+        <span>&nbsp;&nbsp;<span style="color:#B7A9FF">sleep</span> <span style="color:#FFD34D">0.5</span></span>
+      </div>
+      <div style="font:700 12px 'Atkinson Hyperlegible Mono';color:#9C8BFF;margin-top:4px">end</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap"><span style="font:800 10px 'Atkinson Hyperlegible Next';color:#A29CCB;min-width:56px">SLEEPS</span><span style="font:700 12px 'Atkinson Hyperlegible Mono';color:#F4F2FF;background:#26225A;border:1px solid #332E66;border-radius:4px;padding:4px 10px">sleep 0.25</span><span style="font:700 12px 'Atkinson Hyperlegible Mono';color:#110F26;background:#45E0BE;border-radius:4px;padding:4px 10px;box-shadow:0 0 10px rgba(69,224,190,.5)">sleep 0.5 ← Reverb taps this</span><span style="font:700 12px 'Atkinson Hyperlegible Mono';color:#F4F2FF;background:#26225A;border:1px solid #332E66;border-radius:4px;padding:4px 10px">sleep 1</span></div>
+    <div style="display:flex;gap:10px"><span style="font:700 13px 'Atkinson Hyperlegible Next';color:#110F26;background:#45E0BE;border-radius:4px;padding:9px 18px">▶ Play</span><span style="font:700 13px 'Atkinson Hyperlegible Next';color:#110F26;background:#FF5CA8;border-radius:4px;padding:9px 18px">● Cut the take</span><span style="font:700 13px 'Atkinson Hyperlegible Next';color:#FF9A57;border:1px solid #FF9A57;border-radius:4px;padding:8px 16px">Ask Reverb</span></div>
+    <div style="background:#1D1A3E;border:1px solid #332E66;border-radius:6px;padding:10px 14px;display:flex;align-items:center;gap:12px">
+      <div style="width:34px;height:34px;border-radius:50%;background:radial-gradient(circle,#FF5CA8 24%,#2a2450 28%,#1a1638 70%);border:2px solid #FF5CA8;flex:none"></div>
+      <span style="flex:1;font-size:11.5px;color:#A29CCB;line-height:1.5">This take is <b style="color:#FFD34D">0.5 beats short</b>. Reverb went confused and is tapping the chip that fixes it — hint-by-face, not hint-by-text.</span>
+      <span style="font:700 10px 'Atkinson Hyperlegible Mono';color:#5CE07E;flex:none">takes 1/2</span>
+    </div>
+  </div>
+</div></div></div>
+
+<div class="dv-opt" id="6b"><div class="dv-olabel"><a class="dv-oid" href="#6b">6b</a>Career screen — Pixel Beat on the chart, Reverb telling the story</div>
+<div class="dv-card" style="width:880px;background:#110F26">
+<div style="position:relative;width:880px;height:520px;background:linear-gradient(180deg,#151233,#110F26);color:#F4F2FF;font-family:'Atkinson Hyperlegible Next',sans-serif;overflow:hidden">
+  <div style="position:absolute;left:22px;top:18px;bottom:18px;width:250px;border-radius:8px;overflow:hidden;border:2px solid #FF5CA8;box-shadow:0 0 24px rgba(255,92,168,.25)">
+    <img src="assets/pixel-beat-girl.png" style="width:100%;height:100%;object-fit:cover">
+    <div style="position:absolute;left:0;right:0;bottom:0;background:linear-gradient(transparent,rgba(17,15,38,.95) 60%);padding:26px 12px 10px;display:flex;flex-direction:column;gap:2px"><span style="font:800 14px 'Atkinson Hyperlegible Next';color:#F4F2FF">DJ MAYA</span><span style="font:700 10px 'Atkinson Hyperlegible Mono';color:#FF5CA8">CH.2 · DEMO DAYS · #3 ON THE CHART</span></div>
+  </div>
+  <div style="position:absolute;left:294px;top:18px;width:300px;display:flex;flex-direction:column;gap:8px">
+    <span style="font:800 11px 'Atkinson Hyperlegible Next';letter-spacing:2px;color:#A29CCB">THE CHART</span>
+    <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:#A29CCB;padding:5px 8px"><span style="font:700 12px 'Atkinson Hyperlegible Mono';min-width:22px">#1</span><div style="width:22px;height:22px;border-radius:50%;background:radial-gradient(circle,#FFD34D 26%,#2a2450 30%,#1a1638 70%);border:2px solid #FFD34D"></div><span style="flex:1">Hardfloor Finale</span><span style="color:#FFD34D">★</span></div>
+    <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:#A29CCB;padding:5px 8px"><span style="font:700 12px 'Atkinson Hyperlegible Mono';min-width:22px">#2</span><div style="width:22px;height:22px;border-radius:50%;background:radial-gradient(circle,#c9c3d4 26%,#2a2450 30%,#1a1638 70%);border:2px solid #c9c3d4"></div><span style="flex:1">Neon Rush</span></div>
+    <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:#F4F2FF;padding:8px;background:#26225A;border:1.5px solid #FF5CA8;border-radius:5px;box-shadow:0 0 14px rgba(255,92,168,.3)"><span style="font:700 13px 'Atkinson Hyperlegible Mono';min-width:22px;color:#FF5CA8">#3</span><div style="width:26px;height:26px;border-radius:50%;background:radial-gradient(circle,#FF5CA8 26%,#2a2450 30%,#1a1638 70%);border:2px solid #FF5CA8"></div><span style="flex:1;font-weight:700">Maya's Demo Tape</span><span style="color:#5CE07E;font-weight:700">▲ 2</span></div>
+    <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:#A29CCB;opacity:.55;padding:5px 8px"><span style="font:700 12px 'Atkinson Hyperlegible Mono';min-width:22px">#4</span><div style="width:22px;height:22px;border-radius:50%;border:2px dashed #332E66"></div><span style="flex:1">— open slot —</span></div>
+    <div style="margin-top:6px">
+      <div style="display:flex;justify-content:space-between;font:800 9px 'Atkinson Hyperlegible Next';letter-spacing:1px;color:#A29CCB;margin-bottom:5px"><span style="color:#5CE07E">GARAGE ✓</span><span style="color:#F4F2FF;border-bottom:2px solid #FF5CA8;padding-bottom:2px">DEMO</span><span>RADIO</span><span>CLUB</span><span>HEADLINER</span></div>
+      <div style="height:7px;border-radius:99px;background:#1D1A3E;border:1px solid #332E66;overflow:hidden"><div style="width:34%;height:100%;background:linear-gradient(90deg,#45E0BE,#FF5CA8)"></div></div>
+    </div>
+  </div>
+  <div style="position:absolute;left:294px;bottom:18px;width:300px;background:#1D1A3E;border:1px solid #332E66;border-radius:6px;padding:12px;display:flex;gap:10px;align-items:flex-start">
+    <img src="assets/reverb-hype2.png" style="width:56px;height:48px;object-fit:cover;border-radius:6px;border:1px solid #45E0BE;flex:none">
+    <span style="font-size:11.5px;color:#F4F2FF;line-height:1.5">"#3 with a DEMO TAPE?! One more gold and radio wants you. I heard they have… <i>a chance module</i>."</span>
+  </div>
+  <div style="position:absolute;right:22px;top:18px;bottom:18px;width:250px;display:flex;flex-direction:column;gap:10px">
+    <span style="font:800 11px 'Atkinson Hyperlegible Next';letter-spacing:2px;color:#A29CCB">NEXT SESSION</span>
+    <div style="background:#1D1A3E;border:2px solid #45E0BE;border-radius:6px;padding:12px;display:flex;flex-direction:column;gap:5px"><span style="font:700 12px 'Atkinson Hyperlegible Next';color:#F4F2FF">Sleep Math · drill</span><span style="font:700 10px 'Atkinson Hyperlegible Mono';color:#45E0BE">sleep 0.25 / 0.5 / 1</span><span style="font-size:10.5px;color:#A29CCB">3 clean takes presses a record</span></div>
+    <div style="background:rgba(29,26,62,.5);border:1px solid #332E66;border-radius:6px;padding:12px;display:flex;flex-direction:column;gap:5px;opacity:.6"><span style="font:700 12px 'Atkinson Hyperlegible Next';color:#A29CCB">Synth Swap · drill</span><span style="font:700 10px 'Atkinson Hyperlegible Mono';color:#A29CCB">use_synth · gold Sleep Math</span></div>
+    <div style="margin-top:auto;background:#26225A;border:1px solid #332E66;border-radius:6px;padding:10px;display:flex;align-items:center;gap:10px"><img src="assets/pixel-beat-boy.png" style="width:40px;height:48px;object-fit:cover;object-position:50% 0;border-radius:5px;border:1px solid #332E66;flex:none"><span style="font-size:10.5px;color:#A29CCB;line-height:1.4">Avatar picked once at start — <b style="color:#F4F2FF">Girl Beat or Boy Beat</b> — gear upgrades draw onto it per chapter.</span></div>
+    <span style="text-align:center;font:700 13px 'Atkinson Hyperlegible Next';color:#110F26;background:#FFD34D;border-radius:4px;padding:10px 0">Book the session</span>
+  </div>
+</div></div></div>
+
+<div class="dv-opt" id="6c"><div class="dv-olabel"><a class="dv-oid" href="#6c">6c</a>Same career screen, Boy Beat — aqua accent, same layout</div>
+<div class="dv-card" style="width:880px;background:#110F26">
+<div style="position:relative;width:880px;height:520px;background:linear-gradient(180deg,#151233,#110F26);color:#F4F2FF;font-family:'Atkinson Hyperlegible Next',sans-serif;overflow:hidden">
+  <div style="position:absolute;left:22px;top:18px;bottom:18px;width:250px;border-radius:8px;overflow:hidden;border:2px solid #45E0BE;box-shadow:0 0 24px rgba(69,224,190,.25)">
+    <img src="assets/pixel-beat-boy.png" style="width:100%;height:100%;object-fit:cover;object-position:50% 20%">
+    <div style="position:absolute;left:0;right:0;bottom:0;background:linear-gradient(transparent,rgba(17,15,38,.95) 60%);padding:26px 12px 10px;display:flex;flex-direction:column;gap:2px"><span style="font:800 14px 'Atkinson Hyperlegible Next';color:#F4F2FF">DJ LEO</span><span style="font:700 10px 'Atkinson Hyperlegible Mono';color:#45E0BE">CH.2 · DEMO DAYS · #3 ON THE CHART</span></div>
+  </div>
+  <div style="position:absolute;left:294px;top:18px;width:300px;display:flex;flex-direction:column;gap:8px">
+    <span style="font:800 11px 'Atkinson Hyperlegible Next';letter-spacing:2px;color:#A29CCB">THE CHART</span>
+    <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:#A29CCB;padding:5px 8px"><span style="font:700 12px 'Atkinson Hyperlegible Mono';min-width:22px">#1</span><div style="width:22px;height:22px;border-radius:50%;background:radial-gradient(circle,#FFD34D 26%,#2a2450 30%,#1a1638 70%);border:2px solid #FFD34D"></div><span style="flex:1">Hardfloor Finale</span><span style="color:#FFD34D">★</span></div>
+    <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:#A29CCB;padding:5px 8px"><span style="font:700 12px 'Atkinson Hyperlegible Mono';min-width:22px">#2</span><div style="width:22px;height:22px;border-radius:50%;background:radial-gradient(circle,#c9c3d4 26%,#2a2450 30%,#1a1638 70%);border:2px solid #c9c3d4"></div><span style="flex:1">Neon Rush</span></div>
+    <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:#F4F2FF;padding:8px;background:#26225A;border:1.5px solid #45E0BE;border-radius:5px;box-shadow:0 0 14px rgba(69,224,190,.3)"><span style="font:700 13px 'Atkinson Hyperlegible Mono';min-width:22px;color:#45E0BE">#3</span><div style="width:26px;height:26px;border-radius:50%;background:radial-gradient(circle,#45E0BE 26%,#2a2450 30%,#1a1638 70%);border:2px solid #45E0BE"></div><span style="flex:1;font-weight:700">Leo's Demo Tape</span><span style="color:#5CE07E;font-weight:700">▲ 2</span></div>
+    <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:#A29CCB;opacity:.55;padding:5px 8px"><span style="font:700 12px 'Atkinson Hyperlegible Mono';min-width:22px">#4</span><div style="width:22px;height:22px;border-radius:50%;border:2px dashed #332E66"></div><span style="flex:1">— open slot —</span></div>
+    <div style="margin-top:6px">
+      <div style="display:flex;justify-content:space-between;font:800 9px 'Atkinson Hyperlegible Next';letter-spacing:1px;color:#A29CCB;margin-bottom:5px"><span style="color:#5CE07E">GARAGE ✓</span><span style="color:#F4F2FF;border-bottom:2px solid #45E0BE;padding-bottom:2px">DEMO</span><span>RADIO</span><span>CLUB</span><span>HEADLINER</span></div>
+      <div style="height:7px;border-radius:99px;background:#1D1A3E;border:1px solid #332E66;overflow:hidden"><div style="width:34%;height:100%;background:linear-gradient(90deg,#FF5CA8,#45E0BE)"></div></div>
+    </div>
+  </div>
+  <div style="position:absolute;left:294px;bottom:18px;width:300px;background:#1D1A3E;border:1px solid #332E66;border-radius:6px;padding:12px;display:flex;gap:10px;align-items:flex-start">
+    <img src="assets/reverb-hype2.png" style="width:56px;height:48px;object-fit:cover;border-radius:6px;border:1px solid #45E0BE;flex:none">
+    <span style="font-size:11.5px;color:#F4F2FF;line-height:1.5">"#3 with a DEMO TAPE?! One more gold and radio wants you. I heard they have… <i>a chance module</i>."</span>
+  </div>
+  <div style="position:absolute;right:22px;top:18px;bottom:18px;width:250px;display:flex;flex-direction:column;gap:10px">
+    <span style="font:800 11px 'Atkinson Hyperlegible Next';letter-spacing:2px;color:#A29CCB">NEXT SESSION</span>
+    <div style="background:#1D1A3E;border:2px solid #45E0BE;border-radius:6px;padding:12px;display:flex;flex-direction:column;gap:5px"><span style="font:700 12px 'Atkinson Hyperlegible Next';color:#F4F2FF">Sleep Math · drill</span><span style="font:700 10px 'Atkinson Hyperlegible Mono';color:#45E0BE">sleep 0.25 / 0.5 / 1</span><span style="font-size:10.5px;color:#A29CCB">3 clean takes presses a record</span></div>
+    <div style="background:rgba(29,26,62,.5);border:1px solid #332E66;border-radius:6px;padding:12px;display:flex;flex-direction:column;gap:5px;opacity:.6"><span style="font:700 12px 'Atkinson Hyperlegible Next';color:#A29CCB">Synth Swap · drill</span><span style="font:700 10px 'Atkinson Hyperlegible Mono';color:#A29CCB">use_synth · gold Sleep Math</span></div>
+    <div style="margin-top:auto;background:#26225A;border:1px solid #332E66;border-radius:6px;padding:10px;display:flex;align-items:center;gap:10px"><img src="assets/pixel-beat-girl.png" style="width:40px;height:48px;object-fit:cover;object-position:50% 8%;border-radius:5px;border:1px solid #332E66;flex:none"><span style="font-size:10.5px;color:#A29CCB;line-height:1.4">Avatar picked once at start — <b style="color:#F4F2FF">Girl Beat or Boy Beat</b> — gear upgrades draw onto it per chapter.</span></div>
+    <span style="text-align:center;font:700 13px 'Atkinson Hyperlegible Next';color:#110F26;background:#FFD34D;border-radius:4px;padding:10px 0">Book the session</span>
+  </div>
+</div></div></div>
+
+</div>
+<p class="dv-next">Art is cropped from your sheet into <code>assets/</code> (Reverb main + 3 expressions, both Pixel Beats, the duo). Next: pick <a class="dv-oid" href="#6a">6a</a>/<a class="dv-oid" href="#6b">6b</a> to refine, or I fold the winners into a handoff like the Club's.</p>
+</section>
+<section class="dv-turn" id="t5">
+<div class="dv-thd"><a class="dv-tid" href="#t5">5</a><span class="dv-tname">Story layer — a companion who grows with you, and gear that IS the curriculum</span></div>
+<p class="dv-sub">The repo already has a faceless <code>Mentor</code> text box — these give it a body and an arc. Core idea: <b>each piece of studio gear is a chip group</b> (drum machine = drums chips, 303 = notes, synth rack = use_synth, chance module = choose/rrand), so upgrading equipment and learning the language are the same event. The companion — <b>Reverb</b>, a little robot built from studio scraps — gets rebuilt from the same gear you unlock, and the story is your climb from garage nobody to headliner.</p>
+<div class="dv-opts">
+
+<div class="dv-opt" id="5a"><div class="dv-olabel"><a class="dv-oid" href="#5a">5a</a>Reverb + The Rig — companion panel and a gear shelf where chips live as hardware</div>
+<div class="dv-card" style="width:880px;background:#110F26">
+<div style="position:relative;width:880px;height:560px;background:#110F26;color:#F4F2FF;font-family:'Atkinson Hyperlegible Next',sans-serif;overflow:hidden">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 22px 10px">
+    <div style="display:flex;align-items:center;gap:12px"><span style="color:#A29CCB;font-size:18px">←</span><span style="font-size:13px;color:#A29CCB">THE STUDIO · <b style="color:#F4F2FF">Chapter 2 — Demo Days</b></span></div>
+    <span style="font:700 11px 'Atkinson Hyperlegible Next';letter-spacing:1.5px;color:#FFD34D">PLAYING · MAYA</span>
+  </div>
+  <div style="position:absolute;left:22px;top:52px;width:300px;background:#1D1A3E;border:1px solid #332E66;border-radius:6px;padding:16px;display:flex;flex-direction:column;gap:12px;align-items:center">
+    <div style="position:relative;width:110px;height:120px">
+      <div style="position:absolute;left:15px;top:0;width:80px;height:64px;border-radius:14px;background:linear-gradient(180deg,#26225A,#1D1A3E);border:2px solid #9C8BFF"></div>
+      <div style="position:absolute;left:33px;top:18px;width:16px;height:16px;border-radius:50%;background:#45E0BE;box-shadow:0 0 10px rgba(69,224,190,.8)"></div>
+      <div style="position:absolute;left:61px;top:18px;width:16px;height:16px;border-radius:50%;background:#45E0BE;box-shadow:0 0 10px rgba(69,224,190,.8)"></div>
+      <div style="position:absolute;left:41px;top:44px;width:28px;height:6px;border-radius:3px;background:#FF5CA8"></div>
+      <div style="position:absolute;left:8px;top:8px;width:12px;height:26px;border-radius:6px;background:#FFD34D;transform:rotate(-14deg)"></div>
+      <div style="position:absolute;right:8px;top:8px;width:12px;height:26px;border-radius:6px;background:#FFD34D;transform:rotate(14deg)"></div>
+      <div style="position:absolute;left:25px;top:70px;width:60px;height:42px;border-radius:8px;background:#26225A;border:2px solid #332E66;display:flex;align-items:flex-end;justify-content:center;gap:3px;padding:6px"><span style="width:6px;height:10px;background:#FF5CA8;border-radius:2px"></span><span style="width:6px;height:18px;background:#FFD34D;border-radius:2px"></span><span style="width:6px;height:14px;background:#45E0BE;border-radius:2px"></span></div>
+    </div>
+    <div style="font:800 12px 'Atkinson Hyperlegible Mono';color:#9C8BFF;letter-spacing:1px">REVERB · v2</div>
+    <div style="background:#26225A;border:1px solid #332E66;border-radius:6px;padding:10px 12px;font-size:12.5px;line-height:1.55;color:#F4F2FF">"You built me new ears from that synth rack! Now I can hear <b style="color:#45E0BE">:prophet</b>. Cut this record and I'll show you what my chest speaker does…"</div>
+    <div style="display:flex;gap:6px;width:100%"><span style="flex:1;text-align:center;font-size:11px;font-weight:700;color:#A29CCB;border:1px solid #332E66;border-radius:4px;padding:5px 0">Story so far</span><span style="flex:1;text-align:center;font-size:11px;font-weight:700;color:#110F26;background:#9C8BFF;border-radius:4px;padding:5px 0">Ask Reverb</span></div>
+  </div>
+  <div style="position:absolute;left:338px;top:52px;right:22px;display:flex;flex-direction:column;gap:10px">
+    <div style="display:flex;justify-content:space-between;font:700 12px 'Atkinson Hyperlegible Mono';color:#9C8BFF"><span>live_loop :melody do</span><span style="color:#5CE07E">4 / 4 beats</span></div>
+    <div style="background:#151233;border:1px solid #332E66;border-radius:4px;padding:8px 12px;display:flex;flex-direction:column;gap:3px;font:700 13px 'Atkinson Hyperlegible Mono'">
+      <span>&nbsp;&nbsp;<span style="color:#B7A9FF">use_synth</span> <span style="color:#45E0BE">:prophet</span></span>
+      <span>&nbsp;&nbsp;<span style="color:#B7A9FF">play</span> <span style="color:#FFD34D">60</span></span>
+      <span>&nbsp;&nbsp;<span style="color:#B7A9FF">sleep</span> <span style="color:#FFD34D">1</span></span>
+    </div>
+    <div style="display:flex;gap:10px"><span style="font:700 13px 'Atkinson Hyperlegible Next';color:#110F26;background:#45E0BE;border-radius:4px;padding:8px 18px">▶ Play</span><span style="font:700 13px 'Atkinson Hyperlegible Next';color:#110F26;background:#FF5CA8;border-radius:4px;padding:8px 18px">● Cut the take</span></div>
+  </div>
+  <div style="position:absolute;left:338px;right:22px;bottom:16px;top:288px;background:#1D1A3E;border:1px solid #332E66;border-radius:6px;padding:12px 14px;box-sizing:border-box">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px"><span style="font:800 11px 'Atkinson Hyperlegible Next';letter-spacing:2px;color:#A29CCB">THE RIG — your gear is your vocabulary</span><span style="font-size:11px;color:#A29CCB">3 of 5 installed</span></div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
+      <div style="background:#26225A;border:2px solid #FF5CA8;border-radius:8px;padding:10px;display:flex;flex-direction:column;gap:5px"><div style="height:34px;border-radius:5px;background:#151233;display:flex;align-items:center;justify-content:center;gap:4px"><span style="width:9px;height:9px;border-radius:2px;background:#FF5CA8"></span><span style="width:9px;height:9px;border-radius:2px;background:#FF5CA8"></span><span style="width:9px;height:9px;border-radius:2px;background:#332E66"></span><span style="width:9px;height:9px;border-radius:2px;background:#FF5CA8"></span></div><span style="font-size:11px;font-weight:800">TR-08 Beatbox</span><span style="font:700 10px 'Atkinson Hyperlegible Mono';color:#45E0BE">sample :bd_haus…</span></div>
+      <div style="background:#26225A;border:2px solid #FFD34D;border-radius:8px;padding:10px;display:flex;flex-direction:column;gap:5px"><div style="height:34px;border-radius:5px;background:#151233;display:flex;align-items:center;justify-content:center;gap:2px"><span style="width:7px;height:20px;background:#F4F2FF;border-radius:1px"></span><span style="width:7px;height:20px;background:#151233;border:1px solid #332E66;border-radius:1px"></span><span style="width:7px;height:20px;background:#F4F2FF;border-radius:1px"></span><span style="width:7px;height:20px;background:#F4F2FF;border-radius:1px"></span><span style="width:7px;height:20px;background:#151233;border:1px solid #332E66;border-radius:1px"></span></div><span style="font-size:11px;font-weight:800">Bassline 303</span><span style="font:700 10px 'Atkinson Hyperlegible Mono';color:#45E0BE">play 33…72</span></div>
+      <div style="background:#26225A;border:2px solid #45E0BE;border-radius:8px;padding:10px;display:flex;flex-direction:column;gap:5px;box-shadow:0 0 16px rgba(69,224,190,.25)"><div style="height:34px;border-radius:5px;background:#151233;display:flex;align-items:center;justify-content:center;gap:5px"><span style="width:12px;height:12px;border-radius:50%;border:2px solid #45E0BE"></span><span style="width:12px;height:12px;border-radius:50%;border:2px solid #45E0BE"></span><span style="width:12px;height:12px;border-radius:50%;border:2px solid #FFD34D"></span></div><span style="font-size:11px;font-weight:800">Synth Rack <span style="color:#45E0BE;font-size:9px">NEW!</span></span><span style="font:700 10px 'Atkinson Hyperlegible Mono';color:#45E0BE">use_synth :prophet</span></div>
+      <div style="background:rgba(38,34,90,.4);border:2px dashed #332E66;border-radius:8px;padding:10px;display:flex;flex-direction:column;gap:5px;opacity:.65"><div style="height:34px;border-radius:5px;background:#151233;display:flex;align-items:center;justify-content:center;color:#A29CCB;font-size:16px">🎲</div><span style="font-size:11px;font-weight:800;color:#A29CCB">Chance Module</span><span style="font:700 10px 'Atkinson Hyperlegible Mono';color:#A29CCB">choose() · gold Ch.2</span></div>
+    </div>
+    <div style="margin-top:10px;font-size:11px;color:#A29CCB;line-height:1.5">Installing gear = unlocking that chip group. The shelf replaces abstract "chip groups unlock stage by stage" with hardware you can see arriving.</div>
+  </div>
+</div></div></div>
+
+<div class="dv-opt" id="5b"><div class="dv-olabel"><a class="dv-oid" href="#5b">5b</a>Story Map — chapters from garage to headliner; Reverb narrates, gear marks each chapter</div>
+<div class="dv-card" style="width:880px;background:#110F26">
+<div style="position:relative;width:880px;height:440px;background:linear-gradient(180deg,#151233,#110F26);color:#F4F2FF;font-family:'Atkinson Hyperlegible Next',sans-serif;overflow:hidden;padding:18px 26px;box-sizing:border-box">
+  <div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font:800 13px 'Atkinson Hyperlegible Next';letter-spacing:3px;color:#A29CCB">YOUR STORY</span><span style="font-size:12px;color:#A29CCB">Chapter 2 of 5</span></div>
+  <div style="display:flex;gap:12px;margin-top:16px">
+    <div style="flex:1;background:#1D1A3E;border:1px solid #5CE07E;border-radius:6px;padding:12px;display:flex;flex-direction:column;gap:6px"><span style="font:800 10px 'Atkinson Hyperlegible Mono';color:#5CE07E">CH.1 ✓ THE GARAGE</span><span style="font-size:11px;color:#A29CCB;line-height:1.5">You find Reverb in a junk pile — one working eye, no speaker. First beats on a dusty beatbox.</span><span style="font:700 10px 'Atkinson Hyperlegible Mono';color:#45E0BE">gear: TR-08 · play/sleep</span></div>
+    <div style="flex:1;background:#26225A;border:2px solid #FF5CA8;border-radius:6px;padding:12px;display:flex;flex-direction:column;gap:6px;box-shadow:0 0 18px rgba(255,92,168,.25)"><span style="font:800 10px 'Atkinson Hyperlegible Mono';color:#FF5CA8">CH.2 ● DEMO DAYS</span><span style="font-size:11px;color:#F4F2FF;line-height:1.5">A pawn-shop 303 and a synth rack. Reverb gets ears. A local DJ hears your demo tape…</span><span style="font:700 10px 'Atkinson Hyperlegible Mono';color:#45E0BE">gear: 303 + synth rack · use_synth</span></div>
+    <div style="flex:1;background:rgba(29,26,62,.5);border:1px solid #332E66;border-radius:6px;padding:12px;display:flex;flex-direction:column;gap:6px;opacity:.6"><span style="font:800 10px 'Atkinson Hyperlegible Mono';color:#A29CCB">CH.3 RADIO PLAY</span><span style="font-size:11px;color:#A29CCB;line-height:1.5">Your record spins on local radio. Reverb gets a chest speaker — and an attitude.</span><span style="font:700 10px 'Atkinson Hyperlegible Mono';color:#A29CCB">gear: chance module · choose()</span></div>
+    <div style="flex:1;background:rgba(29,26,62,.5);border:1px solid #332E66;border-radius:6px;padding:12px;display:flex;flex-direction:column;gap:6px;opacity:.6"><span style="font:800 10px 'Atkinson Hyperlegible Mono';color:#A29CCB">CH.4 THE CLUB</span><span style="font-size:11px;color:#A29CCB;line-height:1.5">The bouncer knows your name now. Reverb rides in your bag to every booth set.</span><span style="font:700 10px 'Atkinson Hyperlegible Mono';color:#A29CCB">gear: rrand · live sets</span></div>
+    <div style="flex:1;background:rgba(29,26,62,.5);border:1px solid #332E66;border-radius:6px;padding:12px;display:flex;flex-direction:column;gap:6px;opacity:.6"><span style="font:800 10px 'Atkinson Hyperlegible Mono';color:#A29CCB">CH.5 HEADLINER</span><span style="font-size:11px;color:#A29CCB;line-height:1.5">Platinum wall. Reverb, fully rebuilt, DJs warm-up for you — using loops YOU wrote.</span><span style="font:700 10px 'Atkinson Hyperlegible Mono';color:#A29CCB">gear: the full IDE</span></div>
+  </div>
+  <div style="margin-top:16px;background:#1D1A3E;border:1px solid #332E66;border-radius:6px;padding:12px 16px;display:flex;align-items:center;gap:14px">
+    <div style="position:relative;width:54px;height:44px;flex:none"><div style="position:absolute;left:7px;top:0;width:40px;height:32px;border-radius:8px;background:#26225A;border:2px solid #9C8BFF"></div><div style="position:absolute;left:16px;top:9px;width:8px;height:8px;border-radius:50%;background:#45E0BE"></div><div style="position:absolute;left:30px;top:9px;width:8px;height:8px;border-radius:50%;background:#45E0BE"></div><div style="position:absolute;left:20px;top:22px;width:14px;height:3px;border-radius:2px;background:#FF5CA8"></div></div>
+    <span style="flex:1;font-size:12.5px;line-height:1.55">"Chapter beats play between levels as 3-line scenes — never a cutscene longer than the kid's attention. Skippable, but the gear handover always happens on-screen: <b style="color:#45E0BE">new syntax arrives as a physical thing Reverb plugs in</b>."</span>
+    <span style="font:700 12px 'Atkinson Hyperlegible Next';color:#110F26;background:#FFD34D;border-radius:4px;padding:8px 16px;flex:none">Continue Ch.2</span>
+  </div>
+</div></div></div>
+
+<div class="dv-opt" id="5c"><div class="dv-olabel"><a class="dv-oid" href="#5c">5c</a>Reverb evolution strip — how the companion + rig + language grow together</div>
+<div class="dv-card" style="width:880px;background:#110F26">
+<div style="display:flex;gap:12px;padding:20px;box-sizing:border-box;font-family:'Atkinson Hyperlegible Next',sans-serif">
+  <div style="flex:1;background:#1D1A3E;border:1px solid #332E66;border-radius:6px;padding:14px;display:flex;flex-direction:column;align-items:center;gap:8px;color:#F4F2FF">
+    <span style="font:800 10px 'Atkinson Hyperlegible Mono';color:#A29CCB">v1 · JUNK PILE</span>
+    <div style="position:relative;width:70px;height:60px"><div style="position:absolute;left:10px;top:4px;width:50px;height:40px;border-radius:10px;background:#1a1638;border:2px dashed #332E66"></div><div style="position:absolute;left:22px;top:16px;width:10px;height:10px;border-radius:50%;background:#45E0BE"></div><div style="position:absolute;left:40px;top:16px;width:10px;height:10px;border-radius:50%;border:2px solid #332E66"></div></div>
+    <span style="font-size:11px;color:#A29CCB;text-align:center;line-height:1.5">One eye. Speaks in beeps you "translate". Knows <b style="font-family:'Atkinson Hyperlegible Mono';color:#45E0BE">play</b> + <b style="font-family:'Atkinson Hyperlegible Mono';color:#45E0BE">sleep</b>.</span>
+  </div>
+  <div style="flex:1;background:#1D1A3E;border:1px solid #332E66;border-radius:6px;padding:14px;display:flex;flex-direction:column;align-items:center;gap:8px;color:#F4F2FF">
+    <span style="font:800 10px 'Atkinson Hyperlegible Mono';color:#9C8BFF">v2 · REBUILT EARS</span>
+    <div style="position:relative;width:70px;height:60px"><div style="position:absolute;left:10px;top:4px;width:50px;height:40px;border-radius:10px;background:#26225A;border:2px solid #9C8BFF"></div><div style="position:absolute;left:22px;top:16px;width:10px;height:10px;border-radius:50%;background:#45E0BE"></div><div style="position:absolute;left:40px;top:16px;width:10px;height:10px;border-radius:50%;background:#45E0BE"></div><div style="position:absolute;left:2px;top:8px;width:8px;height:18px;border-radius:4px;background:#FFD34D"></div><div style="position:absolute;right:2px;top:8px;width:8px;height:18px;border-radius:4px;background:#FFD34D"></div></div>
+    <span style="font-size:11px;color:#A29CCB;text-align:center;line-height:1.5">Hears synths — hums your melody back. Nags about beats ≠ 4.</span>
+  </div>
+  <div style="flex:1;background:#1D1A3E;border:1px solid #332E66;border-radius:6px;padding:14px;display:flex;flex-direction:column;align-items:center;gap:8px;color:#F4F2FF">
+    <span style="font:800 10px 'Atkinson Hyperlegible Mono';color:#FF5CA8">v3 · CHEST SPEAKER</span>
+    <div style="position:relative;width:70px;height:74px"><div style="position:absolute;left:10px;top:0;width:50px;height:38px;border-radius:10px;background:#26225A;border:2px solid #FF5CA8"></div><div style="position:absolute;left:22px;top:12px;width:10px;height:10px;border-radius:50%;background:#45E0BE"></div><div style="position:absolute;left:40px;top:12px;width:10px;height:10px;border-radius:50%;background:#45E0BE"></div><div style="position:absolute;left:16px;top:42px;width:38px;height:28px;border-radius:6px;background:#1a1638;border:2px solid #332E66;display:flex;align-items:flex-end;justify-content:center;gap:2px;padding:4px"><span style="width:5px;height:8px;background:#FF5CA8;border-radius:1px"></span><span style="width:5px;height:14px;background:#FFD34D;border-radius:1px"></span><span style="width:5px;height:10px;background:#45E0BE;border-radius:1px"></span></div></div>
+    <span style="font-size:11px;color:#A29CCB;text-align:center;line-height:1.5">Plays your records out loud. Rolls dice for <b style="font-family:'Atkinson Hyperlegible Mono';color:#45E0BE">choose()</b> drills.</span>
+  </div>
+  <div style="flex:1;background:#1D1A3E;border:1px solid #FFD34D;border-radius:6px;padding:14px;display:flex;flex-direction:column;align-items:center;gap:8px;color:#F4F2FF">
+    <span style="font:800 10px 'Atkinson Hyperlegible Mono';color:#FFD34D">v4 · STAGE READY</span>
+    <div style="position:relative;width:70px;height:74px"><div style="position:absolute;left:10px;top:0;width:50px;height:38px;border-radius:10px;background:#26225A;border:2px solid #FFD34D;box-shadow:0 0 14px rgba(255,211,77,.4)"></div><div style="position:absolute;left:22px;top:12px;width:10px;height:10px;border-radius:50%;background:#FFD34D"></div><div style="position:absolute;left:40px;top:12px;width:10px;height:10px;border-radius:50%;background:#FFD34D"></div><div style="position:absolute;left:26px;top:-8px;width:18px;height:8px;border-radius:4px 4px 0 0;background:#FF5CA8"></div><div style="position:absolute;left:16px;top:42px;width:38px;height:28px;border-radius:6px;background:#1a1638;border:2px solid #FFD34D;display:flex;align-items:center;justify-content:center;font:700 9px 'Atkinson Hyperlegible Mono';color:#FFD34D">DJ RVB</div></div>
+    <span style="font-size:11px;color:#A29CCB;text-align:center;line-height:1.5">Follows you into the Club booth. Plays warm-up sets from loops <b style="color:#F4F2FF">you</b> wrote in the studio.</span>
+  </div>
+</div>
+<div style="padding:0 20px 18px;font-size:11px;color:#A29CCB;font-family:'Atkinson Hyperlegible Next',sans-serif;line-height:1.5">Progression trigger: each Reverb rebuild = a chapter's gold record, so the character upgrade is earned by the same act that climbs the chart. His dialogue reuses the existing <code style="color:#45E0BE">Mentor</code> lines — same words, now with a face and a reason to care.</div>
+</div></div>
+
+</div>
+<p class="dv-next">The three fit together: <a class="dv-oid" href="#5a">5a</a> is the in-session view, <a class="dv-oid" href="#5b">5b</a> the between-session story map, <a class="dv-oid" href="#5c">5c</a> the progression spec. Open questions for you: is Reverb the right kind of character (robot sidekick vs. human mentor vs. the kid's own avatar)? Should gear unlocks gate chips strictly, or just re-skin the existing stage unlocks?</p>
+</section>
+<section class="dv-turn" id="t4">
+<div class="dv-thd"><a class="dv-tid" href="#t4">4</a><span class="dv-tname">"In the Studio" — cut records, climb the charts</span></div>
+<p class="dv-sub">Grounded in the real code: the Studio is the navy classroom (<code>C</code> palette from <code>theme.js</code>, Atkinson Hyperlegible, chip palette from <code>chipGroups.js</code>, stage checklist from <code>BuildPhase.jsx</code>). Frame: the Club is where you <i>perform</i>; the Studio is where you <i>produce</i>. Every finished drill is a "take", clean takes cut a record, and records climb a music chart — the ladder. Amber/sour/ok stay Club-only; the Studio earns its own trophy metal (bronze → silver → gold vinyl).</p>
+<div class="dv-opts">
+
+<div class="dv-opt" id="4a"><div class="dv-olabel"><a class="dv-oid" href="#4a">4a</a>Chart Climb Session — today's BuildPhase desk + a live chart ladder rail</div>
+<div class="dv-card" style="width:880px;background:#110F26">
+<div style="position:relative;width:880px;height:560px;background:#110F26;color:#F4F2FF;font-family:'Atkinson Hyperlegible Next',sans-serif;overflow:hidden">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 22px 10px">
+    <div style="display:flex;align-items:center;gap:12px"><span style="color:#A29CCB;font-size:18px">←</span><span style="font-size:13px;color:#A29CCB">THE STUDIO · <b style="color:#F4F2FF">Session 3 — Loop Magic</b></span></div>
+    <div style="display:flex;align-items:center;gap:10px"><span style="font:700 11px 'Atkinson Hyperlegible Mono';color:#FF5CA8;background:rgba(255,92,168,.12);border-radius:4px;padding:3px 10px">● TAKE 2</span><span style="font:700 11px 'Atkinson Hyperlegible Next';letter-spacing:1.5px;color:#FFD34D">PLAYING · MAYA</span></div>
+  </div>
+  <div style="position:absolute;left:22px;top:52px;width:548px;display:flex;flex-direction:column;gap:10px">
+    <div style="background:#1D1A3E;border:1px solid #332E66;border-radius:4px;padding:10px 14px;font-size:13px;color:#F4F2FF"><b style="color:#9C8BFF">MC:</b> Two clean takes and this one's pressed. Keep the beats at 4 — the chart's watching.</div>
+    <div style="background:#1D1A3E;border:1px solid #332E66;border-radius:4px;padding:10px 14px;display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:700">
+      <span style="color:#5CE07E">✓ Stage 1: Lay the kick</span>
+      <span style="color:#F4F2FF">● Stage 2: Add snare on the off-beat</span>
+      <span style="color:#A29CCB;opacity:.6">○ Stage 3: Play it twice, clean</span>
+    </div>
+    <div>
+      <div style="display:flex;justify-content:space-between;font:700 12px 'Atkinson Hyperlegible Mono';color:#9C8BFF;margin-bottom:4px"><span>live_loop :drums do</span><span style="color:#5CE07E">4 / 4 beats</span></div>
+      <div style="background:#151233;border:1px solid #332E66;border-radius:4px;padding:8px 12px;display:flex;flex-direction:column;gap:3px;font:700 13px 'Atkinson Hyperlegible Mono'">
+        <span>&nbsp;&nbsp;<span style="color:#B7A9FF">sample</span> <span style="color:#45E0BE">:bd_haus</span></span>
+        <span>&nbsp;&nbsp;<span style="color:#B7A9FF">sleep</span> <span style="color:#FFD34D">0.5</span></span>
+        <span>&nbsp;&nbsp;<span style="color:#B7A9FF">sample</span> <span style="color:#45E0BE">:sn_dolf</span></span>
+        <span>&nbsp;&nbsp;<span style="color:#B7A9FF">sleep</span> <span style="color:#FFD34D">0.5</span></span>
+      </div>
+      <div style="font:700 12px 'Atkinson Hyperlegible Mono';color:#9C8BFF;margin-top:4px">end</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap"><span style="font:800 10px 'Atkinson Hyperlegible Next';color:#A29CCB;min-width:56px;letter-spacing:.5px">DRUMS</span><span style="font:700 12px 'Atkinson Hyperlegible Mono';color:#F4F2FF;background:#26225A;border:1px solid #332E66;border-radius:4px;padding:4px 10px">:bd_haus</span><span style="font:700 12px 'Atkinson Hyperlegible Mono';color:#F4F2FF;background:#26225A;border:1px solid #332E66;border-radius:4px;padding:4px 10px">:sn_dolf</span><span style="font:700 12px 'Atkinson Hyperlegible Mono';color:#F4F2FF;background:#26225A;border:1px solid #332E66;border-radius:4px;padding:4px 10px">:hat</span></div>
+      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap"><span style="font:800 10px 'Atkinson Hyperlegible Next';color:#A29CCB;min-width:56px;letter-spacing:.5px">SLEEPS</span><span style="font:700 12px 'Atkinson Hyperlegible Mono';color:#F4F2FF;background:#26225A;border:1px solid #332E66;border-radius:4px;padding:4px 10px">sleep 0.25</span><span style="font:700 12px 'Atkinson Hyperlegible Mono';color:#F4F2FF;background:#26225A;border:1px solid #332E66;border-radius:4px;padding:4px 10px">sleep 0.5</span><span style="font:700 12px 'Atkinson Hyperlegible Mono';color:#F4F2FF;background:#26225A;border:1px solid #332E66;border-radius:4px;padding:4px 10px">sleep 1</span></div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:2px">
+      <span style="font:700 14px 'Atkinson Hyperlegible Next';color:#110F26;background:#45E0BE;border-radius:4px;padding:9px 20px">▶ Play my loop</span>
+      <span style="font:700 14px 'Atkinson Hyperlegible Next';color:#110F26;background:#FF5CA8;border-radius:4px;padding:9px 20px">● Cut the take</span>
+      <span style="font:700 14px 'Atkinson Hyperlegible Next';color:#FF9A57;border:1px solid #FF9A57;border-radius:4px;padding:8px 18px">Hint</span>
+    </div>
+  </div>
+  <div style="position:absolute;right:22px;top:52px;width:266px;bottom:16px;background:#1D1A3E;border:1px solid #332E66;border-radius:4px;padding:12px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:7px">
+    <div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font:800 11px 'Atkinson Hyperlegible Next';letter-spacing:2px;color:#A29CCB">THE CHART</span><span style="font:700 10px 'Atkinson Hyperlegible Mono';color:#FFD34D">this week</span></div>
+    <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:#A29CCB;padding:4px 6px"><span style="font:700 12px 'Atkinson Hyperlegible Mono';min-width:24px">#1</span><div style="width:22px;height:22px;border-radius:50%;background:radial-gradient(circle,#FFD34D 26%,#2a2450 30%,#1a1638 70%);border:2px solid #FFD34D"></div><span style="flex:1">Hardfloor Finale</span><span style="color:#FFD34D">★ gold</span></div>
+    <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:#A29CCB;padding:4px 6px"><span style="font:700 12px 'Atkinson Hyperlegible Mono';min-width:24px">#2</span><div style="width:22px;height:22px;border-radius:50%;background:radial-gradient(circle,#c9c3d4 26%,#2a2450 30%,#1a1638 70%);border:2px solid #c9c3d4"></div><span style="flex:1">Neon Rush</span><span>silver</span></div>
+    <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:#F4F2FF;padding:7px 6px;background:#26225A;border:1.5px solid #9C8BFF;border-radius:4px;box-shadow:0 0 14px rgba(156,139,255,.3)"><span style="font:700 13px 'Atkinson Hyperlegible Mono';min-width:24px;color:#9C8BFF">#3</span><div style="width:26px;height:26px;border-radius:50%;background:radial-gradient(circle,#FF5CA8 26%,#2a2450 30%,#1a1638 70%);border:2px solid #FF5CA8"></div><span style="flex:1;font-weight:700">Maya's Loop Magic</span><span style="color:#5CE07E;font-weight:700">▲ 4</span></div>
+    <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:#A29CCB;padding:4px 6px"><span style="font:700 12px 'Atkinson Hyperlegible Mono';min-width:24px">#4</span><div style="width:22px;height:22px;border-radius:50%;background:radial-gradient(circle,#cd7f32 26%,#2a2450 30%,#1a1638 70%);border:2px solid #cd7f32"></div><span style="flex:1">First Beat</span><span>bronze</span></div>
+    <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:#A29CCB;opacity:.5;padding:4px 6px"><span style="font:700 12px 'Atkinson Hyperlegible Mono';min-width:24px">#5</span><div style="width:22px;height:22px;border-radius:50%;border:2px dashed #332E66"></div><span style="flex:1">— open slot —</span></div>
+    <div style="margin-top:auto;font-size:11px;color:#A29CCB;line-height:1.5;border-top:1px solid #332E66;padding-top:8px">One more clean take moves <b style="color:#F4F2FF">Loop Magic</b> to <b style="color:#FFD34D">#2</b>. Gold at #1 opens a Club record.</div>
+  </div>
+</div></div></div>
+
+<div class="dv-opt" id="4b"><div class="dv-olabel"><a class="dv-oid" href="#4b">4b</a>Gold Record Wall — progress screen: plaques on the studio wall + the ladder underneath</div>
+<div class="dv-card" style="width:880px;background:#110F26">
+<div style="position:relative;width:880px;height:470px;background:linear-gradient(180deg,#151233 0%,#110F26 100%);color:#F4F2FF;font-family:'Atkinson Hyperlegible Next',sans-serif;overflow:hidden">
+  <div style="display:flex;align-items:baseline;justify-content:space-between;padding:16px 26px 4px"><span style="font:800 13px 'Atkinson Hyperlegible Next';letter-spacing:3px;color:#A29CCB">THE RECORD WALL</span><span style="font-size:12px;color:#A29CCB">2 gold · 1 silver · 1 bronze</span></div>
+  <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:16px;padding:14px 26px 0">
+    <div style="background:#1D1A3E;border:1px solid #332E66;border-radius:6px;padding:14px 10px;display:flex;flex-direction:column;align-items:center;gap:8px">
+      <div style="width:74px;height:74px;border-radius:50%;background:radial-gradient(circle,#FFD34D 22%,#2a2450 26%,#1a1638 58%,#241f4a 60%,#1a1638 72%);border:3px solid #FFD34D;box-shadow:0 0 18px rgba(255,211,77,.35)"></div>
+      <span style="font:700 11px 'Atkinson Hyperlegible Mono';color:#45E0BE">play + sleep</span><span style="font-size:12px;font-weight:700">First Beat</span><span style="font-size:10px;color:#FFD34D;letter-spacing:1px">★ GOLD</span>
+    </div>
+    <div style="background:#1D1A3E;border:1px solid #332E66;border-radius:6px;padding:14px 10px;display:flex;flex-direction:column;align-items:center;gap:8px">
+      <div style="width:74px;height:74px;border-radius:50%;background:radial-gradient(circle,#FFD34D 22%,#2a2450 26%,#1a1638 58%,#241f4a 60%,#1a1638 72%);border:3px solid #FFD34D;box-shadow:0 0 18px rgba(255,211,77,.35)"></div>
+      <span style="font:700 11px 'Atkinson Hyperlegible Mono';color:#45E0BE">live_loop</span><span style="font-size:12px;font-weight:700">Loop Magic</span><span style="font-size:10px;color:#FFD34D;letter-spacing:1px">★ GOLD</span>
+    </div>
+    <div style="background:#1D1A3E;border:1px solid #332E66;border-radius:6px;padding:14px 10px;display:flex;flex-direction:column;align-items:center;gap:8px">
+      <div style="width:74px;height:74px;border-radius:50%;background:radial-gradient(circle,#c9c3d4 22%,#2a2450 26%,#1a1638 58%,#241f4a 60%,#1a1638 72%);border:3px solid #c9c3d4"></div>
+      <span style="font:700 11px 'Atkinson Hyperlegible Mono';color:#45E0BE">use_synth</span><span style="font-size:12px;font-weight:700">Sound Design</span><span style="font-size:10px;color:#c9c3d4;letter-spacing:1px">SILVER · retake?</span>
+    </div>
+    <div style="background:#1D1A3E;border:1px solid #332E66;border-radius:6px;padding:14px 10px;display:flex;flex-direction:column;align-items:center;gap:8px">
+      <div style="width:74px;height:74px;border-radius:50%;background:radial-gradient(circle,#cd7f32 22%,#2a2450 26%,#1a1638 58%,#241f4a 60%,#1a1638 72%);border:3px solid #cd7f32"></div>
+      <span style="font:700 11px 'Atkinson Hyperlegible Mono';color:#45E0BE">choose()</span><span style="font-size:12px;font-weight:700">Random Beats</span><span style="font-size:10px;color:#cd7f32;letter-spacing:1px">BRONZE · retake?</span>
+    </div>
+    <div style="background:rgba(29,26,62,.4);border:1px dashed #332E66;border-radius:6px;padding:14px 10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;opacity:.7">
+      <div style="width:74px;height:74px;border-radius:50%;border:3px dashed #332E66;display:flex;align-items:center;justify-content:center;color:#A29CCB;font-size:20px">?</div>
+      <span style="font-size:12px;font-weight:700;color:#A29CCB">Next session</span><span style="font-size:10px;color:#A29CCB">gold Random Beats to book it</span>
+    </div>
+  </div>
+  <div style="position:absolute;left:26px;right:26px;bottom:22px">
+    <div style="display:flex;justify-content:space-between;font:800 10px 'Atkinson Hyperlegible Next';letter-spacing:1.5px;color:#A29CCB;margin-bottom:8px"><span style="color:#5CE07E">GARAGE ✓</span><span style="color:#5CE07E">DEMO ✓</span><span style="color:#F4F2FF;border-bottom:2px solid #FF5CA8;padding-bottom:2px">RADIO PLAY</span><span>TOP OF THE CHART</span><span>PLATINUM</span></div>
+    <div style="height:8px;border-radius:99px;background:#1D1A3E;border:1px solid #332E66;overflow:hidden"><div style="width:54%;height:100%;background:linear-gradient(90deg,#45E0BE,#9C8BFF,#FF5CA8)"></div></div>
+    <div style="margin-top:8px;font-size:11px;color:#A29CCB">The ladder: every gold record pushes you up a rung. Reach <b style="color:#F4F2FF">Top of the Chart</b> to unlock the Club's finale set.</div>
+  </div>
+</div></div></div>
+
+<div class="dv-opt" id="4c"><div class="dv-olabel"><a class="dv-oid" href="#4c">4c</a>Drill Desk — timed chip drills at a mixing console; clean takes cut the record</div>
+<div class="dv-card" style="width:880px;background:#110F26">
+<div style="position:relative;width:880px;height:560px;background:#110F26;color:#F4F2FF;font-family:'Atkinson Hyperlegible Next',sans-serif;overflow:hidden">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 22px">
+    <div style="display:flex;align-items:center;gap:12px"><span style="color:#A29CCB;font-size:18px">←</span><span style="font-size:13px;color:#A29CCB">DRILL · <b style="color:#F4F2FF">Sleep Math</b> — make every loop land on 4 beats</span></div>
+    <span style="font:700 12px 'Atkinson Hyperlegible Mono';color:#5CE07E">clean takes 2/3</span>
+  </div>
+  <div style="position:absolute;left:22px;top:56px;width:836px;display:flex;gap:14px">
+    <div style="flex:1;background:#1D1A3E;border:1px solid #332E66;border-radius:6px;padding:14px 16px">
+      <div style="font:800 10px 'Atkinson Hyperlegible Next';letter-spacing:2px;color:#A29CCB;margin-bottom:8px">THE BRIEF</div>
+      <div style="font:700 14px 'Atkinson Hyperlegible Mono';color:#F4F2FF;line-height:1.7"><span style="color:#B7A9FF">sample</span> <span style="color:#45E0BE">:bd_haus</span><br><span style="color:#B7A9FF">sleep</span> <span style="color:#FF6B6B">?</span><br><span style="color:#B7A9FF">sample</span> <span style="color:#45E0BE">:sn_dolf</span><br><span style="color:#B7A9FF">sleep</span> <span style="color:#FF6B6B">?</span><br><span style="color:#B7A9FF">sample</span> <span style="color:#45E0BE">:hat</span><br><span style="color:#B7A9FF">sleep</span> <span style="color:#FF6B6B">?</span></div>
+      <div style="margin-top:10px;font-size:12px;color:#A29CCB">Fill the sleeps so the loop is exactly <b style="color:#FFD34D">4 beats</b>. No two the same.</div>
+    </div>
+    <div style="flex:1.3;display:flex;flex-direction:column;gap:12px">
+      <div style="background:#1D1A3E;border:1px solid #332E66;border-radius:6px;padding:12px 16px;display:flex;align-items:center;gap:14px">
+        <div style="display:flex;align-items:flex-end;gap:3px;height:36px"><div style="width:7px;height:40%;background:#5CE07E;border-radius:2px"></div><div style="width:7px;height:75%;background:#5CE07E;border-radius:2px"></div><div style="width:7px;height:55%;background:#5CE07E;border-radius:2px"></div><div style="width:7px;height:95%;background:#FFD34D;border-radius:2px"></div><div style="width:7px;height:65%;background:#5CE07E;border-radius:2px"></div><div style="width:7px;height:30%;background:#5CE07E;border-radius:2px"></div></div>
+        <span style="font:700 22px 'Atkinson Hyperlegible Mono';color:#FFD34D">3.25<span style="color:#A29CCB;font-size:14px"> / 4 beats</span></span>
+        <span style="margin-left:auto;font:700 11px 'Atkinson Hyperlegible Mono';color:#FF5CA8">● REC</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+        <span style="text-align:center;font:700 15px 'Atkinson Hyperlegible Mono';color:#110F26;background:#FF9A57;border-radius:8px;padding:16px 0;box-shadow:0 4px 0 #a05a28">sleep 0.25</span>
+        <span style="text-align:center;font:700 15px 'Atkinson Hyperlegible Mono';color:#110F26;background:#FFD34D;border-radius:8px;padding:16px 0;box-shadow:0 4px 0 #a3841f">sleep 0.5</span>
+        <span style="text-align:center;font:700 15px 'Atkinson Hyperlegible Mono';color:#110F26;background:#45E0BE;border-radius:8px;padding:16px 0;box-shadow:0 4px 0 #1f8a72">sleep 1</span>
+        <span style="text-align:center;font:700 15px 'Atkinson Hyperlegible Mono';color:#110F26;background:#9C8BFF;border-radius:8px;padding:16px 0;box-shadow:0 4px 0 #5747a8">sleep 1.5</span>
+        <span style="text-align:center;font:700 15px 'Atkinson Hyperlegible Mono';color:#110F26;background:#FF5CA8;border-radius:8px;padding:16px 0;box-shadow:0 4px 0 #a03068">sleep 2</span>
+        <span style="text-align:center;font:700 15px 'Atkinson Hyperlegible Mono';color:#A29CCB;border:2px dashed #332E66;border-radius:8px;padding:14px 0">type it…</span>
+      </div>
+      <div style="font-size:12px;color:#A29CCB;line-height:1.55">Chips are the pads. Later drills grey the pads out one by one — by the last take you're typing the whole line. Same brief, less scaffold: the chips <i>teach themselves away</i>.</div>
+      <div style="display:flex;gap:10px;margin-top:auto">
+        <span style="flex:1;text-align:center;font:700 14px 'Atkinson Hyperlegible Next';color:#110F26;background:#45E0BE;border-radius:4px;padding:11px 0">▶ Hear my take</span>
+        <span style="flex:1;text-align:center;font:700 14px 'Atkinson Hyperlegible Next';color:#110F26;background:#FF5CA8;border-radius:4px;padding:11px 0">● Cut it</span>
+      </div>
+    </div>
+  </div>
+  <div style="position:absolute;left:22px;right:22px;bottom:16px;background:#1D1A3E;border:1px solid #332E66;border-radius:6px;padding:10px 16px;display:flex;align-items:center;gap:14px">
+    <div style="width:40px;height:40px;border-radius:50%;background:radial-gradient(circle,#FF5CA8 24%,#2a2450 28%,#1a1638 70%);border:2px solid #FF5CA8"></div>
+    <div style="flex:1;font-size:12px;color:#A29CCB"><b style="color:#F4F2FF">Sleep Math</b> — 3 clean takes presses this record. It enters the chart at whatever tier your takes earned: sloppy = bronze, steady = silver, first-try clean = gold.</div>
+    <div style="display:flex;gap:5px"><span style="width:12px;height:12px;border-radius:50%;background:#5CE07E"></span><span style="width:12px;height:12px;border-radius:50%;background:#5CE07E"></span><span style="width:12px;height:12px;border-radius:50%;border:2px dashed #A29CCB;box-sizing:border-box"></span></div>
+  </div>
+</div></div></div>
+
+<div class="dv-opt" id="4d"><div class="dv-olabel"><a class="dv-oid" href="#4d">4d</a>Session loop storyboard — how one studio visit flows</div>
+<div class="dv-card" style="width:880px;background:#110F26">
+<div style="display:flex;gap:12px;padding:20px;box-sizing:border-box;font-family:'Atkinson Hyperlegible Next',sans-serif">
+  <div style="flex:1;background:#1D1A3E;border:1px solid #332E66;border-radius:6px;padding:14px;display:flex;flex-direction:column;gap:8px;color:#F4F2FF">
+    <span style="font:800 10px 'Atkinson Hyperlegible Mono';color:#9C8BFF">1 · BOOK A SESSION</span>
+    <div style="height:70px;border:1px dashed #332E66;border-radius:4px;display:flex;flex-direction:column;justify-content:center;gap:4px;padding:0 10px"><span style="font-size:11px;color:#F4F2FF;background:#26225A;border-radius:3px;padding:2px 8px;width:fit-content">Sleep Math · drill</span><span style="font-size:11px;color:#A29CCB;border:1px solid #332E66;border-radius:3px;padding:2px 8px;width:fit-content">Synth Swap · drill</span></div>
+    <span style="font-size:11px;color:#A29CCB;line-height:1.5">Pick a drill sized to one sitting (3–5 min). Levels stay as-is; drills are the new practice layer.</span>
+  </div>
+  <div style="flex:1;background:#1D1A3E;border:1px solid #332E66;border-radius:6px;padding:14px;display:flex;flex-direction:column;gap:8px;color:#F4F2FF">
+    <span style="font:800 10px 'Atkinson Hyperlegible Mono';color:#45E0BE">2 · TAKE WITH CHIPS</span>
+    <div style="height:70px;border:1px dashed #332E66;border-radius:4px;display:flex;align-items:center;justify-content:center;gap:6px"><span style="font:700 10px 'Atkinson Hyperlegible Mono';background:#45E0BE;color:#110F26;border-radius:4px;padding:4px 8px">sleep 0.5</span><span style="font:700 10px 'Atkinson Hyperlegible Mono';background:#FFD34D;color:#110F26;border-radius:4px;padding:4px 8px">sleep 1</span></div>
+    <span style="font-size:11px;color:#A29CCB;line-height:1.5">Chips solve it fast. Each retake removes a chip — the gap gets typed instead.</span>
+  </div>
+  <div style="flex:1;background:#1D1A3E;border:1px solid #332E66;border-radius:6px;padding:14px;display:flex;flex-direction:column;gap:8px;color:#F4F2FF">
+    <span style="font:800 10px 'Atkinson Hyperlegible Mono';color:#FF5CA8">3 · CUT THE RECORD</span>
+    <div style="height:70px;border:1px dashed #332E66;border-radius:4px;display:flex;align-items:center;justify-content:center"><div style="width:52px;height:52px;border-radius:50%;background:radial-gradient(circle,#FFD34D 24%,#2a2450 28%,#1a1638 70%);border:2px solid #FFD34D;box-shadow:0 0 14px rgba(255,211,77,.4)"></div></div>
+    <span style="font-size:11px;color:#A29CCB;line-height:1.5">Clean takes press a vinyl with the kid's own loop on it — playable from the wall forever.</span>
+  </div>
+  <div style="flex:1;background:#1D1A3E;border:1px solid #332E66;border-radius:6px;padding:14px;display:flex;flex-direction:column;gap:8px;color:#F4F2FF">
+    <span style="font:800 10px 'Atkinson Hyperlegible Mono';color:#FFD34D">4 · CLIMB THE CHART</span>
+    <div style="height:70px;border:1px dashed #332E66;border-radius:4px;display:flex;flex-direction:column;justify-content:center;padding:0 10px;gap:3px"><span style="font:700 10px 'Atkinson Hyperlegible Mono';color:#A29CCB">#2 Neon Rush</span><span style="font:700 10px 'Atkinson Hyperlegible Mono';color:#F4F2FF;background:#26225A;border-radius:3px;padding:2px 6px">#3 Loop Magic <span style="color:#5CE07E">▲</span></span></div>
+    <span style="font-size:11px;color:#A29CCB;line-height:1.5">Records rank on the chart by tier. Climbing rungs (Garage → Platinum) unlocks Club sets — the ladder IS the meta-game.</span>
+  </div>
+</div></div></div>
+
+</div>
+<p class="dv-next">Pick a spine: <a class="dv-oid" href="#4a">4a</a> keeps today's BuildPhase and adds the chart rail · <a class="dv-oid" href="#4b">4b</a> is the trophy/progress room · <a class="dv-oid" href="#4c">4c</a> is a new drill mode where chips fade out as skill grows · <a class="dv-oid" href="#4d">4d</a> shows how they chain. Say which to push (or combine, like "4c drills + 4a's chart rail") and I'll iterate.</p>
+</section>
+<section class="dv-turn" id="t3">
+<div class="dv-thd"><a class="dv-tid" href="#t3">3</a><span class="dv-tname"><a class="dv-oid" href="#1b">1b</a> + <a class="dv-oid" href="#2a">2a</a> — arcade energy on the real booth layout</span></div>
+<p class="dv-sub">2a's real split structure (highway + script + TYPE IT, real tokens and lane colours) with 1b's game feel layered back in: combo ring, crowd meter, equalizer floor, star progress, and the per-character typing boxes.</p>
+<div class="dv-opts">
+
+<div class="dv-opt" id="3a"><div class="dv-olabel"><a class="dv-oid" href="#3a">3a</a>Arcade Booth Live — the combined screen</div>
+<div class="dv-card" style="width:880px;background:#07060c">
+<div style="position:relative;width:880px;height:560px;background:radial-gradient(ellipse 90% 45% at 28% 0%,#161027 0%,#07060c 65%);color:#f3eee4;font-family:'Fredoka',sans-serif;overflow:hidden">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 22px 6px;position:relative;z-index:2">
+    <div style="display:flex;align-items:center;gap:14px"><span style="color:#c9c3d4;font-size:18px">←</span><span style="font-size:13px;color:#c9c3d4">G · <b style="color:#f3eee4">Hardfloor Finale</b> · 140 BPM</span></div>
+    <div style="display:flex;align-items:center;gap:14px"><div style="display:flex;gap:3px"><span style="color:#ffb703;font-size:15px">★</span><span style="color:#ffb703;font-size:15px">★</span><span style="color:rgba(243,238,228,.25);font-size:15px">★</span></div><span style="font-size:11px;letter-spacing:1.5px;color:#c9c3d4;text-decoration:underline;text-underline-offset:5px">SILENCE THE ROOM</span></div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;border-bottom:1px solid rgba(243,238,228,.14);padding:0 22px;position:relative;z-index:2">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 0 8px;color:#7dffb3"><span style="font-weight:700;font-size:14px">I do ✓</span><span style="font-size:9px;letter-spacing:1.5px">WATCH</span></div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 0 8px;border-bottom:2px solid #f3eee4;margin-bottom:-1px"><span style="font-weight:700;font-size:14px">We do</span><span style="font-size:9px;letter-spacing:1.5px;color:#c9c3d4">TOGETHER</span></div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 0 8px;opacity:.5"><span style="font-weight:700;font-size:14px">You do</span><span style="font-size:9px;letter-spacing:1.5px;color:#c9c3d4">YOUR TURN</span></div>
+  </div>
+  <div style="position:absolute;left:22px;right:478px;bottom:14px;height:70px;display:flex;align-items:flex-end;gap:5px;opacity:.28;z-index:0">
+    <div style="flex:1;height:35%;background:#ece7f2;border-radius:3px 3px 0 0"></div><div style="flex:1;height:70%;background:#4ab8f0;border-radius:3px 3px 0 0"></div><div style="flex:1;height:50%;background:#b085ff;border-radius:3px 3px 0 0"></div><div style="flex:1;height:90%;background:#b085ff;border-radius:3px 3px 0 0"></div><div style="flex:1;height:60%;background:#ff7fb0;border-radius:3px 3px 0 0"></div><div style="flex:1;height:80%;background:#4ab8f0;border-radius:3px 3px 0 0"></div><div style="flex:1;height:45%;background:#ece7f2;border-radius:3px 3px 0 0"></div><div style="flex:1;height:75%;background:#ff7fb0;border-radius:3px 3px 0 0"></div><div style="flex:1;height:55%;background:#b085ff;border-radius:3px 3px 0 0"></div>
+  </div>
+  <div style="position:absolute;left:22px;top:118px;width:330px;height:352px;display:flex;gap:7px;z-index:1">
+    <div style="position:relative;flex:1;border-radius:13px;background:linear-gradient(180deg,rgba(236,231,242,.03),rgba(236,231,242,.16));border:2px solid rgba(236,231,242,.4)">
+      <div style="position:absolute;left:50%;top:22px;transform:translateX(-50%);width:68px;border-radius:11px;background:#ece7f2;border:3px solid #fff;box-shadow:0 3px 0 #8d87a0;display:flex;flex-direction:column;align-items:center;padding:5px 0"><span style="font:700 8px 'JetBrains Mono';color:#5a5470">sample</span><span style="font:700 10px 'JetBrains Mono';color:#0c0910">:bd_haus</span></div>
+      <div style="position:absolute;left:50%;top:216px;transform:translateX(-50%);width:68px;border-radius:11px;background:#ece7f2;border:3px solid #fff;box-shadow:0 3px 0 #8d87a0,0 0 16px rgba(236,231,242,.6);display:flex;flex-direction:column;align-items:center;padding:5px 0"><span style="font:700 8px 'JetBrains Mono';color:#5a5470">sample</span><span style="font:700 10px 'JetBrains Mono';color:#0c0910">:bd_haus</span></div>
+      <span style="position:absolute;left:50%;bottom:7px;transform:translateX(-50%);font:700 10px 'JetBrains Mono';color:#ece7f2">:drums</span>
+    </div>
+    <div style="position:relative;flex:1;border-radius:13px;background:linear-gradient(180deg,rgba(74,184,240,.03),rgba(74,184,240,.16));border:2px solid rgba(74,184,240,.4)">
+      <div style="position:absolute;left:50%;top:118px;transform:translateX(-50%);width:68px;border-radius:11px;background:#4ab8f0;border:3px solid #a8dcf8;box-shadow:0 3px 0 #22688e;display:flex;flex-direction:column;align-items:center;padding:5px 0"><span style="font:700 8px 'JetBrains Mono';color:#123a52">sample</span><span style="font:700 10px 'JetBrains Mono';color:#0c0910">:sn_dolf</span></div>
+      <span style="position:absolute;left:50%;bottom:7px;transform:translateX(-50%);font:700 10px 'JetBrains Mono';color:#4ab8f0">:claps</span>
+    </div>
+    <div style="position:relative;flex:1;border-radius:13px;background:linear-gradient(180deg,rgba(176,133,255,.06),rgba(176,133,255,.24));border:2.5px solid rgba(176,133,255,.8);box-shadow:0 0 20px rgba(176,133,255,.3)">
+      <div style="position:absolute;left:50%;top:-10px;transform:translateX(-50%);font:700 9px 'Fredoka';letter-spacing:1px;color:#120c00;background:#ffb703;border-radius:99px;padding:2px 9px;white-space:nowrap;z-index:2">YOUR LANE</div>
+      <div style="position:absolute;left:50%;top:34px;transform:translateX(-50%);width:68px;border-radius:11px;background:#b085ff;border:3px solid #d8c4ff;box-shadow:0 3px 0 #6a4bad;display:flex;align-items:center;justify-content:center;padding:8px 0"><span style="font:700 11px 'JetBrains Mono';color:#0c0910">play 33</span></div>
+      <div style="position:absolute;left:50%;top:166px;transform:translateX(-50%);width:68px;border-radius:11px;border:3px dashed #ffb703;background:rgba(255,183,3,.08);box-shadow:0 0 18px rgba(255,183,3,.4);display:flex;align-items:center;justify-content:center;padding:8px 0"><span style="font:700 11px 'JetBrains Mono';color:#ffb703">sleep ?</span></div>
+      <div style="position:absolute;left:50%;top:276px;transform:translateX(-50%);width:68px;border-radius:11px;background:#b085ff;border:3px solid #d8c4ff;box-shadow:0 3px 0 #6a4bad,0 0 16px rgba(176,133,255,.7);display:flex;align-items:center;justify-content:center;padding:8px 0"><span style="font:700 11px 'JetBrains Mono';color:#0c0910">play 33</span></div>
+      <span style="position:absolute;left:50%;bottom:7px;transform:translateX(-50%);font:700 10px 'JetBrains Mono';color:#d8c4ff">:bass</span>
+    </div>
+    <div style="position:relative;flex:1;border-radius:13px;background:linear-gradient(180deg,rgba(255,127,176,.03),rgba(255,127,176,.16));border:2px solid rgba(255,127,176,.4)">
+      <div style="position:absolute;left:50%;top:64px;transform:translateX(-50%);width:68px;border-radius:11px;background:#ff7fb0;border:3px solid #ffc2da;box-shadow:0 3px 0 #a8446e;display:flex;align-items:center;justify-content:center;padding:8px 0"><span style="font:700 11px 'JetBrains Mono';color:#0c0910">play 72</span></div>
+      <span style="position:absolute;left:50%;bottom:7px;transform:translateX(-50%);font:700 10px 'JetBrains Mono';color:#ff7fb0">:siren</span>
+    </div>
+  </div>
+  <div style="position:absolute;left:22px;top:430px;width:330px;height:3px;background:#f3eee4;box-shadow:0 0 14px rgba(243,238,228,.7);z-index:1"></div>
+  <div style="position:absolute;left:362px;top:126px;width:96px;display:flex;flex-direction:column;gap:14px;align-items:center;z-index:1">
+    <div style="width:76px;height:76px;border-radius:50%;background:conic-gradient(#7dffb3 0 58%,rgba(243,238,228,.12) 58% 100%);display:flex;align-items:center;justify-content:center"><div style="width:58px;height:58px;border-radius:50%;background:#07060c;display:flex;flex-direction:column;align-items:center;justify-content:center"><span style="font:700 17px 'Fredoka';color:#7dffb3">×6</span><span style="font:500 8px 'Fredoka';color:#c9c3d4;letter-spacing:1px">COMBO</span></div></div>
+    <div style="display:flex;flex-direction:column;gap:6px;align-items:center"><span style="font:500 9px 'Fredoka';letter-spacing:1.5px;color:#c9c3d4">CROWD</span><div style="width:20px;height:150px;border-radius:99px;background:rgba(243,238,228,.1);display:flex;align-items:flex-end;overflow:hidden"><div style="width:100%;height:68%;background:linear-gradient(to top,#4ab8f0,#7dffb3,#ffb703)"></div></div><span style="font:600 11px 'Fredoka';color:#f3eee4">Hyped!</span></div>
+  </div>
+  <div style="position:absolute;left:482px;top:118px;width:376px;height:396px;display:flex;flex-direction:column;font:700 14px/1.55 'JetBrains Mono';color:#c9c3d4;z-index:1">
+    <div style="padding:1px 8px 1px 14px"><span style="color:#f3eee4">use_synth</span> <span style="color:#45E0BE">:tb303</span></div>
+    <div style="padding:1px 8px 1px 14px"><span style="color:#f3eee4">live_loop</span> <span style="color:#45E0BE">:bass</span> <span style="color:#f3eee4">do</span></div>
+    <div style="position:relative;padding:1px 8px 1px 14px;background:rgba(243,238,228,.07);border-radius:2px"><span style="position:absolute;left:0;top:2px;bottom:2px;width:4px;border-radius:1px;background:#ffb703"></span>&nbsp;&nbsp;<span style="color:#f3eee4">sleep</span> <span style="color:#ffb703;border-bottom:2px dashed #ffb703">?</span></div>
+    <div style="padding:1px 8px 1px 14px">&nbsp;&nbsp;<span style="color:#f3eee4">play</span> <span style="color:#FFD34D">33</span></div>
+    <div style="padding:1px 8px 1px 14px">&nbsp;&nbsp;<span style="color:#f3eee4">sleep</span> <span style="color:#FFD34D">0.5</span></div>
+    <div style="padding:1px 8px 1px 14px">&nbsp;&nbsp;<span style="color:#f3eee4">play</span> <span style="color:#FFD34D">33</span></div>
+    <div style="padding:1px 8px 1px 14px"><span style="color:#f3eee4">end</span></div>
+    <div style="margin-top:auto;display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <span style="font:700 10px 'Fredoka';letter-spacing:2px;color:#ffb703">TYPE IT — sleep ?</span>
+        <div style="display:flex;gap:5px;align-items:center">
+          <span style="display:flex;align-items:center;justify-content:center;width:30px;height:38px;border-radius:8px;background:#ffb703;color:#120c00;font:700 18px 'JetBrains Mono'">0</span>
+          <span style="display:flex;align-items:center;justify-content:center;width:30px;height:38px;border-radius:8px;background:#ffb703;color:#120c00;font:700 18px 'JetBrains Mono'">.</span>
+          <span style="display:flex;align-items:center;justify-content:center;width:30px;height:38px;border-radius:8px;border:2px solid #ffb703;color:#ffb703;font:700 18px 'JetBrains Mono';box-sizing:border-box"><span style="display:inline-block;width:2px;height:18px;background:#ffb703"></span></span>
+          <span style="margin-left:10px;font:600 13px 'Fredoka';color:#c9c3d4;border:1.5px solid rgba(243,238,228,.35);border-radius:99px;padding:8px 16px">Write</span>
+          <span style="margin-left:auto;font:600 12px 'Fredoka';color:#f3eee4;border:1.5px solid rgba(243,238,228,.35);border-radius:99px;padding:8px 14px">Stuck? Chips</span>
+        </div>
+      </div>
+      <div style="display:flex;gap:12px;font-family:'Fredoka'"><span style="flex:1;text-align:center;border:1.5px solid #f3eee4;border-radius:99px;padding:10px 0;font-weight:600;font-size:14px;color:#f3eee4">Hear the goal</span><span style="flex:1;text-align:center;background:#f3eee4;border-radius:99px;padding:10px 0;font-weight:600;font-size:14px;color:#07060c">Play this loop</span></div>
+    </div>
+  </div>
+</div></div></div>
+
+<div class="dv-opt" id="3b"><div class="dv-olabel"><a class="dv-oid" href="#3b">3b</a>Same combine, hit moment — PERFECT! flash + combo pop</div>
+<div class="dv-card" style="width:880px;background:#07060c">
+<div style="position:relative;width:880px;height:300px;background:radial-gradient(ellipse 90% 70% at 28% 0%,#161027 0%,#07060c 65%);color:#f3eee4;font-family:'Fredoka',sans-serif;overflow:hidden">
+  <div style="position:absolute;left:22px;top:16px;width:330px;height:240px;display:flex;gap:7px">
+    <div style="flex:1;border-radius:13px;background:linear-gradient(180deg,rgba(236,231,242,.03),rgba(236,231,242,.14));border:2px solid rgba(236,231,242,.3)"></div>
+    <div style="flex:1;border-radius:13px;background:linear-gradient(180deg,rgba(74,184,240,.03),rgba(74,184,240,.14));border:2px solid rgba(74,184,240,.3)"></div>
+    <div style="position:relative;flex:1;border-radius:13px;background:linear-gradient(180deg,rgba(176,133,255,.08),rgba(176,133,255,.3));border:2.5px solid #b085ff;box-shadow:0 0 30px rgba(176,133,255,.5)">
+      <div style="position:absolute;left:50%;top:150px;transform:translate(-50%,0);width:100px;height:100px;border-radius:50%;background:radial-gradient(circle,rgba(255,183,3,.5),transparent 70%)"></div>
+      <div style="position:absolute;left:50%;top:178px;transform:translateX(-50%) rotate(-4deg);font:700 20px 'Fredoka';color:#7dffb3;text-shadow:0 0 16px rgba(125,255,179,.9);white-space:nowrap;z-index:2">PERFECT!</div>
+      <div style="position:absolute;left:50%;top:206px;transform:translateX(-50%);width:68px;border-radius:11px;background:#7dffb3;border:3px solid #d2ffe6;box-shadow:0 0 26px rgba(125,255,179,.9);display:flex;align-items:center;justify-content:center;padding:8px 0"><span style="font:700 11px 'JetBrains Mono';color:#0c0910">sleep 0.5</span></div>
+    </div>
+    <div style="flex:1;border-radius:13px;background:linear-gradient(180deg,rgba(255,127,176,.03),rgba(255,127,176,.14));border:2px solid rgba(255,127,176,.3)"></div>
+  </div>
+  <div style="position:absolute;left:22px;top:256px;width:330px;height:3px;background:#f3eee4;box-shadow:0 0 20px rgba(243,238,228,.9)"></div>
+  <div style="position:absolute;left:378px;top:80px;display:flex;flex-direction:column;gap:10px;align-items:center">
+    <div style="width:92px;height:92px;border-radius:50%;background:conic-gradient(#7dffb3 0 70%,rgba(243,238,228,.12) 70% 100%);display:flex;align-items:center;justify-content:center;box-shadow:0 0 26px rgba(125,255,179,.4)"><div style="width:70px;height:70px;border-radius:50%;background:#07060c;display:flex;flex-direction:column;align-items:center;justify-content:center"><span style="font:700 22px 'Fredoka';color:#7dffb3">×7</span><span style="font:500 9px 'Fredoka';color:#c9c3d4;letter-spacing:1px">COMBO</span></div></div>
+    <span style="font:600 13px 'Fredoka';color:#ffb703">Crowd goes up!</span>
+  </div>
+  <div style="position:absolute;left:520px;top:60px;right:30px;display:flex;flex-direction:column;gap:14px;font:700 15px/1.55 'JetBrains Mono';color:#c9c3d4">
+    <div style="position:relative;padding:4px 10px 4px 16px;background:rgba(125,255,179,.08);border-radius:4px"><span style="position:absolute;left:0;top:3px;bottom:3px;width:4px;border-radius:1px;background:#7dffb3"></span>&nbsp;&nbsp;<span style="color:#f3eee4">sleep</span> <span style="color:#7dffb3">0.5</span> <span style="color:#7dffb3;font-size:13px">✓ locked in</span></div>
+    <span style="font:500 13px 'Fredoka';color:#c9c3d4">The line joins the loop — next hole comes around in 2 bars. Misses never flash red: the sour note just plays sour, like real Sonic Pi.</span>
+    <span style="font:600 14px 'Fredoka';color:#07060c;background:#ffb703;border-radius:99px;padding:10px 0;text-align:center;width:200px">Play this loop</span>
+  </div>
+</div></div></div>
+
+</div>
+<p class="dv-next">Next: "animate 3a", tweak the HUD (drop combo? move crowd meter?), or I'll write the CSS/canvas changes against <code>booth.css</code> + <code>ClubHighway.jsx</code> for handoff.</p>
+</section>
+<section class="dv-turn" id="t2">
+<div class="dv-thd"><a class="dv-tid" href="#t2">2</a><span class="dv-tname">Variations of <a class="dv-oid" href="#1b">1b</a> — grounded in the real booth</span></div>
+<p class="dv-sub">Now built from the actual code: real lane colours (drums / claps / bass / siren from <code>theme.js</code>), the amber = "the thing you write" convention, real Sonic Pi tokens, and the split highway-plus-script layout from <code>booth.css</code>. Notes are pre-made — the highway is the ear, the script is where they type.</p>
+<div class="dv-opts">
+
+<div class="dv-opt" id="2a"><div class="dv-olabel"><a class="dv-oid" href="#2a">2a</a>Arcade Booth — 1b's chunky tiles dropped into the real split layout</div>
+<div class="dv-card" style="width:880px;background:#07060c">
+<div style="position:relative;width:880px;height:560px;background:#07060c;color:#f3eee4;font-family:'Fredoka',sans-serif;overflow:hidden">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 22px 6px">
+    <div style="display:flex;align-items:center;gap:14px"><span style="color:#c9c3d4;font-size:18px">←</span><span style="font-size:13px;color:#c9c3d4">G · <b style="color:#f3eee4">Hardfloor Finale</b> · 140 BPM</span></div>
+    <span style="font-size:11px;letter-spacing:1.5px;color:#c9c3d4;text-decoration:underline;text-underline-offset:5px">SILENCE THE ROOM</span>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;border-bottom:1px solid rgba(243,238,228,.14);padding:0 22px">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 0 8px;color:#7dffb3"><span style="font-weight:700;font-size:14px">I do ✓</span><span style="font-size:9px;letter-spacing:1.5px">WATCH</span></div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 0 8px;border-bottom:2px solid #f3eee4;margin-bottom:-1px"><span style="font-weight:700;font-size:14px">We do</span><span style="font-size:9px;letter-spacing:1.5px;color:#c9c3d4">TOGETHER</span></div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 0 8px;opacity:.5"><span style="font-weight:700;font-size:14px">You do</span><span style="font-size:9px;letter-spacing:1.5px;color:#c9c3d4">YOUR TURN</span></div>
+  </div>
+  <div style="position:absolute;left:22px;top:118px;width:400px;height:396px;display:flex;gap:8px">
+    <div style="position:relative;flex:1;border-radius:14px;background:linear-gradient(180deg,rgba(236,231,242,.03),rgba(236,231,242,.16));border:2px solid rgba(236,231,242,.4)">
+      <div style="position:absolute;left:50%;top:26px;transform:translateX(-50%);width:82px;border-radius:12px;background:#ece7f2;border:3px solid #fff;box-shadow:0 3px 0 #8d87a0,0 0 14px rgba(236,231,242,.5);display:flex;flex-direction:column;align-items:center;padding:6px 0"><span style="font:700 9px 'JetBrains Mono';color:#5a5470">sample</span><span style="font:700 11px 'JetBrains Mono';color:#0c0910">:bd_haus</span></div>
+      <div style="position:absolute;left:50%;top:132px;transform:translateX(-50%) scale(.92);width:82px;border-radius:12px;background:#ece7f2;border:3px solid #fff;box-shadow:0 3px 0 #8d87a0;display:flex;flex-direction:column;align-items:center;padding:6px 0"><span style="font:700 9px 'JetBrains Mono';color:#5a5470">sample</span><span style="font:700 11px 'JetBrains Mono';color:#0c0910">:bd_haus</span></div>
+      <div style="position:absolute;left:50%;top:244px;transform:translateX(-50%);width:82px;border-radius:12px;background:#ece7f2;border:3px solid #fff;box-shadow:0 3px 0 #8d87a0,0 0 18px rgba(236,231,242,.7);display:flex;flex-direction:column;align-items:center;padding:6px 0"><span style="font:700 9px 'JetBrains Mono';color:#5a5470">sample</span><span style="font:700 11px 'JetBrains Mono';color:#0c0910">:bd_haus</span></div>
+      <span style="position:absolute;left:50%;bottom:8px;transform:translateX(-50%);font:700 11px 'JetBrains Mono';color:#ece7f2">:drums</span>
+    </div>
+    <div style="position:relative;flex:1;border-radius:14px;background:linear-gradient(180deg,rgba(74,184,240,.03),rgba(74,184,240,.16));border:2px solid rgba(74,184,240,.4)">
+      <div style="position:absolute;left:50%;top:82px;transform:translateX(-50%);width:82px;border-radius:12px;background:#4ab8f0;border:3px solid #a8dcf8;box-shadow:0 3px 0 #22688e;display:flex;flex-direction:column;align-items:center;padding:6px 0"><span style="font:700 9px 'JetBrains Mono';color:#123a52">sample</span><span style="font:700 11px 'JetBrains Mono';color:#0c0910">:sn_dolf</span></div>
+      <div style="position:absolute;left:50%;top:298px;transform:translateX(-50%);width:82px;border-radius:12px;background:#4ab8f0;border:3px solid #a8dcf8;box-shadow:0 3px 0 #22688e,0 0 18px rgba(74,184,240,.7);display:flex;flex-direction:column;align-items:center;padding:6px 0"><span style="font:700 9px 'JetBrains Mono';color:#123a52">sample</span><span style="font:700 11px 'JetBrains Mono';color:#0c0910">:sn_dolf</span></div>
+      <span style="position:absolute;left:50%;bottom:8px;transform:translateX(-50%);font:700 11px 'JetBrains Mono';color:#4ab8f0">:claps</span>
+    </div>
+    <div style="position:relative;flex:1;border-radius:14px;background:linear-gradient(180deg,rgba(176,133,255,.05),rgba(176,133,255,.22));border:2.5px solid rgba(176,133,255,.75);box-shadow:0 0 22px rgba(176,133,255,.25)">
+      <div style="position:absolute;left:50%;top:44px;transform:translateX(-50%);width:82px;border-radius:12px;background:#b085ff;border:3px solid #d8c4ff;box-shadow:0 3px 0 #6a4bad;display:flex;align-items:center;justify-content:center;padding:9px 0"><span style="font:700 12px 'JetBrains Mono';color:#0c0910">play 33</span></div>
+      <div style="position:absolute;left:50%;top:196px;transform:translateX(-50%);width:82px;border-radius:12px;border:3px dashed #ffb703;background:rgba(255,183,3,.08);display:flex;align-items:center;justify-content:center;padding:9px 0;box-shadow:0 0 20px rgba(255,183,3,.4)"><span style="font:700 12px 'JetBrains Mono';color:#ffb703">sleep ?</span></div>
+      <div style="position:absolute;left:50%;top:246px;transform:translateX(-50%);font:700 10px 'Fredoka';letter-spacing:1px;color:#120c00;background:#ffb703;border-radius:99px;padding:2px 9px;white-space:nowrap">YOU WRITE THIS</div>
+      <div style="position:absolute;left:50%;top:308px;transform:translateX(-50%);width:82px;border-radius:12px;background:#b085ff;border:3px solid #d8c4ff;box-shadow:0 3px 0 #6a4bad,0 0 18px rgba(176,133,255,.7);display:flex;align-items:center;justify-content:center;padding:9px 0"><span style="font:700 12px 'JetBrains Mono';color:#0c0910">play 33</span></div>
+      <span style="position:absolute;left:50%;bottom:8px;transform:translateX(-50%);font:700 11px 'JetBrains Mono';color:#b085ff">:bass</span>
+    </div>
+    <div style="position:relative;flex:1;border-radius:14px;background:linear-gradient(180deg,rgba(255,127,176,.03),rgba(255,127,176,.16));border:2px solid rgba(255,127,176,.4)">
+      <div style="position:absolute;left:50%;top:60px;transform:translateX(-50%) scale(.9);width:82px;border-radius:12px;background:#ff7fb0;border:3px solid #ffc2da;box-shadow:0 3px 0 #a8446e;display:flex;align-items:center;justify-content:center;padding:9px 0"><span style="font:700 12px 'JetBrains Mono';color:#0c0910">play 72</span></div>
+      <div style="position:absolute;left:50%;top:168px;transform:translateX(-50%);width:82px;border-radius:12px;background:#ff7fb0;border:3px solid #ffc2da;box-shadow:0 3px 0 #a8446e;display:flex;align-items:center;justify-content:center;padding:9px 0"><span style="font:700 12px 'JetBrains Mono';color:#0c0910">play 72</span></div>
+      <span style="position:absolute;left:50%;bottom:8px;transform:translateX(-50%);font:700 11px 'JetBrains Mono';color:#ff7fb0">:siren</span>
+    </div>
+  </div>
+  <div style="position:absolute;left:22px;top:472px;width:400px;height:3px;background:#f3eee4;box-shadow:0 0 16px rgba(243,238,228,.7)"></div>
+  <div style="position:absolute;left:446px;top:118px;width:412px;height:396px;display:flex;flex-direction:column;font:700 15px/1.55 'JetBrains Mono';color:#c9c3d4">
+    <div style="padding:1px 8px 1px 14px"><span style="color:#f3eee4">use_synth</span> <span style="color:#45E0BE">:tb303</span></div>
+    <div style="padding:1px 8px 1px 14px"><span style="color:#f3eee4">live_loop</span> <span style="color:#45E0BE">:bass</span> <span style="color:#f3eee4">do</span></div>
+    <div style="position:relative;padding:1px 8px 1px 14px;background:rgba(243,238,228,.07);border-radius:2px"><span style="position:absolute;left:0;top:2px;bottom:2px;width:4px;border-radius:1px;background:#ffb703"></span>&nbsp;&nbsp;<span style="color:#f3eee4">sleep</span> <span style="color:#ffb703;border-bottom:2px dashed #ffb703">?</span></div>
+    <div style="padding:1px 8px 1px 14px">&nbsp;&nbsp;<span style="color:#f3eee4">play</span> <span style="color:#FFD34D">33</span></div>
+    <div style="padding:1px 8px 1px 14px">&nbsp;&nbsp;<span style="color:#f3eee4">sleep</span> <span style="color:#FFD34D">0.5</span></div>
+    <div style="padding:1px 8px 1px 14px">&nbsp;&nbsp;<span style="color:#f3eee4">play</span> <span style="color:#FFD34D">33</span></div>
+    <div style="padding:1px 8px 1px 14px">&nbsp;&nbsp;<span style="color:#f3eee4">sleep</span> <span style="color:#FFD34D">0.5</span></div>
+    <div style="padding:1px 8px 1px 14px"><span style="color:#f3eee4">end</span></div>
+    <div style="margin-top:auto;display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;align-items:center;gap:10px"><span style="font:700 11px 'Fredoka';letter-spacing:1.5px;color:#c9c3d4">TYPE IT</span><span style="width:96px;border:2px solid #ffb703;border-radius:8px;padding:8px 12px;color:#f3eee4;background:rgba(255,183,3,.06)">0.5<span style="display:inline-block;width:2px;height:16px;background:#ffb703;margin-left:2px;vertical-align:-2px"></span></span><span style="border:1.5px solid rgba(243,238,228,.35);border-radius:99px;padding:8px 18px;color:#c9c3d4;font-family:'Fredoka';font-weight:600;font-size:14px">Write</span><span style="margin-left:auto;border:1.5px solid rgba(243,238,228,.35);border-radius:99px;padding:8px 16px;color:#f3eee4;font-family:'Fredoka';font-weight:600;font-size:13px">Stuck? Show the chips</span></div>
+      <div style="display:flex;gap:12px;font-family:'Fredoka'"><span style="flex:1;text-align:center;border:1.5px solid #f3eee4;border-radius:99px;padding:11px 0;font-weight:600;font-size:15px;color:#f3eee4">Hear the goal</span><span style="flex:1;text-align:center;background:#f3eee4;border-radius:99px;padding:11px 0;font-weight:600;font-size:15px;color:#07060c">Play this loop</span></div>
+    </div>
+  </div>
+</div></div></div>
+
+<div class="dv-opt" id="2b"><div class="dv-olabel"><a class="dv-oid" href="#2b">2b</a>Full-Floor — lanes span the screen, script docks as one big line</div>
+<div class="dv-card" style="width:880px;background:#07060c">
+<div style="position:relative;width:880px;height:560px;background:radial-gradient(ellipse 100% 50% at 50% 0%,#16112b 0%,#07060c 70%);color:#f3eee4;font-family:'Fredoka',sans-serif;overflow:hidden">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 22px">
+    <div style="display:flex;align-items:center;gap:14px"><span style="color:#c9c3d4;font-size:18px">←</span><span style="font-size:13px;color:#c9c3d4">G · <b style="color:#f3eee4">Hardfloor Finale</b> · 140 BPM</span></div>
+    <div style="display:flex;align-items:center;gap:8px"><span style="font:600 12px 'Fredoka';color:#7dffb3;background:rgba(125,255,179,.1);border-radius:99px;padding:4px 12px">I do ✓</span><span style="font:600 12px 'Fredoka';color:#07060c;background:#f3eee4;border-radius:99px;padding:4px 12px">We do</span><span style="font:600 12px 'Fredoka';color:#c9c3d4;background:rgba(243,238,228,.08);border-radius:99px;padding:4px 12px">You do</span></div>
+    <span style="font-size:11px;letter-spacing:1.5px;color:#c9c3d4;text-decoration:underline;text-underline-offset:5px">SILENCE THE ROOM</span>
+  </div>
+  <div style="position:absolute;left:22px;top:64px;right:22px;bottom:118px;display:flex;gap:12px">
+    <div style="position:relative;flex:1;border-radius:16px;background:linear-gradient(180deg,rgba(236,231,242,.02),rgba(236,231,242,.14));border:2px solid rgba(236,231,242,.35)">
+      <div style="position:absolute;left:50%;top:20px;transform:translateX(-50%);width:120px;border-radius:14px;background:#ece7f2;border:3px solid #fff;box-shadow:0 4px 0 #8d87a0;display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 0"><span style="font-size:15px">🦶</span><span style="font:700 13px 'JetBrains Mono';color:#0c0910">:bd_haus</span></div>
+      <div style="position:absolute;left:50%;top:150px;transform:translateX(-50%);width:120px;border-radius:14px;background:#ece7f2;border:3px solid #fff;box-shadow:0 4px 0 #8d87a0,0 0 20px rgba(236,231,242,.6);display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 0"><span style="font-size:15px">🦶</span><span style="font:700 13px 'JetBrains Mono';color:#0c0910">:bd_haus</span></div>
+      <div style="position:absolute;left:50%;bottom:10px;transform:translateX(-50%);width:130px;height:40px;border-radius:12px;border:3px dashed rgba(236,231,242,.5);background:rgba(236,231,242,.06);display:flex;align-items:center;justify-content:center"><span style="font:700 12px 'JetBrains Mono';color:#ece7f2">:drums</span></div>
+    </div>
+    <div style="position:relative;flex:1;border-radius:16px;background:linear-gradient(180deg,rgba(74,184,240,.02),rgba(74,184,240,.14));border:2px solid rgba(74,184,240,.35)">
+      <div style="position:absolute;left:50%;top:84px;transform:translateX(-50%);width:120px;border-radius:14px;background:#4ab8f0;border:3px solid #a8dcf8;box-shadow:0 4px 0 #22688e;display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 0"><span style="font-size:15px">🥁</span><span style="font:700 13px 'JetBrains Mono';color:#0c0910">:sn_dolf</span></div>
+      <div style="position:absolute;left:50%;bottom:10px;transform:translateX(-50%);width:130px;height:40px;border-radius:12px;border:3px dashed rgba(74,184,240,.5);background:rgba(74,184,240,.06);display:flex;align-items:center;justify-content:center"><span style="font:700 12px 'JetBrains Mono';color:#4ab8f0">:claps</span></div>
+    </div>
+    <div style="position:relative;flex:1;border-radius:16px;background:linear-gradient(180deg,rgba(176,133,255,.05),rgba(176,133,255,.2));border:2.5px solid rgba(176,133,255,.8);box-shadow:0 0 26px rgba(176,133,255,.25)">
+      <div style="position:absolute;left:50%;top:-11px;transform:translateX(-50%);font:700 10px 'Fredoka';letter-spacing:1px;color:#120c00;background:#ffb703;border-radius:99px;padding:3px 12px;white-space:nowrap;z-index:2">YOUR LANE</div>
+      <div style="position:absolute;left:50%;top:40px;transform:translateX(-50%);width:110px;border-radius:14px;background:#b085ff;border:3px solid #d8c4ff;box-shadow:0 4px 0 #6a4bad;display:flex;align-items:center;justify-content:center;padding:10px 0"><span style="font:700 14px 'JetBrains Mono';color:#0c0910">play 33</span></div>
+      <div style="position:absolute;left:50%;top:172px;transform:translateX(-50%);width:110px;border-radius:14px;border:3px dashed #ffb703;background:rgba(255,183,3,.08);box-shadow:0 0 24px rgba(255,183,3,.45);display:flex;align-items:center;justify-content:center;padding:10px 0"><span style="font:700 14px 'JetBrains Mono';color:#ffb703">sleep ?</span></div>
+      <div style="position:absolute;left:50%;bottom:10px;transform:translateX(-50%);width:130px;height:40px;border-radius:12px;border:3px solid #b085ff;background:rgba(176,133,255,.18);box-shadow:0 0 18px rgba(176,133,255,.5);display:flex;align-items:center;justify-content:center"><span style="font:700 12px 'JetBrains Mono';color:#d8c4ff">:bass</span></div>
+    </div>
+    <div style="position:relative;flex:1;border-radius:16px;background:linear-gradient(180deg,rgba(255,127,176,.02),rgba(255,127,176,.14));border:2px solid rgba(255,127,176,.35)">
+      <div style="position:absolute;left:50%;top:56px;transform:translateX(-50%);width:110px;border-radius:14px;background:#ff7fb0;border:3px solid #ffc2da;box-shadow:0 4px 0 #a8446e;display:flex;align-items:center;justify-content:center;padding:10px 0"><span style="font:700 14px 'JetBrains Mono';color:#0c0910">play 72</span></div>
+      <div style="position:absolute;left:50%;top:210px;transform:translateX(-50%) scale(.92);width:110px;border-radius:14px;background:#ff7fb0;border:3px solid #ffc2da;box-shadow:0 4px 0 #a8446e;display:flex;align-items:center;justify-content:center;padding:10px 0"><span style="font:700 14px 'JetBrains Mono';color:#0c0910">play 76</span></div>
+      <div style="position:absolute;left:50%;bottom:10px;transform:translateX(-50%);width:130px;height:40px;border-radius:12px;border:3px dashed rgba(255,127,176,.5);background:rgba(255,127,176,.06);display:flex;align-items:center;justify-content:center"><span style="font:700 12px 'JetBrains Mono';color:#ff7fb0">:siren</span></div>
+    </div>
+  </div>
+  <div style="position:absolute;left:0;right:0;bottom:118px;height:3px;background:linear-gradient(90deg,transparent,#f3eee4,transparent);box-shadow:0 0 20px rgba(243,238,228,.6)"></div>
+  <div style="position:absolute;left:0;right:0;bottom:0;height:106px;background:#0d0a18;border-top:1px solid rgba(243,238,228,.12);display:flex;flex-direction:column;justify-content:center;gap:10px;padding:0 26px;box-sizing:border-box">
+    <div style="display:flex;align-items:baseline;gap:16px"><span style="font:700 11px 'Fredoka';letter-spacing:2px;color:#ffb703">FILL THE HOLE</span><span style="font:700 24px 'JetBrains Mono';color:#c9c3d4">sleep <span style="color:#ffb703">0.5</span><span style="display:inline-block;width:12px;height:24px;background:#ffb703;border-radius:2px;vertical-align:-3px"></span></span><span style="margin-left:auto;font:700 14px 'JetBrains Mono';color:#7dffb3">×6 in a row</span></div>
+    <div style="display:flex;gap:12px;align-items:center"><span style="font:600 13px 'Fredoka';color:#c9c3d4;border:1.5px solid rgba(243,238,228,.3);border-radius:99px;padding:7px 16px">Stuck? Show the chips</span><span style="margin-left:auto;font:600 14px 'Fredoka';color:#f3eee4;border:1.5px solid #f3eee4;border-radius:99px;padding:8px 22px">Hear the goal</span><span style="font:600 14px 'Fredoka';color:#07060c;background:#ffb703;border-radius:99px;padding:8px 22px">Play this loop</span></div>
+  </div>
+</div></div></div>
+
+<div class="dv-opt" id="2c"><div class="dv-olabel"><a class="dv-oid" href="#2c">2c</a>Pad Deck — LED rails, drum-machine pad notes, DJ deck typing bar</div>
+<div class="dv-card" style="width:880px;background:#07060c">
+<div style="position:relative;width:880px;height:560px;background:#07060c;color:#f3eee4;font-family:'Fredoka',sans-serif;overflow:hidden">
+  <div style="position:absolute;left:200px;top:-60px;width:480px;height:220px;background:radial-gradient(ellipse at 50% 100%,rgba(176,133,255,.16),transparent 70%)"></div>
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 22px;position:relative;z-index:2">
+    <div style="display:flex;align-items:center;gap:14px"><span style="color:#c9c3d4;font-size:18px">←</span><span style="font-size:13px;color:#c9c3d4">G · <b style="color:#f3eee4">Hardfloor Finale</b> · 140 BPM</span></div>
+    <span style="font:700 13px 'JetBrains Mono';color:#7dffb3">28,900 · ×15</span>
+  </div>
+  <div style="position:absolute;left:60px;top:56px;right:60px;bottom:150px;display:flex;justify-content:space-between">
+    <div style="width:6px;background:repeating-linear-gradient(to bottom,#ece7f2 0 9px,transparent 9px 20px);border-radius:3px;opacity:.5"></div>
+    <div style="position:relative;width:150px">
+      <div style="position:absolute;left:50%;top:10px;transform:translateX(-50%);width:96px;height:64px;border-radius:12px;background:linear-gradient(180deg,#ece7f2,#c9c3d4);border:2px solid #fff;box-shadow:0 5px 0 #6e6880,inset 0 -8px 0 rgba(0,0,0,.08);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px"><span style="font-size:16px">🦶</span><span style="font:700 11px 'JetBrains Mono';color:#0c0910">:bd_haus</span></div>
+      <div style="position:absolute;left:50%;top:200px;transform:translateX(-50%);width:96px;height:64px;border-radius:12px;background:linear-gradient(180deg,#ece7f2,#c9c3d4);border:2px solid #fff;box-shadow:0 5px 0 #6e6880,0 0 22px rgba(236,231,242,.6),inset 0 -8px 0 rgba(0,0,0,.08);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px"><span style="font-size:16px">🦶</span><span style="font:700 11px 'JetBrains Mono';color:#0c0910">:bd_haus</span></div>
+      <span style="position:absolute;left:50%;bottom:-24px;transform:translateX(-50%);font:700 11px 'JetBrains Mono';color:#ece7f2">:drums</span>
+    </div>
+    <div style="width:6px;background:repeating-linear-gradient(to bottom,#4ab8f0 0 9px,transparent 9px 20px);border-radius:3px;opacity:.5"></div>
+    <div style="position:relative;width:150px">
+      <div style="position:absolute;left:50%;top:96px;transform:translateX(-50%);width:96px;height:64px;border-radius:12px;background:linear-gradient(180deg,#4ab8f0,#2f8fc4);border:2px solid #a8dcf8;box-shadow:0 5px 0 #17475f,inset 0 -8px 0 rgba(0,0,0,.12);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px"><span style="font-size:16px">🥁</span><span style="font:700 11px 'JetBrains Mono';color:#0c0910">:sn_dolf</span></div>
+      <span style="position:absolute;left:50%;bottom:-24px;transform:translateX(-50%);font:700 11px 'JetBrains Mono';color:#4ab8f0">:claps</span>
+    </div>
+    <div style="width:6px;background:repeating-linear-gradient(to bottom,#b085ff 0 9px,transparent 9px 20px);border-radius:3px;opacity:.9;box-shadow:0 0 10px rgba(176,133,255,.6)"></div>
+    <div style="position:relative;width:150px">
+      <div style="position:absolute;left:50%;top:30px;transform:translateX(-50%);width:96px;height:64px;border-radius:12px;background:linear-gradient(180deg,#b085ff,#8a63d8);border:2px solid #d8c4ff;box-shadow:0 5px 0 #4a3380,inset 0 -8px 0 rgba(0,0,0,.12);display:flex;align-items:center;justify-content:center"><span style="font:700 13px 'JetBrains Mono';color:#0c0910">play 33</span></div>
+      <div style="position:absolute;left:50%;top:168px;transform:translateX(-50%);width:96px;height:64px;border-radius:12px;border:3px dashed #ffb703;background:rgba(255,183,3,.07);box-shadow:0 0 26px rgba(255,183,3,.45);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px"><span style="font:700 13px 'JetBrains Mono';color:#ffb703">sleep ?</span><span style="font:600 9px 'Fredoka';letter-spacing:1px;color:#ffb703">TYPE IT BELOW</span></div>
+      <span style="position:absolute;left:50%;bottom:-24px;transform:translateX(-50%);font:700 11px 'JetBrains Mono';color:#d8c4ff;background:rgba(176,133,255,.15);border-radius:99px;padding:2px 10px">:bass ★</span>
+    </div>
+    <div style="width:6px;background:repeating-linear-gradient(to bottom,#ff7fb0 0 9px,transparent 9px 20px);border-radius:3px;opacity:.5"></div>
+    <div style="position:relative;width:150px">
+      <div style="position:absolute;left:50%;top:64px;transform:translateX(-50%);width:96px;height:64px;border-radius:12px;background:linear-gradient(180deg,#ff7fb0,#d85a8c);border:2px solid #ffc2da;box-shadow:0 5px 0 #7e2f4e,inset 0 -8px 0 rgba(0,0,0,.12);display:flex;align-items:center;justify-content:center"><span style="font:700 13px 'JetBrains Mono';color:#0c0910">play 72</span></div>
+      <span style="position:absolute;left:50%;bottom:-24px;transform:translateX(-50%);font:700 11px 'JetBrains Mono';color:#ff7fb0">:siren</span>
+    </div>
+    <div style="width:6px;background:repeating-linear-gradient(to bottom,#ff7fb0 0 9px,transparent 9px 20px);border-radius:3px;opacity:.5"></div>
+  </div>
+  <div style="position:absolute;left:0;right:0;bottom:136px;height:3px;background:linear-gradient(90deg,transparent 4%,#f3eee4 30%,#f3eee4 70%,transparent 96%);box-shadow:0 0 18px rgba(243,238,228,.55)"></div>
+  <div style="position:absolute;left:0;right:0;bottom:0;height:124px;background:linear-gradient(180deg,#131022,#0b0916);border-top:1px solid rgba(243,238,228,.14);display:flex;align-items:center;gap:20px;padding:0 30px;box-sizing:border-box">
+    <div style="position:relative;width:88px;height:88px;border-radius:50%;background:radial-gradient(circle,#221d3a 28%,#131022 70%);border:3px solid rgba(236,231,242,.25)"><div style="position:absolute;inset:12px;border-radius:50%;border:1.5px solid rgba(236,231,242,.14)"></div><div style="position:absolute;inset:24px;border-radius:50%;border:1.5px solid rgba(236,231,242,.14)"></div><div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:22px;height:22px;border-radius:50%;background:#b085ff"></div><div style="position:absolute;left:50%;top:6px;width:2px;height:14px;background:rgba(236,231,242,.4)"></div></div>
+    <div style="flex:1;display:flex;flex-direction:column;gap:8px">
+      <div style="display:flex;align-items:baseline;gap:12px"><span style="font:700 10px 'Fredoka';letter-spacing:2px;color:#ffb703">TYPE IT</span><span style="font:500 11px 'Fredoka';color:#c9c3d4">half a beat between bass notes…</span></div>
+      <div style="display:flex;align-items:center;gap:10px"><span style="flex:1;font:700 22px 'JetBrains Mono';color:#f3eee4;background:rgba(255,183,3,.07);border:2px solid #ffb703;border-radius:10px;padding:8px 14px">sleep 0.<span style="display:inline-block;width:11px;height:22px;background:#ffb703;border-radius:2px;vertical-align:-3px"></span></span><span style="font:600 14px 'Fredoka';color:#07060c;background:#ffb703;border-radius:99px;padding:10px 24px">Drop it</span></div>
+    </div>
+    <div style="position:relative;width:88px;height:88px;border-radius:50%;background:radial-gradient(circle,#221d3a 28%,#131022 70%);border:3px solid rgba(236,231,242,.25)"><div style="position:absolute;inset:12px;border-radius:50%;border:1.5px solid rgba(236,231,242,.14)"></div><div style="position:absolute;inset:24px;border-radius:50%;border:1.5px solid rgba(236,231,242,.14)"></div><div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:22px;height:22px;border-radius:50%;background:#ff7fb0"></div><div style="position:absolute;left:50%;top:6px;width:2px;height:14px;background:rgba(236,231,242,.4)"></div></div>
+  </div>
+</div></div></div>
+
+</div>
+<p class="dv-next">Say "2a but with 2c's pad notes", "make the write-lane spotlight stronger", or "animate one" — or I can restyle <code>ClubHighway.jsx</code> / <code>booth.css</code> directly to match the winner.</p>
+</section>
+<section class="dv-turn" id="t1">
+<div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">"In the Club" — Guitar-Hero typing lanes</span></div>
+<p class="dv-sub">Assumptions (correct me): 4 lanes, each lane = a Sonic Pi command family (play / sleep / sample / loop); notes carry real syntax tokens; when a note reaches the hit line the student types the line. Three full-screen directions from calm→wild, plus a parts kit (<a class="dv-oid" href="#1d">1d</a>) of note/lane/feedback atoms to mix &amp; match.</p>
+<div class="dv-opts">
+
+<div class="dv-opt" id="1a"><div class="dv-olabel"><a class="dv-oid" href="#1a">1a</a>Neon Stage — true Guitar-Hero perspective, glow-pill notes</div>
+<div class="dv-card" style="width:880px">
+<div style="position:relative;width:880px;height:560px;background:radial-gradient(ellipse 120% 60% at 50% -10%,#3a1d7a 0%,#1e1048 45%,#150b33 100%);overflow:hidden">
+  <div style="position:absolute;left:200px;top:-40px;width:480px;height:200px;background:radial-gradient(ellipse at 50% 100%,rgba(255,79,163,.22),transparent 70%)"></div>
+  <div style="position:absolute;left:0;top:0;right:0;height:48px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;box-sizing:border-box;z-index:5">
+    <div style="display:flex;align-items:center;gap:10px"><div style="width:26px;height:26px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,#b9c8ff 40%,#5d6bd8 75%)"></div><span style="font:600 16px 'Fredoka';color:#f4f0ff">IN THE CLUB</span><span style="font:500 12px 'Fredoka';color:#9d8fd8;background:rgba(255,255,255,.08);padding:3px 10px;border-radius:99px">Level 2 · Beat Builder</span></div>
+    <div style="display:flex;align-items:center;gap:14px"><span style="font:700 13px 'JetBrains Mono';color:#ffb02e;text-shadow:0 0 10px rgba(255,176,46,.6)">×8 COMBO</span><span style="font:700 18px 'Fredoka';color:#f4f0ff">12,480</span></div>
+  </div>
+  <div style="position:absolute;left:20px;right:20px;top:52px;height:5px;border-radius:99px;background:rgba(255,255,255,.1);z-index:5"><div style="width:38%;height:100%;border-radius:99px;background:linear-gradient(90deg,#2fe0ff,#a8ff3f)"></div></div>
+  <div style="position:absolute;left:0;top:90px;width:880px;height:350px">
+    <div style="position:absolute;inset:0;clip-path:polygon(132px 0,363px 0,220px 350px,0 350px);background:linear-gradient(to top,rgba(255,79,163,.20),rgba(255,79,163,.02))"></div>
+    <div style="position:absolute;inset:0;clip-path:polygon(363px 0,440px 0,440px 350px,220px 350px);background:linear-gradient(to top,rgba(47,224,255,.18),rgba(47,224,255,.02))"></div>
+    <div style="position:absolute;inset:0;clip-path:polygon(440px 0,517px 0,660px 350px,440px 350px);background:linear-gradient(to top,rgba(168,255,63,.16),rgba(168,255,63,.02))"></div>
+    <div style="position:absolute;inset:0;clip-path:polygon(517px 0,748px 0,880px 350px,660px 350px);background:linear-gradient(to top,rgba(255,176,46,.18),rgba(255,176,46,.02))"></div>
+    <div style="position:absolute;left:64px;top:-12px;width:3px;height:374px;transform:rotate(20.7deg);background:linear-gradient(to top,#ff4fa3,transparent);box-shadow:0 0 8px rgba(255,79,163,.8)"></div>
+    <div style="position:absolute;left:290px;top:-14px;width:3px;height:378px;transform:rotate(22.2deg);background:linear-gradient(to top,rgba(255,255,255,.55),transparent);box-shadow:0 0 6px rgba(255,255,255,.4)"></div>
+    <div style="position:absolute;left:438px;top:0;width:3px;height:350px;background:linear-gradient(to top,rgba(255,255,255,.55),transparent);box-shadow:0 0 6px rgba(255,255,255,.4)"></div>
+    <div style="position:absolute;left:587px;top:-14px;width:3px;height:378px;transform:rotate(-22.2deg);background:linear-gradient(to top,rgba(255,255,255,.55),transparent);box-shadow:0 0 6px rgba(255,255,255,.4)"></div>
+    <div style="position:absolute;left:812px;top:-12px;width:3px;height:374px;transform:rotate(-20.7deg);background:linear-gradient(to top,#ffb02e,transparent);box-shadow:0 0 8px rgba(255,176,46,.8)"></div>
+  </div>
+  <div style="position:absolute;left:292px;top:142px;transform:translate(-50%,-50%) scale(.53);display:flex;align-items:center;gap:8px;background:linear-gradient(135deg,#ff4fa3,#ff77b8);border:3px solid #ffd3e8;border-radius:99px;padding:8px 18px 8px 10px;box-shadow:0 0 22px rgba(255,79,163,.8);white-space:nowrap"><span style="display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:#1e1048;color:#ff77b8;font:700 14px 'Fredoka'">▶</span><span style="font:700 20px 'JetBrains Mono';color:#1e1048">play 64</span></div>
+  <div style="position:absolute;left:609px;top:177px;transform:translate(-50%,-50%) scale(.59);display:flex;align-items:center;gap:8px;background:linear-gradient(135deg,#ffb02e,#ffcd6e);border:3px solid #ffe9c2;border-radius:99px;padding:8px 18px 8px 10px;box-shadow:0 0 22px rgba(255,176,46,.8);white-space:nowrap"><span style="display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:#1e1048;color:#ffcd6e;font:700 15px 'Fredoka'">↻</span><span style="font:700 20px 'JetBrains Mono';color:#1e1048">2.times</span></div>
+  <div style="position:absolute;left:369px;top:247px;transform:translate(-50%,-50%) scale(.7);display:flex;align-items:center;gap:8px;background:linear-gradient(135deg,#2fe0ff,#8beeff);border:3px solid #d2f8ff;border-radius:99px;padding:8px 18px 8px 10px;box-shadow:0 0 22px rgba(47,224,255,.8);white-space:nowrap"><span style="display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:#1e1048;color:#8beeff;font:700 15px 'Fredoka'">z</span><span style="font:700 20px 'JetBrains Mono';color:#1e1048">sleep 0.5</span></div>
+  <div style="position:absolute;left:525px;top:317px;transform:translate(-50%,-50%) scale(.81);display:flex;align-items:center;gap:8px;background:linear-gradient(135deg,#a8ff3f,#ccff8a);border:3px solid #e9ffcd;border-radius:99px;padding:8px 18px 8px 10px;box-shadow:0 0 22px rgba(168,255,63,.7);white-space:nowrap"><span style="display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:#1e1048;color:#ccff8a;font:700 14px 'Fredoka'">◉</span><span style="font:700 20px 'JetBrains Mono';color:#1e1048">sample :bd_haus</span></div>
+  <div style="position:absolute;left:142px;top:387px;transform:translate(-50%,-50%) scale(.92);display:flex;align-items:center;gap:8px;background:linear-gradient(135deg,#ff4fa3,#ff77b8);border:3px solid #fff;border-radius:99px;padding:8px 18px 8px 10px;box-shadow:0 0 34px rgba(255,79,163,1);white-space:nowrap"><span style="display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:#1e1048;color:#ff77b8;font:700 14px 'Fredoka'">▶</span><span style="font:700 20px 'JetBrains Mono';color:#1e1048">play 60</span></div>
+  <div style="position:absolute;left:142px;top:342px;transform:translateX(-50%);font:700 11px 'Fredoka';letter-spacing:1px;color:#fff;background:#ff4fa3;border-radius:99px;padding:3px 10px;box-shadow:0 0 14px rgba(255,79,163,.9)">TYPE NOW!</div>
+  <div style="position:absolute;left:0;right:0;top:436px;height:4px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.9),transparent);box-shadow:0 0 18px rgba(255,255,255,.6)"></div>
+  <div style="position:absolute;left:0;right:0;top:448px;display:flex;justify-content:center;gap:30px">
+    <div style="width:170px;height:26px;border-radius:99px;border:2px solid #ff4fa3;background:rgba(255,79,163,.35);box-shadow:0 0 20px rgba(255,79,163,.8)"></div>
+    <div style="width:170px;height:26px;border-radius:99px;border:2px solid rgba(47,224,255,.6);background:rgba(47,224,255,.12)"></div>
+    <div style="width:170px;height:26px;border-radius:99px;border:2px solid rgba(168,255,63,.6);background:rgba(168,255,63,.12)"></div>
+    <div style="width:170px;height:26px;border-radius:99px;border:2px solid rgba(255,176,46,.6);background:rgba(255,176,46,.12)"></div>
+  </div>
+  <div style="position:absolute;left:0;right:0;bottom:0;height:64px;background:#0d0724;border-top:1px solid rgba(255,255,255,.12);display:flex;align-items:center;gap:12px;padding:0 24px;box-sizing:border-box">
+    <span style="font:700 16px 'JetBrains Mono';color:#ff4fa3">▶</span>
+    <span style="font:700 22px 'JetBrains Mono';color:#a8ff3f">play 6</span><span style="display:inline-block;width:13px;height:26px;background:#fff;border-radius:2px"></span><span style="font:700 22px 'JetBrains Mono';color:rgba(255,255,255,.28)">0</span>
+    <span style="margin-left:auto;font:500 12px 'Fredoka';color:#9d8fd8">type the line, then hit ENTER on the beat</span>
+  </div>
+</div></div></div>
+
+<div class="dv-opt" id="1b"><div class="dv-olabel"><a class="dv-oid" href="#1b">1b</a>Big Beat Arcade — flat lanes, chunky tile notes (younger / Chromebook-simple)</div>
+<div class="dv-card" style="width:880px">
+<div style="position:relative;width:880px;height:560px;background:linear-gradient(180deg,#0e1e3a 0%,#122a4d 100%);overflow:hidden">
+  <div style="position:absolute;left:0;right:0;bottom:64px;height:110px;display:flex;align-items:flex-end;gap:6px;padding:0 10px;opacity:.35">
+    <div style="flex:1;height:30%;background:#2fe0ff;border-radius:4px 4px 0 0"></div><div style="flex:1;height:65%;background:#2fe0ff;border-radius:4px 4px 0 0"></div><div style="flex:1;height:45%;background:#a8ff3f;border-radius:4px 4px 0 0"></div><div style="flex:1;height:90%;background:#a8ff3f;border-radius:4px 4px 0 0"></div><div style="flex:1;height:55%;background:#ffb02e;border-radius:4px 4px 0 0"></div><div style="flex:1;height:75%;background:#ff4fa3;border-radius:4px 4px 0 0"></div><div style="flex:1;height:40%;background:#ff4fa3;border-radius:4px 4px 0 0"></div><div style="flex:1;height:85%;background:#ffb02e;border-radius:4px 4px 0 0"></div><div style="flex:1;height:50%;background:#a8ff3f;border-radius:4px 4px 0 0"></div><div style="flex:1;height:70%;background:#2fe0ff;border-radius:4px 4px 0 0"></div><div style="flex:1;height:35%;background:#2fe0ff;border-radius:4px 4px 0 0"></div><div style="flex:1;height:60%;background:#ff4fa3;border-radius:4px 4px 0 0"></div>
+  </div>
+  <div style="position:absolute;left:0;top:0;right:0;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;box-sizing:border-box;z-index:5">
+    <span style="display:flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:#ff4fa3;color:#fff;font:700 14px 'Fredoka'">♪</span>
+    <div style="display:flex;align-items:center;gap:10px"><span style="font:600 17px 'Fredoka';color:#fff">Club Banger</span><span style="font:500 12px 'Fredoka';color:#8fb3e8;background:rgba(255,255,255,.1);padding:3px 10px;border-radius:99px">Track 3 of 5</span></div>
+    <div style="display:flex;gap:4px"><span style="color:#ffb02e;font-size:18px">★</span><span style="color:#ffb02e;font-size:18px">★</span><span style="color:rgba(255,255,255,.25);font-size:18px">★</span></div>
+  </div>
+  <div style="position:absolute;left:150px;top:66px;width:580px;height:364px;display:flex;gap:14px;justify-content:center">
+    <div style="position:relative;width:132px;border-radius:16px;background:linear-gradient(180deg,rgba(255,79,163,.10),rgba(255,79,163,.28));border:2px solid rgba(255,79,163,.5)">
+      <div style="position:absolute;left:50%;top:16%;transform:translateX(-50%);width:104px;border-radius:14px;background:#ff4fa3;border:3px solid #ffd3e8;box-shadow:0 4px 0 #b03070,0 0 18px rgba(255,79,163,.7);display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0"><span style="font:700 22px 'Fredoka';color:#fff">▶</span><span style="font:700 13px 'JetBrains Mono';color:#3a0a24">play 60</span></div>
+      <div style="position:absolute;left:50%;bottom:8px;transform:translateX(-50%);width:112px;height:34px;border-radius:12px;border:3px dashed rgba(255,79,163,.7);background:rgba(255,79,163,.15)"></div>
+    </div>
+    <div style="position:relative;width:132px;border-radius:16px;background:linear-gradient(180deg,rgba(47,224,255,.10),rgba(47,224,255,.28));border:2px solid rgba(47,224,255,.5)">
+      <div style="position:absolute;left:50%;bottom:6px;transform:translateX(-50%);width:110px;border-radius:14px;background:#2fe0ff;border:3px solid #fff;box-shadow:0 0 30px rgba(47,224,255,1);display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0"><span style="font:700 22px 'Fredoka';color:#0e1e3a">z</span><span style="font:700 13px 'JetBrains Mono';color:#0e1e3a">sleep 0.5</span></div>
+      <div style="position:absolute;left:50%;bottom:-24px;transform:translateX(-50%);font:700 12px 'Fredoka';letter-spacing:1px;color:#0e1e3a;background:#a8ff3f;border-radius:99px;padding:3px 12px;box-shadow:0 0 14px rgba(168,255,63,.9);white-space:nowrap;z-index:6">TYPE IT!</div>
+    </div>
+    <div style="position:relative;width:132px;border-radius:16px;background:linear-gradient(180deg,rgba(168,255,63,.10),rgba(168,255,63,.25));border:2px solid rgba(168,255,63,.5)">
+      <div style="position:absolute;left:50%;top:48%;transform:translateX(-50%);width:110px;border-radius:14px;background:#a8ff3f;border:3px solid #e9ffcd;box-shadow:0 4px 0 #6da021,0 0 18px rgba(168,255,63,.6);display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0"><span style="font:700 20px 'Fredoka';color:#1c3a0a">◉</span><span style="font:700 12px 'JetBrains Mono';color:#1c3a0a">sample :bd</span></div>
+      <div style="position:absolute;left:50%;bottom:8px;transform:translateX(-50%);width:112px;height:34px;border-radius:12px;border:3px dashed rgba(168,255,63,.6);background:rgba(168,255,63,.12)"></div>
+    </div>
+    <div style="position:relative;width:132px;border-radius:16px;background:linear-gradient(180deg,rgba(255,176,46,.10),rgba(255,176,46,.25));border:2px solid rgba(255,176,46,.5)">
+      <div style="position:absolute;left:50%;top:6%;transform:translateX(-50%);width:104px;border-radius:14px;background:#ffb02e;border:3px solid #ffe9c2;box-shadow:0 4px 0 #b57713,0 0 18px rgba(255,176,46,.6);display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0"><span style="font:700 20px 'Fredoka';color:#3a2708">↻</span><span style="font:700 13px 'JetBrains Mono';color:#3a2708">4.times</span></div>
+      <div style="position:absolute;left:50%;bottom:8px;transform:translateX(-50%);width:112px;height:34px;border-radius:12px;border:3px dashed rgba(255,176,46,.6);background:rgba(255,176,46,.12)"></div>
+    </div>
+  </div>
+  <div style="position:absolute;left:22px;top:80px;width:110px;display:flex;flex-direction:column;gap:10px;align-items:center">
+    <div style="width:84px;height:84px;border-radius:50%;background:conic-gradient(#a8ff3f 0 62%,rgba(255,255,255,.12) 62% 100%);display:flex;align-items:center;justify-content:center"><div style="width:64px;height:64px;border-radius:50%;background:#122a4d;display:flex;flex-direction:column;align-items:center;justify-content:center"><span style="font:700 20px 'Fredoka';color:#a8ff3f">×12</span><span style="font:500 9px 'Fredoka';color:#8fb3e8;letter-spacing:1px">COMBO</span></div></div>
+    <span style="font:600 13px 'Fredoka';color:#ff4fa3;text-align:center">ON FIRE!</span>
+  </div>
+  <div style="position:absolute;right:22px;top:80px;width:110px;display:flex;flex-direction:column;gap:8px;align-items:center">
+    <span style="font:500 10px 'Fredoka';letter-spacing:1.5px;color:#8fb3e8">CROWD METER</span>
+    <div style="width:26px;height:190px;border-radius:99px;background:rgba(255,255,255,.1);display:flex;align-items:flex-end;overflow:hidden"><div style="width:100%;height:70%;background:linear-gradient(to top,#2fe0ff,#a8ff3f,#ffb02e)"></div></div>
+    <span style="font:600 12px 'Fredoka';color:#fff">Hyped!</span>
+  </div>
+  <div style="position:absolute;left:0;right:0;bottom:0;height:64px;background:#0a1730;border-top:2px solid rgba(47,224,255,.4);display:flex;align-items:center;justify-content:center;gap:6px">
+    <span style="font:700 20px 'JetBrains Mono';color:#2fe0ff;margin-right:8px">⌨</span>
+    <span style="display:flex;align-items:center;justify-content:center;width:34px;height:40px;border-radius:8px;background:#2fe0ff;color:#0e1e3a;font:700 20px 'JetBrains Mono'">s</span>
+    <span style="display:flex;align-items:center;justify-content:center;width:34px;height:40px;border-radius:8px;background:#2fe0ff;color:#0e1e3a;font:700 20px 'JetBrains Mono'">l</span>
+    <span style="display:flex;align-items:center;justify-content:center;width:34px;height:40px;border-radius:8px;background:#2fe0ff;color:#0e1e3a;font:700 20px 'JetBrains Mono'">e</span>
+    <span style="display:flex;align-items:center;justify-content:center;width:34px;height:40px;border-radius:8px;border:2px solid #2fe0ff;color:#2fe0ff;font:700 20px 'JetBrains Mono';box-sizing:border-box">e</span>
+    <span style="display:flex;align-items:center;justify-content:center;width:34px;height:40px;border-radius:8px;border:2px dashed rgba(47,224,255,.5);color:rgba(47,224,255,.5);font:700 20px 'JetBrains Mono';box-sizing:border-box">p</span>
+    <span style="width:16px"></span>
+    <span style="display:flex;align-items:center;justify-content:center;width:34px;height:40px;border-radius:8px;border:2px dashed rgba(47,224,255,.5);color:rgba(47,224,255,.5);font:700 20px 'JetBrains Mono';box-sizing:border-box">0</span>
+    <span style="display:flex;align-items:center;justify-content:center;width:34px;height:40px;border-radius:8px;border:2px dashed rgba(47,224,255,.5);color:rgba(47,224,255,.5);font:700 20px 'JetBrains Mono';box-sizing:border-box">.</span>
+    <span style="display:flex;align-items:center;justify-content:center;width:34px;height:40px;border-radius:8px;border:2px dashed rgba(47,224,255,.5);color:rgba(47,224,255,.5);font:700 20px 'JetBrains Mono';box-sizing:border-box">5</span>
+  </div>
+</div></div></div>
+
+<div class="dv-opt" id="1c"><div class="dv-olabel"><a class="dv-oid" href="#1c">1c</a>Laser Tunnel — beam lanes, vinyl-record notes, crowd at the drop</div>
+<div class="dv-card" style="width:880px">
+<div style="position:relative;width:880px;height:560px;background:radial-gradient(ellipse 90% 55% at 50% 8%,#241055 0%,#140a2e 55%,#0a0620 100%);overflow:hidden">
+  <div style="position:absolute;left:-80px;top:-20px;width:500px;height:300px;background:linear-gradient(115deg,transparent 46%,rgba(47,224,255,.25) 49%,transparent 52%)"></div>
+  <div style="position:absolute;right:-80px;top:-20px;width:500px;height:300px;background:linear-gradient(65deg,transparent 46%,rgba(255,79,163,.25) 49%,transparent 52%)"></div>
+  <div style="position:absolute;left:0;right:0;top:14px;display:flex;justify-content:center;z-index:5"><div style="display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:99px;padding:6px 18px"><span style="font:600 13px 'Fredoka';color:#f4f0ff">DJ SONIC · Live Set</span><span style="font:700 13px 'JetBrains Mono';color:#a8ff3f">28,900</span><span style="font:700 12px 'JetBrains Mono';color:#ffb02e">×15</span></div></div>
+  <div style="position:absolute;left:390px;top:44px;width:100px;height:34px;border-radius:10px 10px 0 0;background:#241055;border:2px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;gap:10px"><div style="width:20px;height:20px;border-radius:50%;background:#0a0620;border:2px solid #2fe0ff"></div><div style="width:20px;height:20px;border-radius:50%;background:#0a0620;border:2px solid #ff4fa3"></div></div>
+  <div style="position:absolute;left:0;top:78px;width:880px;height:360px">
+    <div style="position:absolute;left:215px;top:-30px;width:4px;height:419px;transform:rotate(30.8deg);background:linear-gradient(to top,#ff4fa3,rgba(255,79,163,.05));box-shadow:0 0 16px rgba(255,79,163,.7)"></div>
+    <div style="position:absolute;left:364px;top:-4px;width:4px;height:367px;transform:rotate(11.2deg);background:linear-gradient(to top,#2fe0ff,rgba(47,224,255,.05));box-shadow:0 0 16px rgba(47,224,255,.7)"></div>
+    <div style="position:absolute;left:512px;top:-4px;width:4px;height:367px;transform:rotate(-11.2deg);background:linear-gradient(to top,#a8ff3f,rgba(168,255,63,.05));box-shadow:0 0 16px rgba(168,255,63,.6)"></div>
+    <div style="position:absolute;left:661px;top:-30px;width:4px;height:419px;transform:rotate(-30.8deg);background:linear-gradient(to top,#ffb02e,rgba(255,176,46,.05));box-shadow:0 0 16px rgba(255,176,46,.7)"></div>
+  </div>
+  <div style="position:absolute;left:387px;top:186px;transform:translate(-50%,-50%) scale(.66);width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,#1a1a2e 30%,#0d0d1c 70%);border:4px solid #2fe0ff;box-shadow:0 0 24px rgba(47,224,255,.8);display:flex;align-items:center;justify-content:center"><div style="position:absolute;inset:14px;border-radius:50%;border:2px solid rgba(255,255,255,.15)"></div><span style="background:#2fe0ff;color:#0a0620;font:700 15px 'JetBrains Mono';border-radius:99px;padding:4px 10px;z-index:2">play 72</span></div>
+  <div style="position:absolute;left:582px;top:150px;transform:translate(-50%,-50%) scale(.55);width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,#1a1a2e 30%,#0d0d1c 70%);border:4px solid #ffb02e;box-shadow:0 0 24px rgba(255,176,46,.8);display:flex;align-items:center;justify-content:center"><div style="position:absolute;inset:14px;border-radius:50%;border:2px solid rgba(255,255,255,.15)"></div><span style="background:#ffb02e;color:#0a0620;font:700 15px 'JetBrains Mono';border-radius:99px;padding:4px 10px;z-index:2">sleep 1</span></div>
+  <div style="position:absolute;left:266px;top:296px;transform:translate(-50%,-50%) scale(.82);width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,#1a1a2e 30%,#0d0d1c 70%);border:4px solid #ff4fa3;box-shadow:0 0 24px rgba(255,79,163,.8);display:flex;align-items:center;justify-content:center"><div style="position:absolute;inset:14px;border-radius:50%;border:2px solid rgba(255,255,255,.15)"></div><span style="background:#ff4fa3;color:#0a0620;font:700 14px 'JetBrains Mono';border-radius:99px;padding:4px 10px;z-index:2">:amen</span></div>
+  <div style="position:absolute;left:530px;top:404px;transform:translate(-50%,-50%);width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,#1a1a2e 30%,#0d0d1c 70%);border:4px solid #fff;box-shadow:0 0 40px rgba(168,255,63,1);display:flex;align-items:center;justify-content:center"><div style="position:absolute;inset:14px;border-radius:50%;border:2px solid rgba(255,255,255,.2)"></div><span style="background:#a8ff3f;color:#0a0620;font:700 15px 'JetBrains Mono';border-radius:99px;padding:4px 10px;z-index:2">:bd_haus</span></div>
+  <div style="position:absolute;left:0;right:0;top:436px;height:44px;z-index:4;background:linear-gradient(90deg,rgba(168,255,63,0),rgba(168,255,63,.16),rgba(168,255,63,0));border-top:3px solid rgba(255,255,255,.85);border-bottom:1px solid rgba(255,255,255,.15);box-shadow:0 0 30px rgba(255,255,255,.3);display:flex;align-items:center;justify-content:space-between;padding:0 26px;box-sizing:border-box">
+    <span style="font:700 13px 'Fredoka';letter-spacing:3px;color:#a8ff3f">THE DROP ▼</span>
+    <span style="font:700 20px 'JetBrains Mono';color:#f4f0ff">sample <span style="color:#a8ff3f">:bd_ha</span><span style="display:inline-block;width:11px;height:22px;background:#a8ff3f;border-radius:2px;vertical-align:-3px"></span><span style="color:rgba(255,255,255,.3)">us</span></span>
+    <span style="font:700 13px 'Fredoka';letter-spacing:3px;color:#a8ff3f">▼</span>
+  </div>
+  <div style="position:absolute;left:0;right:0;bottom:0;height:78px">
+    <div style="position:absolute;left:30px;bottom:0;width:70px;height:52px;border-radius:35px 35px 0 0;background:#070417"></div>
+    <div style="position:absolute;left:88px;bottom:0;width:80px;height:66px;border-radius:40px 40px 0 0;background:#0b0722"></div>
+    <div style="position:absolute;left:120px;bottom:52px;width:9px;height:30px;border-radius:5px;background:#0b0722;transform:rotate(-24deg)"></div>
+    <div style="position:absolute;left:158px;bottom:0;width:66px;height:46px;border-radius:33px 33px 0 0;background:#070417"></div>
+    <div style="position:absolute;left:220px;bottom:0;width:84px;height:70px;border-radius:42px 42px 0 0;background:#0b0722"></div>
+    <div style="position:absolute;left:236px;bottom:56px;width:9px;height:32px;border-radius:5px;background:#0b0722;transform:rotate(20deg)"></div>
+    <div style="position:absolute;left:298px;bottom:0;width:72px;height:54px;border-radius:36px 36px 0 0;background:#070417"></div>
+    <div style="position:absolute;left:364px;bottom:0;width:80px;height:64px;border-radius:40px 40px 0 0;background:#0b0722"></div>
+    <div style="position:absolute;left:432px;bottom:0;width:70px;height:48px;border-radius:35px 35px 0 0;background:#070417"></div>
+    <div style="position:absolute;left:494px;bottom:0;width:86px;height:72px;border-radius:43px 43px 0 0;background:#0b0722"></div>
+    <div style="position:absolute;left:560px;bottom:58px;width:9px;height:32px;border-radius:5px;background:#0b0722;transform:rotate(-18deg)"></div>
+    <div style="position:absolute;left:574px;bottom:0;width:68px;height:50px;border-radius:34px 34px 0 0;background:#070417"></div>
+    <div style="position:absolute;left:636px;bottom:0;width:82px;height:66px;border-radius:41px 41px 0 0;background:#0b0722"></div>
+    <div style="position:absolute;left:712px;bottom:0;width:70px;height:44px;border-radius:35px 35px 0 0;background:#070417"></div>
+    <div style="position:absolute;left:774px;bottom:0;width:78px;height:60px;border-radius:39px 39px 0 0;background:#0b0722"></div>
+    <div style="position:absolute;left:800px;bottom:48px;width:9px;height:30px;border-radius:5px;background:#0b0722;transform:rotate(26deg)"></div>
+  </div>
+</div></div></div>
+
+<div class="dv-opt" id="1d"><div class="dv-olabel"><a class="dv-oid" href="#1d">1d</a>Parts kit — note styles, hit feedback, lane rails (mix &amp; match)</div>
+<div class="dv-card" style="width:880px;background:#1a1040">
+<div style="display:flex;flex-direction:column;gap:26px;padding:28px 32px;box-sizing:border-box">
+  <div style="display:flex;flex-direction:column;gap:12px">
+    <span style="font:600 11px 'Fredoka';letter-spacing:2px;color:#9d8fd8">FALLING NOTE — 3 TREATMENTS</span>
+    <div style="display:flex;align-items:center;gap:34px;flex-wrap:wrap">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:8px;background:linear-gradient(135deg,#2fe0ff,#8beeff);border:3px solid #d2f8ff;border-radius:99px;padding:8px 18px 8px 10px;box-shadow:0 0 22px rgba(47,224,255,.8)"><span style="display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:#1e1048;color:#8beeff;font:700 15px 'Fredoka'">z</span><span style="font:700 18px 'JetBrains Mono';color:#1e1048">sleep 0.5</span></div><span style="font:500 11px 'Fredoka';color:#9d8fd8">Glow pill (<a class="dv-oid" href="#1a" style="background:rgba(255,255,255,.15);color:#fff">1a</a>)</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px"><div style="width:96px;border-radius:14px;background:#ff4fa3;border:3px solid #ffd3e8;box-shadow:0 4px 0 #b03070,0 0 18px rgba(255,79,163,.7);display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0"><span style="font:700 20px 'Fredoka';color:#fff">▶</span><span style="font:700 12px 'JetBrains Mono';color:#3a0a24">play 60</span></div><span style="font:500 11px 'Fredoka';color:#9d8fd8">Arcade tile (<a class="dv-oid" href="#1b" style="background:rgba(255,255,255,.15);color:#fff">1b</a>)</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px"><div style="position:relative;width:92px;height:92px;border-radius:50%;background:radial-gradient(circle,#1a1a2e 30%,#0d0d1c 70%);border:4px solid #a8ff3f;box-shadow:0 0 20px rgba(168,255,63,.7);display:flex;align-items:center;justify-content:center"><div style="position:absolute;inset:11px;border-radius:50%;border:2px solid rgba(255,255,255,.15)"></div><span style="background:#a8ff3f;color:#0a0620;font:700 12px 'JetBrains Mono';border-radius:99px;padding:3px 8px;z-index:2">:bd_haus</span></div><span style="font:500 11px 'Fredoka';color:#9d8fd8">Vinyl (<a class="dv-oid" href="#1c" style="background:rgba(255,255,255,.15);color:#fff">1c</a>)</span></div>
+    </div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:12px">
+    <span style="font:600 11px 'Fredoka';letter-spacing:2px;color:#9d8fd8">HIT FEEDBACK</span>
+    <div style="display:flex;align-items:center;gap:22px;flex-wrap:wrap">
+      <span style="font:700 22px 'Fredoka';color:#a8ff3f;text-shadow:0 0 16px rgba(168,255,63,.9);transform:rotate(-4deg)">PERFECT!</span>
+      <span style="font:700 19px 'Fredoka';color:#2fe0ff;text-shadow:0 0 12px rgba(47,224,255,.8)">Nice!</span>
+      <span style="font:700 17px 'Fredoka';color:#ffb02e;text-shadow:0 0 10px rgba(255,176,46,.7)">Almost…</span>
+      <span style="font:600 15px 'Fredoka';color:#8fa;opacity:.5;text-decoration:line-through">miss</span>
+      <span style="font:500 12px 'Fredoka';color:#9d8fd8;background:rgba(255,255,255,.07);border-radius:99px;padding:4px 12px">no red ✕ — a miss just fades out, kid-safe</span>
+      <span style="font:700 13px 'JetBrains Mono';color:#ffb02e;background:rgba(255,176,46,.12);border:1px solid rgba(255,176,46,.4);border-radius:8px;padding:5px 10px">typo hint: sleep 0.5 ← check the dot!</span>
+    </div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:12px">
+    <span style="font:600 11px 'Fredoka';letter-spacing:2px;color:#9d8fd8">LANE RAIL OPTIONS</span>
+    <div style="display:flex;align-items:flex-end;gap:30px;flex-wrap:wrap">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px"><div style="width:110px;height:120px;border-radius:12px;background:linear-gradient(to top,rgba(255,79,163,.3),rgba(255,79,163,.03));border-left:3px solid #ff4fa3;border-right:3px solid #ff4fa3;box-shadow:inset 0 -14px 22px rgba(255,79,163,.25)"></div><span style="font:500 11px 'Fredoka';color:#9d8fd8">Gradient fill</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px"><div style="width:110px;height:120px;display:flex;justify-content:center"><div style="width:4px;height:120px;background:linear-gradient(to top,#2fe0ff,rgba(47,224,255,.05));box-shadow:0 0 16px rgba(47,224,255,.8)"></div></div><span style="font:500 11px 'Fredoka';color:#9d8fd8">Laser beam</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px"><div style="width:110px;height:120px;display:flex;justify-content:space-between"><div style="width:6px;height:120px;background:repeating-linear-gradient(to top,#a8ff3f 0 8px,transparent 8px 18px);border-radius:3px"></div><div style="width:6px;height:120px;background:repeating-linear-gradient(to top,#a8ff3f 0 8px,transparent 8px 18px);border-radius:3px"></div></div><span style="font:500 11px 'Fredoka';color:#9d8fd8">LED dashes</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px"><div style="width:110px;height:120px;border-radius:14px;background:rgba(255,176,46,.10);border:3px dashed rgba(255,176,46,.55)"></div><span style="font:500 11px 'Fredoka';color:#9d8fd8">Soft track (younger)</span></div>
+    </div>
+  </div>
+</div></div></div>
+
+</div>
+<p class="dv-next">Try next: "animate <a class="dv-oid" href="#1a">1a</a> so notes actually fall" · "<a class="dv-oid" href="#1b">1b</a> layout with <a class="dv-oid" href="#1c">1c</a> vinyl notes" · "show the miss / perfect moment as full screens" · connect the LoopLab repo and I'll restyle the real screen.</p>
+</section>
+</x-dc>
+</body>
+</html>

@@ -62,7 +62,7 @@ export function CodeEditor({ value, onChange, errors, chipGroups, mode, disabled
       {mode === "typed" && !showChips && (
         <button
           onClick={() => setShowChips(true)}
-          className="self-start rounded-[4px] px-3 py-2 text-xs font-extrabold"
+          className="self-start rounded-[4px] px-3 py-2 text-xs font-bold"
           style={{ background: C.panel2, border: `1px solid ${C.line}`, color: C.aqua }}
         >
           Stuck? Show me the blocks
@@ -71,12 +71,12 @@ export function CodeEditor({ value, onChange, errors, chipGroups, mode, disabled
 
       {showChips && chipGroups.length > 0 && (
         <div className="flex flex-col gap-1.5">
-          <div className="text-[11px] font-extrabold uppercase" style={{ color: C.dim }}>
+          <div className="text-[11px] font-bold uppercase" style={{ color: C.dim }}>
             {mode === "chips" ? "Tap to add a line" : "Tap to type it for you"}
           </div>
           {chipGroups.map(([k, g]) => (
             <div key={k} className="flex flex-wrap items-center gap-1.5">
-              <span className="text-[11px] font-extrabold uppercase" style={{ color: C.dim, minWidth: 62 }}>
+              <span className="text-[11px] font-bold uppercase" style={{ color: C.dim, minWidth: 62 }}>
                 {g.label}
               </span>
               {g.items.map((it) => (
@@ -89,7 +89,7 @@ export function CodeEditor({ value, onChange, errors, chipGroups, mode, disabled
           {mode === "typed" && (
             <button
               onClick={() => setShowChips(false)}
-              className="self-start rounded-[4px] px-2 py-1 text-[11px] font-extrabold"
+              className="self-start rounded-[4px] px-2 py-1 text-[11px] font-bold"
               style={{ color: C.dim }}
             >
               Hide the blocks — I've got this

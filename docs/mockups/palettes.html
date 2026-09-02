@@ -1,0 +1,159 @@
+<meta charset="utf-8">
+<title>Club Palette Options</title>
+<style>
+  body { margin:0; background:#101014; color:#f3eee4;
+    font-family:"Atkinson Hyperlegible Next","Trebuchet MS",system-ui,sans-serif; }
+  .wrap { padding:20px clamp(12px,3vw,30px) 60px; }
+  h1 { font-size:18px; margin:0 0 4px; }
+  .sub { font-size:13px; color:#b9b3c4; margin:0 0 20px; max-width:74ch; line-height:1.5; }
+  .grid { display:grid; gap:26px; grid-template-columns:repeat(auto-fit,minmax(420px,1fr)); }
+  .opt { border:1px solid #2a2530; border-radius:4px; overflow:hidden; background:#0a090f; }
+  .opt h2 { font-size:16px; margin:0; padding:12px 14px 2px; }
+  .opt p { font-size:12.5px; color:#b9b3c4; margin:0; padding:0 14px 10px; line-height:1.45; min-height:3.2em; }
+  canvas { display:block; width:100%; height:420px; }
+</style>
+<div class="wrap">
+  <h1>How much colour, not which colour</h1>
+  <p class="sub">The last set were four dark rectangles &mdash; the pit is almost entirely black, so the hue
+  occupied about five per cent of the pixels and swapping it changed nothing. These four differ in how much
+  colour is on screen and how hard it is. Same four bars of Warehouse 909, 128&nbsp;BPM.</p>
+  <div class="grid" id="grid"></div>
+</div>
+<script>
+const LOOPS = [
+  { name:"drums", notes:[0,.5,1,1.5,2,2.5,3,3.5] },
+  { name:"claps", notes:[1,3] },
+  { name:"bass",  notes:[0,.5,.75,1,1.5,1.75,2,2.5,2.75,3,3.5,3.75] },
+  { name:"stabs", notes:[.5,1.5,2.5,3.5] },
+];
+const HOLE={lane:2,at:.75}, SOUR={lane:0,at:1.5};
+
+const OPTIONS = [
+  { name:"1 &mdash; the lane IS the colour",
+    note:"Solid colour fields running the whole length of the pit, the way a fret board is coloured. Tokens are near-black cut out of the lane. Colour goes from five per cent of the screen to about sixty.",
+    lanes:["#E8452F","#F0A31B","#2FA8E0","#8B4FD8"],
+    laneFill:0.62, laneFillOn:0.92, tokenInk:"#0A0810", tokenFromLane:false,
+    ground:"#0A0810", write:"#FFFFFF", fault:"#FFF04A", glow:0, big:1.25 },
+
+  { name:"2 &mdash; hard tokens on black",
+    note:"The floor stays black, the tokens carry all of it: full saturation, large, no fade into the distance. Nothing is tinted or tasteful.",
+    lanes:["#FF3B30","#FFD426","#00D6FF","#B14BFF"],
+    laneFill:0.05, laneFillOn:0.11, tokenInk:null, tokenFromLane:true,
+    ground:"#07060c", write:"#FFFFFF", fault:"#FF2D9E", glow:0, big:1.45 },
+
+  { name:"3 &mdash; neon, lit",
+    note:"Same black room, but every token and lane edge throws light. This is the one that looks like a club rather than a chart.",
+    lanes:["#FF2E88","#FFC400","#22E0FF","#9D4EFF"],
+    laneFill:0.07, laneFillOn:0.14, tokenInk:null, tokenFromLane:true,
+    ground:"#06060a", write:"#FFFFFF", fault:"#FF3B30", glow:16, big:1.2 },
+
+  { name:"4 &mdash; daylight",
+    note:"Invert it. A pale deck with dark lanes and saturated tokens &mdash; the one option that survives a sunlit classroom and a washed-out projector without a fight.",
+    lanes:["#C43A1F","#B8860B","#1C6E9C","#5B3A9E"],
+    laneFill:0.14, laneFillOn:0.26, tokenInk:null, tokenFromLane:true,
+    ground:"#E7E1D4", write:"#111015", fault:"#D6006A", glow:0, big:1.25, light:true },
+];
+
+const SHAPES=["circle","square","diamond","hexagon"];
+function trace(ctx,shape,x,y,r){
+  ctx.beginPath();
+  if(shape==="circle"){ctx.arc(x,y,r,0,Math.PI*2);return;}
+  if(shape==="square"){const a=r*.86,k=Math.min(4,r*.22);
+    ctx.moveTo(x-a+k,y-a);ctx.arcTo(x+a,y-a,x+a,y+a,k);ctx.arcTo(x+a,y+a,x-a,y+a,k);
+    ctx.arcTo(x-a,y+a,x-a,y-a,k);ctx.arcTo(x-a,y-a,x+a,y-a,k);ctx.closePath();return;}
+  const sides=shape==="diamond"?4:6, turn=shape==="hexagon"?Math.PI/6:-Math.PI/2;
+  const R=shape==="diamond"?r*1.16:r*1.06;
+  for(let i=0;i<sides;i++){const a=turn+i*2*Math.PI/sides;
+    const px=x+Math.cos(a)*R,py=y+Math.sin(a)*R;i?ctx.lineTo(px,py):ctx.moveTo(px,py);}
+  ctx.closePath();
+}
+const hexa=(h,a)=>{const n=parseInt(h.slice(1),16);
+  return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`;};
+
+function draw(cv,o,t){
+  const dpr=Math.min(2,window.devicePixelRatio||1);
+  const W=cv.clientWidth,H=cv.clientHeight;
+  cv.width=W*dpr;cv.height=H*dpr;
+  const ctx=cv.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.fillStyle=o.ground;ctx.fillRect(0,0,W,H);
+
+  const hitY=H-40,topY=4,vx=W/2,laneW=W/4,CONV=.6,K=1.5,VIEW=6;
+  const g=u=>(1-1/(1+u*K))/(1-1/(1+K));
+  const xOf=(cx,gg)=>cx+(vx-cx)*CONV*gg, yOf=gg=>hitY-(hitY-topY)*gg;
+
+  LOOPS.forEach((lp,i)=>{
+    const lx=i*laneW,rx=lx+laneW,ink=o.lanes[i],on=i===2;
+    ctx.beginPath();ctx.moveTo(lx,hitY);ctx.lineTo(xOf(lx,1),topY);
+    ctx.lineTo(xOf(rx,1),topY);ctx.lineTo(rx,hitY);ctx.closePath();
+    ctx.fillStyle=hexa(ink,on?o.laneFillOn:o.laneFill);ctx.fill();
+    ctx.strokeStyle=hexa(ink,on?.95:.55);ctx.lineWidth=on?2.5:1.5;
+    if(o.glow){ctx.shadowColor=ink;ctx.shadowBlur=o.glow*.7;}
+    ctx.stroke();ctx.shadowBlur=0;
+    ctx.font='700 12px ui-monospace,Menlo,monospace';ctx.textAlign="center";ctx.textBaseline="top";
+    ctx.fillStyle=o.light?"#3a3630":hexa(ink,on?1:.8);
+    const lab=":"+lp.name,lw=ctx.measureText(lab).width;
+    ctx.fillText(lab,lx+laneW/2+7,hitY+22);
+    ctx.fillStyle=o.light?"#3a3630":hexa(ink,on?1:.8);
+    trace(ctx,SHAPES[i],lx+laneW/2-lw/2-4,hitY+28,5);ctx.fill();
+  });
+
+  for(let b=Math.ceil(t);b-t<=VIEW;b++){
+    const gg=g((b-t)/VIEW),y=yOf(gg),down=b%4===0;
+    ctx.beginPath();ctx.moveTo(xOf(0,gg),y);ctx.lineTo(xOf(W,gg),y);
+    ctx.strokeStyle=o.light?`rgba(20,16,14,${((down?.34:.13)*(1-.45*gg)).toFixed(3)})`
+                           :`rgba(243,238,228,${((down?.4:.15)*(1-.45*gg)).toFixed(3)})`;
+    ctx.lineWidth=down?2:1;ctx.stroke();
+  }
+
+  const since=t-Math.floor(t),pulse=Math.max(0,1-since/.3)*(Math.floor(t)%4===0?1:.55);
+  ctx.beginPath();ctx.moveTo(2,hitY);ctx.lineTo(W-2,hitY);
+  ctx.strokeStyle=o.light?"#141014":"#ffffff";ctx.lineWidth=3+pulse*4;
+  ctx.globalAlpha=.8+pulse*.2;
+  if(o.glow){ctx.shadowColor="#fff";ctx.shadowBlur=pulse*20;}
+  ctx.stroke();ctx.shadowBlur=0;ctx.globalAlpha=1;
+
+  const toks=[];
+  LOOPS.forEach((lp,i)=>{
+    for(let bar=-1;bar<3;bar++) lp.notes.forEach(n=>{
+      const at=bar*4+n,dt=at-t;
+      if(dt<-.05||dt>VIEW)return;
+      const ob=Math.abs(at-Math.round(at))<.06;
+      toks.push({dt,lane:i,w:ob?(Math.round(at)%4===0?1:.85):.5,
+        hole:i===HOLE.lane&&Math.abs(n-HOLE.at)<.01,
+        sour:i===SOUR.lane&&Math.abs(n-SOUR.at)<.01});
+    });
+  });
+  toks.sort((a,b)=>b.dt-a.dt);
+  for(const tk of toks){
+    const gg=g(tk.dt/VIEW),sh=1-CONV*gg;
+    const x=xOf((tk.lane+.5)*laneW,gg),y=yOf(gg);
+    const r=Math.min(24,H*.07)*o.big*tk.w*(tk.hole?1.35:1)*sh;
+    if(r<3)continue;
+    ctx.globalAlpha=(1-.3*gg)*(tk.lane===2?1:.82)*(.55+.45*tk.w);
+    const shape=SHAPES[tk.lane];
+    if(o.glow&&!tk.hole){ctx.shadowColor=tk.sour?o.fault:o.lanes[tk.lane];ctx.shadowBlur=o.glow;}
+    trace(ctx,shape,x,y,r);
+    if(tk.hole){ctx.setLineDash([5*sh+2,4*sh+2]);ctx.strokeStyle=o.write;
+      ctx.lineWidth=Math.max(1.6,3*sh);ctx.stroke();ctx.setLineDash([]);}
+    else if(tk.sour){ctx.fillStyle=o.fault;ctx.fill();
+      trace(ctx,shape,x,y,r+Math.max(2,3.5*sh));ctx.strokeStyle=hexa(o.fault,.6);
+      ctx.lineWidth=Math.max(1.2,2*sh);ctx.stroke();}
+    else {ctx.fillStyle=o.tokenFromLane?o.lanes[tk.lane]:o.tokenInk;ctx.fill();
+      if(!o.tokenFromLane){ctx.strokeStyle=hexa(o.lanes[tk.lane],.9);ctx.lineWidth=1.5;ctx.stroke();}}
+    ctx.shadowBlur=0;ctx.globalAlpha=1;
+  }
+}
+
+const grid=document.getElementById("grid"),cvs=[];
+OPTIONS.forEach(o=>{
+  const d=document.createElement("div");d.className="opt";
+  d.innerHTML=`<h2>${o.name}</h2><p>${o.note}</p><canvas></canvas>`;
+  grid.appendChild(d);cvs.push([d.querySelector("canvas"),o]);
+});
+let t0=performance.now();
+(function frame(){
+  const t=((performance.now()-t0)/1000)*(128/60);
+  cvs.forEach(([cv,o])=>draw(cv,o,t));
+  requestAnimationFrame(frame);
+})();
+</script>

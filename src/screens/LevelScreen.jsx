@@ -19,7 +19,7 @@ export function LevelScreen(props) {
           <div className="text-[11px] font-bold uppercase" style={{ color: C.dim, letterSpacing: "0.16em" }}>
             Level {levelIdx + 1}
           </div>
-          <h1 className="text-lg font-bold">{level.title}</h1>
+          <h1 className="text-lg font-semibold">{level.title}</h1>
         </div>
         <Stars n={stars} size={15} />
       </div>

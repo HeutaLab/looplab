@@ -15,7 +15,7 @@ export function MapScreen({ stars, records, loaded, persist, playerName, onOpen,
       <div className="flex flex-wrap items-end justify-between gap-x-4 gap-y-1 pt-2">
         <div>
           <h1
-            className="text-4xl font-bold"
+            className="text-4xl font-semibold"
             style={{ letterSpacing: "-0.02em", WebkitTouchCallout: "none", WebkitUserSelect: "none", userSelect: "none" }}
             onPointerDown={onHoldStart}
             onPointerUp={onHoldEnd}
@@ -61,7 +61,7 @@ export function MapScreen({ stars, records, loaded, persist, playerName, onOpen,
                 {i + 1}
               </span>
               <span className="flex-1">
-                <span className="block font-bold">{lv.title}</span>
+                <span className="block font-semibold" style={{ letterSpacing: "0.006em" }}>{lv.title}</span>
                 <span className="block text-xs" style={{ fontFamily: TYPE.code, color: C.dim }}>
                   {unlocked ? lv.blurb : "Finish the level above to unlock"}
                 </span>
@@ -81,12 +81,12 @@ export function MapScreen({ stars, records, loaded, persist, playerName, onOpen,
         className="p-4 text-left"
         style={{
           background: clubOpen ? CLUB.void : "#17142F",
-          border: `1px solid ${clubOpen ? CLUB.amber : C.line}`,
+          border: `1px solid ${clubOpen ? CLUB.ink : C.line}`,
           borderRadius: 4,
           opacity: clubOpen ? 1 : 0.5,
         }}
       >
-        <div className="text-lg font-bold" style={{ color: clubOpen ? CLUB.ink : C.dim }}>
+        <div className="text-lg font-semibold" style={{ color: clubOpen ? CLUB.ink : C.dim, letterSpacing: "0.006em" }}>
           Enter The Club
         </div>
         <div className="mt-0.5 text-xs" style={{ color: clubOpen ? CLUB.dim : C.dim }}>

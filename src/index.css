@@ -4,18 +4,28 @@
 
    This runs on school iPads, Windows laptops, Chromebooks and Android
    tablets, and a system-font stack renders as a different product on each of
-   them — Gill Sans on the iPad, Trebuchet on Windows, Roboto on the
-   Chromebook. So the fonts are bundled, not borrowed: two variable files,
-   52KB together, served from the app itself. No CDN, so a classroom with the
-   wifi down still gets the right screen.
+   them. So the fonts are bundled, not borrowed, and no CDN is involved — a
+   classroom with the wifi down still gets the right screen.
 
-   Atkinson Hyperlegible was drawn by the Braille Institute to make characters
-   as hard to confuse as possible — an unambiguous 1 / l / I and 0 / O. This
-   whole product turns on a child telling `play 45` from `play 46` across a
-   classroom, so that is not a stylistic preference, it is the requirement.
-   The mono is the same family, so the code and the interface are one voice.
-
-   SIL Open Font License 1.1 — see src/fonts/OFL.txt. */
+   Fredoka for the interface and JetBrains Mono for code, per the Club
+   handoff. Both are variable, both SIL Open Font License 1.1, licences in
+   src/fonts/. Atkinson Hyperlegible stays alongside them: it was chosen
+   because a child has to tell `play 45` from `play 46` across a room, and if
+   Fredoka's rounder letterforms ever cost that, the swap back is one line. */
+@font-face {
+  font-family: "Fredoka";
+  src: url("./fonts/fredoka.woff2") format("woff2");
+  font-weight: 300 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("./fonts/jetbrains-mono.woff2") format("woff2");
+  font-weight: 100 800;
+  font-style: normal;
+  font-display: swap;
+}
 @font-face {
   font-family: "Atkinson Hyperlegible Next";
   src: url("./fonts/atkinson-hyperlegible-next.woff2") format("woff2");
@@ -35,6 +45,19 @@ html,
 body,
 #root {
   height: 100%;
+}
+
+/* Titles stop at 600.
+
+   Fredoka's 700 sets too tight for its own weight: on a dark ground the
+   letters bloom into each other and a track title stops being readable, even
+   though the same 700 is fine at body size. Headings cap at 600 and carry a
+   little extra tracking to give the heavier strokes somewhere to go. */
+h1,
+h2,
+h3 {
+  font-weight: 600;
+  letter-spacing: 0.006em;
 }
 
 /* Where the keyboard is, always visible.
@@ -61,5 +84,5 @@ body {
   margin: 0;
   background: #110f26;
   color: #f4f2ff;
-  font-family: "Atkinson Hyperlegible Next", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-family: "Fredoka", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
